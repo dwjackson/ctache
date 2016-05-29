@@ -13,8 +13,8 @@ SOURCE_FILES = main.c
 
 # Library
 LIB_NAME = lib$(BASE_NAME).so
-LIB_OBJ_FILES = linked_list.o lexer.o
-LIB_SOURCE_FILES = linked_list.c lexer.c
+LIB_OBJ_FILES = linked_list.o lexer.o hash_table.o
+LIB_SOURCE_FILES = linked_list.c lexer.c hash_table.c
 
 all: $(EXE_NAME) $(LIB_NAME)
 
