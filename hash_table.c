@@ -1,18 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "linked_list.h"
+#include "hash_table.h"
 
 #define DEFAULT_BUFSIZE 10
 
 struct ctache_hash_table_cell {
     char *key;
     void *value;
-};
-
-struct ctache_hash_table {
-    int bufsize; /* Total size of the "cells" buffer */
-    int length; /* Number of elements */
-    struct linked_list *cells[];
 };
 
 struct ctache_hash_table
