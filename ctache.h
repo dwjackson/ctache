@@ -9,5 +9,6 @@
 
 #include "linked_list.h"
 #include "lexer.h"
+#include "ctache_data.h"
 
 #endif /* CTACHE_H */
