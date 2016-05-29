@@ -5,6 +5,7 @@
 BASE_NAME = ctache
 CFLAGS = -Wall -g
 PREFIX=/usr/local
+CC = gcc
 
 # Executable
 EXE_NAME = $(BASE_NAME)
@@ -19,16 +20,16 @@ LIB_SOURCE_FILES = linked_list.c lexer.c hash_table.c
 all: $(EXE_NAME) $(LIB_NAME)
 
 $(EXE_NAME): $(OBJ_FILES) $(LIB_NAME)
-	cc $(CFLAGS) -L. -o $(EXE_NAME) $(OBJ_FILES) -l$(BASE_NAME)
+	$(CC) $(CFLAGS) -L. -o $(EXE_NAME) $(OBJ_FILES) -l$(BASE_NAME)
 
 $(OBJ_FILES): $(SOURCE_FILES)
-	cc $(CFLAGS) -c $(SOURCE_FILES)
+	$(CC) $(CFLAGS) -c $(SOURCE_FILES)
 
 $(LIB_NAME): $(LIB_OBJ_FILES)
-	cc $(CFLAGS) -shared -o $(LIB_NAME) $(LIB_OBJ_FILES)
+	$(CC) $(CFLAGS) -shared -o $(LIB_NAME) $(LIB_OBJ_FILES)
 
 $(LIB_OBJ_FILES): $(LIB_SOURCE_FILES)
-	cc $(CFLAGS) -c -fpic $(LIB_SOURCE_FILES)
+	$(CC) $(CFLAGS) -c -fpic $(LIB_SOURCE_FILES)
 
 install: $(EXE_NAME) $(LIB_NAME)
 	mkdir -p $(PREFIX)/bin

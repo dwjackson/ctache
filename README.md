@@ -14,7 +14,8 @@ implemented as the command-line tool `ctache` and also in library form as
 ## Building & Installing
 
 Ctache requires a C99-compatible C compiler -- it should work with both GCC and
-clang in any reasonably modern version thereof.
+clang in any reasonably modern version thereof. I've tested it with both
+GCC-4.8 and clang-3.6 and they both work.
 
 To build ctache, you should just have to run `make`.
 
