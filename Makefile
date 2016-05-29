@@ -4,11 +4,14 @@
 
 BASE_NAME = ctache
 CFLAGS = -Wall -g
+PREFIX=/usr/local
 
+# Executable
 EXE_NAME = $(BASE_NAME)
 OBJ_FILES = main.o
 SOURCE_FILES = main.c
 
+# Library
 LIB_NAME = lib$(BASE_NAME).so
 LIB_OBJ_FILES = linked_list.o lexer.o
 LIB_SOURCE_FILES = linked_list.c lexer.c
@@ -27,9 +30,19 @@ $(LIB_NAME): $(LIB_OBJ_FILES)
 $(LIB_OBJ_FILES): $(LIB_SOURCE_FILES)
 	cc $(CFLAGS) -c -fpic $(LIB_SOURCE_FILES)
 
+install: $(EXE_NAME) $(LIB_NAME)
+	mkdir -p $(PREFIX)/bin
+	mkdir -p $(PREFIX)/lib
+	install $(EXE_NAME) $(PREFIX)/bin/$(EXE_NAME)
+	install $(LIB_NAME) $(PREFIX)/lib/$(LIB_NAME)
+
+uninstall:
+	rm $(PREFIX)/bin/$(EXE_NAME)
+	rm $(PREFIX)/lib/$(LIB_NAME)
+
 clean:
 	rm -f $(EXE_NAME)
 	rm -f $(LIB_NAME)
 	rm -f *.o
 
-.PHONY: all clean
+.PHONY: all clean uninstall

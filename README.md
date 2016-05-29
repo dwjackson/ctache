@@ -18,7 +18,13 @@ clang in any reasonably modern version thereof.
 
 To build ctache, you should just have to run `make`.
 
-To install ctache, TODO
+To install ctache, run `make install`. If you want to change where ctache is
+installed, pass a `PREFIX=/some/directory` variable to `make`.
+
+If you want to uninstall ctache, you will need to pass in the same `PREFIX` as
+you did when you first installed it. If you don't remember where you installed
+ctache, if it is on your path you can run `which ctache` to figure out where it
+is in your filesystem.
 
 ## Usage
 
