@@ -7,9 +7,9 @@
 #ifndef CTACHE_H
 #define CTACHE_H
 
-#include "linked_list.h"
-#include "lexer.h"
-#include "ctache_data.h"
-#include "ctache_array.h"
+#include "ctache/linked_list.h"
+#include "ctache/lexer.h"
+#include "ctache/ctache_data.h"
+#include "ctache/ctache_array.h"
 
 #endif /* CTACHE_H */
