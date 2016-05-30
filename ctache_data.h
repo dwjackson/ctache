@@ -12,7 +12,13 @@ enum ctache_data_type {
 typedef struct ctache_data ctache_data_t;
 
 ctache_data_t
-*ctache_data_create(enum ctache_data_type data_type, void *data);
+*ctache_data_create_array(size_t element_size, size_t num_elements);
+
+ctache_data_t
+*ctache_data_create(enum ctache_data_type data_type,
+                    void *data,
+                    size_t element_size,
+                    size_t num_elements);
 
 void
 ctache_data_destroy(void *data);

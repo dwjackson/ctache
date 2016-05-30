@@ -9,18 +9,33 @@ struct ctache_data {
     union {
         struct ctache_hash_table *hash;
         struct ctache_array *array;
+        char *string;
         double number;
         bool boolean;
     } data;
 };
 
 ctache_data_t
-*ctache_data_create(enum ctache_data_type data_type, void *data)
+*ctache_data_create_array(size_t element_size, size_t num_elements)
+{
+    return ctache_data_create(CTACHE_DATA_ARRAY,
+                              NULL,
+                              element_size,
+                              num_elements);
+}
+
+ctache_data_t
+*ctache_data_create(enum ctache_data_type data_type,
+                    void *data,
+                    size_t element_size,
+                    size_t num_elements)
+
 {
     struct ctache_hash_table *tbl;
     struct ctache_array *array;
     double *dp;
     bool *bp;
+    char *str;
 
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
     if (ctache_data) {
@@ -31,11 +46,12 @@ ctache_data_t
             ctache_data->data.hash = tbl;
             break;
         case CTACHE_DATA_ARRAY:
-            array = (struct ctache_array *)(data);
+            array = ctache_array_create(element_size, num_elements);
             ctache_data->data.array = array;
             break;
         case CTACHE_DATA_STRING:
-            // TODO
+            str = (char *)(data);
+            ctache_data->data.string = str;
             break;
         case CTACHE_DATA_NUMBER:
             dp = (double *)(data);
