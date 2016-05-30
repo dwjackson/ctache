@@ -10,26 +10,26 @@ CC = cc
 # Executable
 EXE_NAME = $(BASE_NAME)
 OBJ_FILES = main.o
-SOURCE_FILES = main.c
+SRC_FILES = main.c
 
 # Library
 LIB_NAME = lib$(BASE_NAME).so
-LIB_OBJ_FILES = linked_list.o lexer.o hash_table.o ctache_data.o
-LIB_SOURCE_FILES = linked_list.c lexer.c hash_table.c ctache_data.c
+LIB_OBJ_FILES = linked_list.o lexer.o hash_table.o ctache_data.o ctache_array.o
+LIB_SRC_FILES = linked_list.c lexer.c hash_table.c ctache_data.c ctache_array.c
 
 all: $(EXE_NAME) $(LIB_NAME)
 
 $(EXE_NAME): $(OBJ_FILES) $(LIB_NAME)
 	$(CC) $(CFLAGS) -L. -o $(EXE_NAME) $(OBJ_FILES) -l$(BASE_NAME)
 
-$(OBJ_FILES): $(SOURCE_FILES)
-	$(CC) $(CFLAGS) -c $(SOURCE_FILES)
+$(OBJ_FILES): $(SRC_FILES)
+	$(CC) $(CFLAGS) -c $(SRC_FILES)
 
 $(LIB_NAME): $(LIB_OBJ_FILES)
 	$(CC) $(CFLAGS) -shared -o $(LIB_NAME) $(LIB_OBJ_FILES)
 
-$(LIB_OBJ_FILES): $(LIB_SOURCE_FILES)
-	$(CC) $(CFLAGS) -c -fpic $(LIB_SOURCE_FILES)
+$(LIB_OBJ_FILES): $(LIB_SRC_FILES)
+	$(CC) $(CFLAGS) -c -fpic $(LIB_SRC_FILES)
 
 install: $(EXE_NAME) $(LIB_NAME)
 	mkdir -p $(PREFIX)/bin
