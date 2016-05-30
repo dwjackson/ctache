@@ -2,11 +2,13 @@
 #include <stdbool.h>
 #include "hash_table.h"
 #include "ctache_data.h"
+#include "ctache_array.h"
 
 struct ctache_data {
     enum ctache_data_type data_type;
     union {
         struct ctache_hash_table *hash;
+        struct ctache_array *array;
         double number;
         bool boolean;
     } data;
@@ -16,6 +18,7 @@ ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type, void *data)
 {
     struct ctache_hash_table *tbl;
+    struct ctache_array *array;
     double *dp;
     bool *bp;
 
@@ -28,7 +31,8 @@ ctache_data_t
             ctache_data->data.hash = tbl;
             break;
         case CTACHE_DATA_ARRAY:
-            // TODO
+            array = (struct ctache_array *)(data);
+            ctache_data->data.array = array;
             break;
         case CTACHE_DATA_STRING:
             // TODO
