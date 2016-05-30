@@ -21,8 +21,8 @@ $(LIB_NAME):
 install: $(EXE_NAME) $(LIB_NAME)
 	mkdir -p $(PREFIX)/bin
 	mkdir -p $(PREFIX)/lib
-	install $(EXE_NAME) $(PREFIX)/bin/$(EXE_NAME)
-	install $(LIB_NAME) $(PREFIX)/lib/$(LIB_NAME)
+	install src/$(EXE_NAME) $(PREFIX)/bin/$(EXE_NAME)
+	install lib/$(LIB_NAME) $(PREFIX)/lib/$(LIB_NAME)
 
 uninstall:
 	rm $(PREFIX)/bin/$(EXE_NAME)
