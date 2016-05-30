@@ -6,8 +6,9 @@
 typedef char byte;
 
 struct ctache_array {
-    int bufsize;
-    int length;
+    size_t bufsize;
+    size_t length;
+    size_t element_size;
     byte buffer[];
 };
 
@@ -23,6 +24,7 @@ ctache_array_t
     if (array != NULL) {
         array->bufsize = bufsize;
         array->length = 0;
+        array->element_size = element_size;
     }
     return array;
 }
@@ -32,6 +34,31 @@ ctache_array_destroy(void *data)
 {
     struct ctache_array *array = (struct ctache_array *)(data);
     free(array);
+}
+
+void
+*ctache_array_get(ctache_array_t *array, int index)
+{
+    void *data;
+    if (index < 0 || index > array->length) {
+        return NULL;
+    }
+    byte *byte_ptr = (array->buffer) + index * array->element_size;
+    data = (void *)(byte_ptr);
+    return data;
+}
+
+void
+ctache_array_put(ctache_array_t *array, size_t index, void *data)
+{
+    byte *byte_ptr = (array->buffer) + index * array->element_size;
+    byte *data_ptr = (byte *)(data);
+    int i;
+    for (i = 0; i < array->element_size; i++) {
+        *byte_ptr = *data_ptr;
+        byte_ptr++;
+        data_ptr++;
+    }
 }
 
 #undef BUF_SIZE
