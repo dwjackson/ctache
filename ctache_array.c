@@ -40,7 +40,7 @@ void
 *ctache_array_get(ctache_array_t *array, int index)
 {
     void *data;
-    if (index < 0 || index > array->length) {
+    if (index > array->length) {
         return NULL;
     }
     byte *byte_ptr = (array->buffer) + index * array->element_size;
@@ -49,7 +49,7 @@ void
 }
 
 void
-ctache_array_put(ctache_array_t *array, size_t index, void *data)
+ctache_array_set(ctache_array_t *array, size_t index, void *data)
 {
     byte *byte_ptr = (array->buffer) + index * array->element_size;
     byte *data_ptr = (byte *)(data);
@@ -59,6 +59,19 @@ ctache_array_put(ctache_array_t *array, size_t index, void *data)
         byte_ptr++;
         data_ptr++;
     }
+}
+
+void
+ctache_array_append(ctache_array_t **array_ptr, void *data)
+{
+    struct ctache_array *array = *array_ptr;
+    if (array->length + 1 >= array->bufsize) {
+        size_t bufsize = array->bufsize *= 2;
+        *array_ptr = realloc(*array_ptr, sizeof(struct ctache_array) + bufsize);
+        array = *array_ptr;
+    }
+    ctache_array_set(*array_ptr, array->length, data);
+    ((*array_ptr)->length)++;
 }
 
 #undef BUF_SIZE
