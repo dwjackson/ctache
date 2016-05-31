@@ -179,7 +179,7 @@ ctache_data_t
     int fd = open(file_name, O_RDONLY);
     if (fd >= 0) {
         void *region = mmap(NULL, file_size, PROT_READ, 0, fd, 0);
-        char *file_content = (char *)(region);
+        unsigned char *file_content = (unsigned char *)(region);
 
         yaml_parser_t parser;
         yaml_event_t event;

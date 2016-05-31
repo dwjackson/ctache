@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 BASE_NAME = ctache
-CFLAGS = -Wall -g -I../include
+CFLAGS = -Wall -g -I../include -I/usr/local/include -L/usr/local/lib
 PREFIX=/usr/local
 CC = cc
 
@@ -16,7 +16,7 @@ LIB_NAME=../lib/lib$(BASE_NAME).so
 all: $(EXE_NAME)
 
 $(EXE_NAME): $(OBJ_FILES) $(LIB_NAME)
-	$(CC) $(CFLAGS) -L../lib -o $(EXE_NAME) $(OBJ_FILES) -l$(BASE_NAME)
+	$(CC) $(CFLAGS) -L../lib -o $(EXE_NAME) $(OBJ_FILES) -l$(BASE_NAME) -lyaml
 
 $(OBJ_FILES): $(SRC_FILES)
 	$(CC) $(CFLAGS) -c $(SRC_FILES)
