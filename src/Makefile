@@ -3,8 +3,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 BASE_NAME = ctache
-CFLAGS = -Wall -g -I../include -I/usr/local/include -L/usr/local/lib
-PREFIX=/usr/local
+CFLAGS = -Wall -g -I../include
+PREFIX = /usr/local
 CC = cc
 
 # Executable
