@@ -13,6 +13,9 @@
 
 #define IN_BUF_SIZE_DEFAULT 1024
 
+void
+print_help(const char* prog_name);
+
 int
 main(int argc, char *argv[])
 {
@@ -21,7 +24,7 @@ main(int argc, char *argv[])
     FILE *out_fp = stdout; /* Output file pointer */
     char *out_file_name = NULL; /* Output file name */
     bool print_tokens = false;
-    bool print_help = false;
+    bool help_flag_set = false;
     struct linked_list_node *curr = NULL;
     struct linked_list *tokens = NULL;
     char *in_buf = NULL;
@@ -31,13 +34,8 @@ main(int argc, char *argv[])
     int opt;
     while ((opt = getopt(argc, argv, "o:i:th")) != -1) {
         switch (opt) {
-        case 'o':
-            out_file_name = strdup(optarg);
-            out_fp = fopen(out_file_name, "w");
-            if (out_fp == NULL) {
-                fprintf(stderr, "Error opening file: %s\n", out_file_name);
-                exit(EXIT_FAILURE);
-            }
+        case 'h':
+            help_flag_set = true;
             break;
         case 'i':
             in_file_name = strdup(optarg);
@@ -47,11 +45,16 @@ main(int argc, char *argv[])
                 exit(EXIT_FAILURE);
             }
             break;
+        case 'o':
+            out_file_name = strdup(optarg);
+            out_fp = fopen(out_file_name, "w");
+            if (out_fp == NULL) {
+                fprintf(stderr, "Error opening file: %s\n", out_file_name);
+                exit(EXIT_FAILURE);
+            }
+            break;
         case 't':
             print_tokens = true;
-            break;
-        case 'h':
-            print_help = true;
             break;
         default:
             printf("Unrecognized option: %c\n", opt);
@@ -60,12 +63,8 @@ main(int argc, char *argv[])
         }
     }
 
-    if (print_help) {
-        printf("Usage: %s [OPTIONS] ...\n", argv[0]);
-        printf("\t-h: print this help message\n");
-        printf("\t-t: only print lexer tokens, do not parse\n");
-        printf("\t-i: specify input file name\n");
-        printf("\t-o: Specify output file name\n");
+    if (help_flag_set) {
+        print_help(argv[0]);
         goto cleanup; /* Do nothing else */
     }
     
@@ -140,4 +139,14 @@ cleanup:
     }
 
     return 0;
+}
+
+void
+print_help(const char *prog_name)
+{
+    printf("Usage: %s [OPTIONS] ...\n", prog_name);
+    printf("\t-h: print this help message\n");
+    printf("\t-t: only print lexer tokens, do not parse\n");
+    printf("\t-i: specify input file name\n");
+    printf("\t-o: Specify output file name\n");
 }
