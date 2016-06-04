@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <yaml.h>
+#include <errno.h>
 #include "ctache.h"
 
 #define IN_BUF_SIZE_DEFAULT 1024
@@ -120,6 +121,9 @@ main(int argc, char *argv[])
         goto cleanup; /* Do not perform actual parsing */
     }
 
+    /* Read the YAML data file */
+    ctache_data_t *data = data_from_yaml(yaml_file_name);
+
     // TODO: Parsing
     
 cleanup:
@@ -178,8 +182,13 @@ ctache_data_t
     off_t file_size = statbuf.st_size;
     int fd = open(file_name, O_RDONLY);
     if (fd >= 0) {
-        void *region = mmap(NULL, file_size, PROT_READ, 0, fd, 0);
+        void *region = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
+        if (region == (void *) -1) {
+            fprintf(stderr, "mmap() failed, errno = %s\n", strerror(errno));
+            exit(EXIT_FAILURE);
+        }
         unsigned char *file_content = (unsigned char *)(region);
+        printf("[DEBUG]\n%s\n", file_content);
 
         yaml_parser_t parser;
         yaml_event_t event;
@@ -192,6 +201,26 @@ ctache_data_t
             }
 
             // TODO: Process the event
+            yaml_char_t *value;
+            switch (event.type) {
+            case YAML_MAPPING_START_EVENT:
+                tag = event.data.mapping_start.tag;
+                printf("[DEBUG] mapping_start\n");
+                // TODO
+                break;
+            case YAML_SCALAR_EVENT:
+                value = event.data.scalar.value;
+                printf("[DEBUG] value = %s\n", value);
+                // TODO
+                break;
+            case YAML_MAPPING_END_EVENT:
+                printf("[DEBUG] mapping end\n");
+                // TODO
+                break;
+            default:
+                /* Do nothing */
+                break;
+            }
 
             done = (event.type == YAML_STREAM_END_EVENT);
             yaml_event_delete(&event);
