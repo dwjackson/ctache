@@ -188,7 +188,8 @@ ctache_data_t
             exit(EXIT_FAILURE);
         }
         unsigned char *file_content = (unsigned char *)(region);
-        printf("[DEBUG]\n%s\n", file_content);
+
+        data = ctache_data_create_hash();
 
         yaml_parser_t parser;
         yaml_event_t event;

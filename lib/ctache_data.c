@@ -37,6 +37,12 @@ ctache_data_t
 }
 
 ctache_data_t
+*ctache_data_create_hash()
+{
+    return ctache_data_create(CTACHE_DATA_HASH, NULL, -1, -1);
+}
+
+ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type,
                     void *data,
                     size_t element_size,

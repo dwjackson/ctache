@@ -24,6 +24,9 @@ ctache_data_t
 *ctache_data_create_string(char *str, size_t len);
 
 ctache_data_t
+*ctache_data_create_hash();
+
+ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type,
                     void *data,
                     size_t element_size,
