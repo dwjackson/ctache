@@ -31,6 +31,12 @@ ctache_data_t
 }
 
 ctache_data_t
+*ctache_data_create_string(char *str, size_t len)
+{
+    return ctache_data_create(CTACHE_DATA_STRING, str, 1, len);
+}
+
+ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type,
                     void *data,
                     size_t element_size,

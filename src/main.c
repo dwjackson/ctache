@@ -204,7 +204,6 @@ ctache_data_t
             yaml_char_t *value;
             switch (event.type) {
             case YAML_MAPPING_START_EVENT:
-                tag = event.data.mapping_start.tag;
                 printf("[DEBUG] mapping_start\n");
                 // TODO
                 break;
