@@ -39,7 +39,8 @@ ctache_data_t
 ctache_data_t
 *ctache_data_create_hash()
 {
-    return ctache_data_create(CTACHE_DATA_HASH, NULL, -1, -1);
+    struct ctache_hash_table *tbl = ctache_hash_table_create();
+    return ctache_data_create(CTACHE_DATA_HASH, tbl, -1, -1);
 }
 
 ctache_data_t

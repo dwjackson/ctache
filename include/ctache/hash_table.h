@@ -15,4 +15,16 @@ struct ctache_hash_table {
     struct linked_list *cells[];
 };
 
+struct ctache_hash_table
+*ctache_hash_table_create();
+
+void
+ctache_hash_table_destroy(struct ctache_hash_table *table,
+                          void (*free_data)(void *));
+
+void
+ctache_hash_table_set(struct ctache_hash_table *table,
+                      const char *key,
+                      void *value);
+
 #endif /* HASH_TABLE */
