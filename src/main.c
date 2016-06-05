@@ -124,10 +124,11 @@ main(int argc, char *argv[])
     /* Read the YAML data file */
     ctache_data_t *data = data_from_yaml(yaml_file_name);
 
-    // TODO: Parsing
+    // TODO: Render the template
     
 cleanup:
     /* Cleanup */
+    ctache_data_destroy(data);
     if (tokens != NULL) {
         for (curr = tokens->first; curr != NULL; curr = curr->next) {
             struct ctache_token *tok = (struct ctache_token *)(curr->data);
