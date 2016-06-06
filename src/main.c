@@ -38,6 +38,7 @@ main(int argc, char *argv[])
     struct linked_list *tokens = NULL;
     char *in_buf = NULL;
     char *yaml_file_name = NULL;
+    ctache_data_t *data = NULL;
 
     extern char *optarg;
     extern int optind, opterr, optopt;
@@ -122,13 +123,15 @@ main(int argc, char *argv[])
     }
 
     /* Read the YAML data file */
-    ctache_data_t *data = data_from_yaml(yaml_file_name);
+    data = data_from_yaml(yaml_file_name);
 
     // TODO: Render the template
     
 cleanup:
     /* Cleanup */
-    ctache_data_destroy(data);
+    if (data != NULL) {
+        ctache_data_destroy(data);
+    }
     if (tokens != NULL) {
         for (curr = tokens->first; curr != NULL; curr = curr->next) {
             struct ctache_token *tok = (struct ctache_token *)(curr->data);
