@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <yaml.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -5,6 +6,16 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include "yaml_data.h"
+
+static yaml_char_t
+*yaml_strdup(yaml_char_t *src, size_t length)
+{
+    size_t size = length * sizeof(yaml_char_t) + 1;
+    yaml_char_t *dest_str = malloc(size);
+    memset(dest_str, 0, size);
+    memcpy(dest_str, src, length); 
+    return dest_str;
+}
     
 ctache_data_t
 *data_from_yaml(const char *file_name)
@@ -49,13 +60,17 @@ ctache_data_t
                 break;
             case YAML_SCALAR_EVENT:
                 if (key == NULL) {
-                    key = event.data.scalar.value; // TODO
+                    key = yaml_strdup(event.data.scalar.value,
+                                      event.data.scalar.length);
                 } else {
-                    value = event.data.scalar.value;
+                    value = yaml_strdup(event.data.scalar.value,
+                                        event.data.scalar.length);
                 }
                 if (key != NULL && value != NULL) {
                     printf("[DEBUG] %s: \"%s\"\n", key, value);
                     // TODO
+                    free(key);
+                    free(value);
                     key = NULL;
                     value = NULL;
                 }
