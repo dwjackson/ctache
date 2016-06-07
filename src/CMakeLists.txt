@@ -1,0 +1,5 @@
+set(EXE_SOURCES main.c)
+include_directories(${CMAKE_SOURCE_DIR}/include)
+add_executable(${EXE_NAME} ${EXE_SOURCES})
+target_link_libraries(${EXE_NAME} ${LIB_NAME} yaml) 
+set_target_properties(${EXE_NAME} PROPERTIES OUTPUT_NAME ctache)
