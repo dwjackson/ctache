@@ -1,4 +1,4 @@
-set(EXE_SOURCES main.c)
+set(EXE_SOURCES main.c yaml_data.c)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 add_executable(${EXE_NAME} ${EXE_SOURCES})
 target_link_libraries(${EXE_NAME} ${LIB_NAME} yaml) 
