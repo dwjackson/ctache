@@ -17,6 +17,17 @@ Ctache requires a C99-compatible C compiler -- it should work with both GCC and
 clang in any reasonably modern version thereof. I've tested it with both
 GCC-4.8 and clang-3.6 and they both work.
 
+### Dependencies
+
+Ctache has only one dependency other than a working C99-compatible compiler.
+It requires the libyaml library. At the time of this writing the version of the
+library is 0.1.6 and it is available [here](http://pyyaml.org/wiki/LibYAML). It
+should be available in the package manager for your operating system. I got it
+from [pkgsrc](https://www.pkgsrc.org/) on my OS X machine, apt-get on my Ubuntu
+machine and from the ports tree on my FreeBSD machine.
+
+### Compiling
+
 To build Ctache, you need to have CMake installed. To build:
 
 ```sh
