@@ -12,11 +12,6 @@
 
 #define DEFAULT_BUFSIZE 10
 
-struct ctache_hash_table_cell {
-    char *key;
-    void *value;
-};
-
 struct ctache_hash_table
 *ctache_hash_table_create()
 {
@@ -35,12 +30,16 @@ ctache_hash_table_destroy(struct ctache_hash_table *table,
 {
     struct linked_list *list;
     struct linked_list_node *curr;
+    struct ctache_hash_table_cell *cell;
     int i;
     for (i = 0; i < table->bufsize; i++) {
         list = (table->cells)[i];
         if (list != NULL) {
             for (curr = list->first; curr != NULL; curr = curr->next) {
-                free_data(curr->data);
+                cell = curr->data;
+                void *data = cell->value;
+                free_data(data);
+                free(cell->key);
             }
             linked_list_destroy(list);
         }
@@ -69,7 +68,30 @@ ctache_hash_table_set(struct ctache_hash_table *table,
     uint32_t hash = sdbm_hash(key);
     uint32_t index = hash % table->bufsize;
     struct linked_list *list = (table->cells)[index];
-    linked_list_append(list, value);
+    struct ctache_hash_table_cell *cell = malloc(sizeof(*cell));
+    cell->key = strdup(key);
+    cell->value = value;
+    linked_list_append(list, cell);
+}
+
+void
+*ctache_hash_table_get(struct ctache_hash_table *table, const char *key)
+{
+    void *value = NULL;
+    uint32_t hash = sdbm_hash(key);
+    uint32_t index = hash % table->bufsize;
+    struct linked_list *list = (table->cells)[index];
+    struct linked_list_node *curr = list->first;
+    struct ctache_hash_table_cell *cell;
+    while (curr != NULL) {
+        cell = (struct ctache_hash_table_cell *)(curr->data);
+        if (strcmp(cell->key, key) == 0) {
+            value = cell->value;
+            break;
+        }
+        curr = curr->next;
+    }
+    return value;
 }
 
 #undef DEFAULT_BUFSIZE 

@@ -68,6 +68,7 @@ ctache_data_t
                 }
                 if (key != NULL && value != NULL) {
                     printf("[DEBUG] %s: \"%s\"\n", key, value);
+                    ctache_data_hash_table_set(data, key, value);
                     // TODO
                     free(key);
                     free(value);

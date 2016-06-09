@@ -9,6 +9,11 @@
 
 #include "linked_list.h"
 
+struct ctache_hash_table_cell {
+    char *key;
+    void *value;
+};
+
 struct ctache_hash_table {
     int bufsize; /* Total size of the "cells" buffer */
     int length; /* Number of elements */
@@ -26,5 +31,8 @@ void
 ctache_hash_table_set(struct ctache_hash_table *table,
                       const char *key,
                       void *value);
+
+void
+*ctache_hash_table_get(struct ctache_hash_table *table, const char *key);
 
 #endif /* HASH_TABLE */

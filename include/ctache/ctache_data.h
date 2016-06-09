@@ -35,4 +35,7 @@ ctache_data_t
 void
 ctache_data_destroy(void *data);
 
+void
+ctache_data_hash_set(ctache_data_t *data, const char *key, void *value);
+
 #endif /* CTACHE_DATA_H */
