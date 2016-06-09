@@ -18,8 +18,19 @@ struct ctache_hash_table
     size_t size = sizeof(struct ctache_hash_table)
         + DEFAULT_BUFSIZE * sizeof(struct linked_list *);
     struct ctache_hash_table *table = malloc(size);
+    int i;
     if (table != NULL) {
         memset(table, 0, size); /* Set every list to NULL */
+        table->bufsize = DEFAULT_BUFSIZE;
+        if (table->bufsize == 0) {
+            abort();
+        }
+        table->length = 0;
+
+        /* Initialize the linked lists */
+        for (i = 0; i < table->bufsize; i++) {
+            (table->cells)[i] = linked_list_create();
+        }
     }
     return table;
 }
