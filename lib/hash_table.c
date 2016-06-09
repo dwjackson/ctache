@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "linked_list.h"
 #include "hash_table.h"
 
@@ -47,12 +48,28 @@ ctache_hash_table_destroy(struct ctache_hash_table *table,
     free(table);
 }
 
+static uint32_t
+sdbm_hash(const char *str)
+{
+    uint32_t hash = 0x0;
+    int ch;
+
+    while ((ch = *str++) != '\0') {
+        hash = ch + (hash << 6) + (hash << 16) - hash;
+    }
+
+    return hash;
+}
+
 void
 ctache_hash_table_set(struct ctache_hash_table *table,
                       const char *key,
                       void *value)
 {
-    // TODO
+    uint32_t hash = sdbm_hash(key);
+    uint32_t index = hash % table->bufsize;
+    struct linked_list *list = (table->cells)[index];
+    linked_list_append(list, value);
 }
 
 #undef DEFAULT_BUFSIZE 
