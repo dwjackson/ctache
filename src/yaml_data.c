@@ -67,8 +67,9 @@ ctache_data_t
                                         event.data.scalar.length);
                 }
                 if (key != NULL && value != NULL) {
-                    printf("[DEBUG] %s: \"%s\"\n", key, value);
                     ctache_data_hash_table_set(data, key, value);
+                    void *valptr = ctache_data_hash_table_get(data, key);
+                    printf("[DEBUG] %s: \"%s\"\n", key, (char*)valptr);
                     // TODO
                     free(key);
                     free(value);

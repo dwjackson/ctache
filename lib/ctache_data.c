@@ -104,3 +104,9 @@ ctache_data_hash_table_set(ctache_data_t *data, const char *key, void *value)
 {
     ctache_hash_table_set(data->data.hash, key, value);
 }
+
+void
+*ctache_data_hash_table_get(ctache_data_t *data, const char *key)
+{
+    return ctache_hash_table_get(data->data.hash, key);
+}
