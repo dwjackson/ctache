@@ -11,12 +11,22 @@
 #include "linked_list.h"
 
 enum ctache_token_type {
+    /* Terminals */
     CTACHE_TOK_STRING,
     CTACHE_TOK_SECTION_TAG_START,
     CTACHE_TOK_CLOSE_TAG_START,
     CTACHE_TOK_VALUE_TAG_START,
-    CTACHE_TOK_TAG_END
+    CTACHE_TOK_TAG_END,
+    CTACHE_TOK_EOI,
+
+    /* Non-Terminals */
+    CTACHE_TOK_TEMPLATE,
+    CTACHE_TOK_TEXT,
+    CTACHE_TOK_TAG,
+    CTACHE_TOK_TAG_START
 };
+#define CTACHE_NUM_TERMINALS CTACHE_TOK_EOI
+#define CTACHE_NUM_NONTERMINALS (CTACHE_TOK_TAG_START - CTACHE_TOK_TEMPLATE + 1)
 
 struct ctache_token {
     char *value;

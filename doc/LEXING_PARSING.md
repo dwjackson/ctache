@@ -52,12 +52,12 @@ The rules that follow from the above grammar as as follows:
 
 ### Parsing Table
 
-|           | {{# | {{/ | {{ | string | $ |
-|-----------|-----|-----|----|--------|---|
-| template  |  2  |  -  |  2 |    1   | - |
-| text      |  4  |  4  |  4 |    3   | - |
-| tag       |  5  |  5  |  5 |    -   | - |
-| tag start |  6  |  7  |  8 |    -   | - |
+|           | {{# | {{/ | {{ | }} | string | $ |
+|-----------|-----|-----|----|----|--------|---|
+| template  |  2  |  -  |  2 |  - |    1   | - |
+| text      |  4  |  4  |  4 |  4 |    3   | 4 |
+| tag       |  5  |  5  |  5 |  - |    -   | - |
+| tag start |  6  |  7  |  8 |  - |    -   | - |
 
 Note that when the parsing table is translated into actual C code, the rule
 indices will be zero-indexed, as opposed to beginning the indices at one. This
