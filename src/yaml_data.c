@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include "ctache.h"
 #include "yaml_data.h"
 
 static yaml_char_t
@@ -67,10 +68,10 @@ ctache_data_t
                                         event.data.scalar.length);
                 }
                 if (key != NULL && value != NULL) {
-                    ctache_data_hash_table_set(data, key, value);
-                    void *valptr = ctache_data_hash_table_get(data, key);
+                    void *valptr;
+                    ctache_data_hash_table_set(data, (char *)key, value);
+                    valptr = ctache_data_hash_table_get(data, (char*)key);
                     printf("[DEBUG] %s: \"%s\"\n", key, (char*)valptr);
-                    // TODO
                     free(key);
                     free(value);
                     key = NULL;
