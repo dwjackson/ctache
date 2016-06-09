@@ -51,4 +51,10 @@ linked_list_push(struct linked_list *list, void *data);
 void
 *linked_list_pop(struct linked_list *list);
 
+/*
+ * Get the last element pushed onto the list without popping it off the list.
+ */
+void
+*linked_list_peek(struct linked_list *list);
+
 #endif /* LINKED_LIST_H */

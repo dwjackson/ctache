@@ -99,3 +99,14 @@ void
     return data;
 }
 
+void
+*linked_list_peek(struct linked_list *list)
+{
+    struct linked_list_node *node;
+    void *data = NULL;
+    if (list->length > 0) {
+        node = list->last;
+        data = node->data;
+    }
+    return data;
+}
