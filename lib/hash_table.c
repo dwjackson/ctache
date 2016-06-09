@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include "linked_list.h"
 #include "hash_table.h"
+#include "parser.h"
 
 #define DEFAULT_BUFSIZE 10
 

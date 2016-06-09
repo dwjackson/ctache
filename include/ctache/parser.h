@@ -4,13 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef CTACHE_H
-#define CTACHE_H
+#ifndef PARSER_H
+#define PARSER_H
 
-#include "ctache/linked_list.h"
-#include "ctache/lexer.h"
-#include "ctache/ctache_data.h"
-#include "ctache/ctache_array.h"
-#include "ctache/parser.h"
+#include "linked_list.h"
 
-#endif /* CTACHE_H */
+struct linked_list
+*ctache_parse(struct linked_list *tokens);
+
+#endif /* PARSER_H */
