@@ -55,7 +55,7 @@ The rules that follow from the above grammar as as follows:
 
 |           | {{# | {{/ | {{ | }} | string | $ |
 |-----------|-----|-----|----|----|--------|---|
-| template  |  2  |  -  |  2 |  - |    1   | 3 |
+| template  |  2  |  2  |  2 |  - |    1   | 3 |
 | text      |  5  |  5  |  5 |  5 |    4   | 5 |
 | tag       |  6  |  6  |  6 |  - |    -   | - |
 | tag start |  7  |  8  |  9 |  - |    -   | - |
