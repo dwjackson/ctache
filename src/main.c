@@ -124,7 +124,7 @@ main(int argc, char *argv[])
 
     parsed_rules = ctache_parse(tokens);
     if (print_parsed_rules) {
-        printf("Parsed rules: ]n");
+        printf("Parsed rules:\n");
         for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
             int *rule_ptr = curr->data;
             printf("\t%d\n", *rule_ptr);
