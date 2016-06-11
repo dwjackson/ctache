@@ -135,7 +135,9 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
     }
 
     /* Render the template to the file */
-    _ctache_render(tokens, parsed_rules, out_fp, data);
+    if (tokens != NULL && parsed_rules != NULL) {
+        _ctache_render(tokens, parsed_rules, out_fp, data);
+    }
 
 cleanup:
     if (tokens != NULL) {
