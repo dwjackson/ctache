@@ -52,7 +52,7 @@ void
 *linked_list_pop(struct linked_list *list);
 
 /*
- * Get the last element pushed onto the list without popping it off the list.
+ * Get the element most-recently pushed onto the list without popping it
  */
 void
 *linked_list_peek(struct linked_list *list);

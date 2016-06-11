@@ -72,7 +72,7 @@ struct linked_list
             free(ptr);
             ptr = NULL;
 
-            switch (match) { // TODO
+            switch (match) {
             case 0: /* Rule 1: template -> text, template */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_TEMPLATE;

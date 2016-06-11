@@ -105,7 +105,7 @@ void
     struct linked_list_node *node;
     void *data = NULL;
     if (list->length > 0) {
-        node = list->last;
+        node = list->first;
         data = node->data;
     }
     return data;
