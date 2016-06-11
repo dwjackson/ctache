@@ -83,6 +83,12 @@ ctache_data_t
             case YAML_MAPPING_END_EVENT:
                 // TODO
                 break;
+            case YAML_SEQUENCE_START_EVENT:
+                // TODO
+                break;
+            case YAML_SEQUENCE_END_EVENT:
+                // TODO
+                break;
             default:
                 /* Do nothing */
                 break;
