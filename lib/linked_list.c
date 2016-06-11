@@ -32,10 +32,22 @@ linked_list_destroy(struct linked_list *list)
     free(list);
 }
 
+static struct linked_list_node
+*create_linked_list_node(void *data)
+{
+    struct linked_list_node *node = malloc(sizeof(*node));
+    if (node != NULL) {
+        node->data = data;
+        node->next = NULL;
+    }
+    return node;
+}
+
 void
 linked_list_append(struct linked_list *list, void *data)
 {
-    struct linked_list_node *node = malloc(sizeof(*node));
+    struct linked_list_node *node;
+    node = create_linked_list_node(data);
     if (node != NULL) {
         node->data = data;
         node->next = NULL;
@@ -56,10 +68,8 @@ linked_list_append(struct linked_list *list, void *data)
 void
 linked_list_push(struct linked_list *list, void *data)
 {
-    struct linked_list_node *node = malloc(sizeof(node));
+    struct linked_list_node *node = create_linked_list_node(data);
     if (node != NULL) {
-        node->data = data;
-        node->next = NULL;
         if (list->length == 0) {
             list->first = node;
             list->last = node;
