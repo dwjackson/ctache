@@ -32,11 +32,13 @@ main(int argc, char *argv[])
     char *in_buf = NULL;
     char *yaml_file_name = NULL;
     ctache_data_t *data = NULL;
+    struct linked_list *parsed_rules = NULL;
+    bool print_parsed_rules = false;
 
     extern char *optarg;
     extern int optind, opterr, optopt;
     int opt;
-    while ((opt = getopt(argc, argv, "o:i:thy:")) != -1) {
+    while ((opt = getopt(argc, argv, "o:i:thy:p")) != -1) {
         switch (opt) {
         case 'h':
             help_flag_set = true;
@@ -56,6 +58,9 @@ main(int argc, char *argv[])
                 fprintf(stderr, "Error opening file: %s\n", out_file_name);
                 exit(EXIT_FAILURE);
             }
+            break;
+        case 'p':
+            print_parsed_rules = true;
             break;
         case 't':
             print_tokens = true;
@@ -112,7 +117,19 @@ main(int argc, char *argv[])
             }
             printf("\n");
         }
-        goto cleanup; /* Do not perform actual parsing */
+        if (!print_parsed_rules) {
+            goto cleanup; /* Do not perform actual parsing */
+        }
+    }
+
+    parsed_rules = ctache_parse(tokens);
+    if (print_parsed_rules) {
+        printf("Parsed rules: ]n");
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            int *rule_ptr = curr->data;
+            printf("\t%d\n", *rule_ptr);
+        }
+        goto cleanup; /* Do nothing else */
     }
 
     /* Read the YAML data file */
@@ -134,6 +151,12 @@ cleanup:
             free(tok);
         }
         linked_list_destroy(tokens);
+    }
+    if (parsed_rules != NULL) {
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            free(curr->data);
+        }
+        linked_list_destroy(parsed_rules);
     }
     if (in_buf != NULL) {
         free(in_buf);
@@ -162,7 +185,9 @@ print_help(const char *prog_name)
 {
     printf("Usage: %s [OPTIONS] ...\n", prog_name);
     printf("\t-h: print this help message\n");
-    printf("\t-t: only print lexer tokens, do not parse\n");
+    printf("\t-t: print lexer tokens (for debugging)\n");
     printf("\t-i: specify input file name\n");
     printf("\t-o: Specify output file name\n");
+    printf("\t-p: Print list of parsed rules (for debugging)\n");
+    printf("\t-y: Specify the YAML-formatted input data file");
 }
