@@ -54,8 +54,8 @@ ctache_data_t
             if (!yaml_parser_parse(&parser, &event)) {
                 goto end;
             }
-
-            // TODO: Process the event
+            
+            /* Process the event */
             switch (event.type) {
             case YAML_MAPPING_START_EVENT:
                 if (data == NULL) {
@@ -74,18 +74,13 @@ ctache_data_t
                                         event.data.scalar.length);
                 }
                 if (key != NULL && value != NULL) {
-                    void *valptr;
                     ctache_data_hash_table_set(data, (char *)key, value);
-                    valptr = ctache_data_hash_table_get(data, (char*)key);
-                    printf("[DEBUG] %s: \"%s\"\n", key, (char*)valptr);
                     free(key);
-                    free(value);
                     key = NULL;
                     value = NULL;
                 }
                 break;
             case YAML_MAPPING_END_EVENT:
-                printf("[DEBUG] mapping end\n");
                 // TODO
                 break;
             default:
