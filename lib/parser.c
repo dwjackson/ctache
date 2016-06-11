@@ -70,7 +70,6 @@ struct linked_list
     struct ctache_token *token;
     enum ctache_token_type *token_type_ptr;
     int match;
-    int *rule_ptr;
     struct linked_list *stack;
 
     /* Set up the stack */

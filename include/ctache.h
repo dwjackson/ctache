@@ -12,5 +12,6 @@
 #include "ctache/ctache_data.h"
 #include "ctache/ctache_array.h"
 #include "ctache/parser.h"
+#include "ctache/render.h"
 
 #endif /* CTACHE_H */

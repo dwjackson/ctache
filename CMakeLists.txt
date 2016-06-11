@@ -12,6 +12,8 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
     link_directories(/usr/local/lib)
 endif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+
 set(LIB_NAME ctache)
 set(EXE_NAME ctache-bin)
 

@@ -5,9 +5,14 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "linked_list.h"
 #include "lexer.h"
 #include "ctache_data.h"
+#include "render.h"
+#include "parser.h"
+
+#define IN_BUF_SIZE_DEFAULT 1024
 
 static void
 _ctache_render(struct linked_list *tokens,
@@ -63,7 +68,90 @@ _ctache_render(struct linked_list *tokens,
 }
 
 void
-ctache_render_file(FILE *in, FILE *out, ctache_data_t *data)
+ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
 {
-    // TODO
+    struct linked_list *tokens = NULL;
+    char *in_buf = NULL;
+    struct linked_list_node *curr = NULL;
+    struct linked_list *parsed_rules = NULL;
+
+    /* Flags */
+    bool print_tokens = flags & CTACHE_RENDER_FLAG_PRINT_TOKENS;
+    bool print_parsed_rules = flags & CTACHE_RENDER_FLAG_PRINT_RULES;
+
+    /* Read the input file into a string */
+    size_t in_buf_size = IN_BUF_SIZE_DEFAULT;
+    size_t in_buf_len = 0;
+    in_buf = malloc(in_buf_size);
+    if (in_buf == NULL) {
+        fprintf(stderr, "Out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+    int ch;
+    while ((ch = fgetc(in_fp)) != EOF) {
+        if (in_buf_len + 1 < in_buf_size - 1) { /* -1 is for '\0') */
+            in_buf[in_buf_len] = ch;
+            in_buf_len++;
+        } else {
+            in_buf_size *= 2;
+            in_buf = realloc(in_buf, in_buf_len);
+            if (in_buf == NULL) {
+                fprintf(stderr, "Out of memory\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+    in_buf[in_buf_len] = '\0';
+
+    /* Perform lexical analysis */
+    tokens = ctache_lex(in_buf, in_buf_len);
+    if (print_tokens) {
+        extern char *ctache_token_names[];
+        printf("Tokens:\n");
+        for (curr = tokens->first; curr != NULL; curr = curr->next) {
+            struct ctache_token *tok = (struct ctache_token *)(curr->data);
+            enum ctache_token_type tok_type = tok->tok_type;
+            printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
+            if (tok->tok_type == CTACHE_TOK_STRING) {
+                printf(" \"%s\"", tok->value);
+            }
+            printf("\n");
+        }
+        if (!print_parsed_rules) {
+            goto cleanup; /* Do not perform actual parsing */
+        }
+    }
+
+    parsed_rules = ctache_parse(tokens);
+    if (print_parsed_rules && parsed_rules != NULL) {
+        printf("Parsed rules:\n");
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            int *rule_ptr = curr->data;
+            printf("\t%d\n", *rule_ptr);
+        }
+        goto cleanup; /* Do nothing else */
+    }
+
+    // TODO: Render the template to the file
+
+cleanup:
+    if (tokens != NULL) {
+        for (curr = tokens->first; curr != NULL; curr = curr->next) {
+            struct ctache_token *tok = (struct ctache_token *)(curr->data);
+            if (tok->value != NULL) {
+                free(tok->value);
+            }
+            free(tok);
+        }
+        linked_list_destroy(tokens);
+    }
+    if (parsed_rules != NULL) {
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            free(curr->data);
+        }
+        linked_list_destroy(parsed_rules);
+    }
+    if (in_buf != NULL) {
+        free(in_buf);
+    }
 }
