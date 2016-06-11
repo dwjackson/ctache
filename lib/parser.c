@@ -94,6 +94,7 @@ struct linked_list
             case 3: /* Rule 4: text -> string */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_STRING;
+                linked_list_push(stack, token_type_ptr);
                 break;
             case 4: /* Rule 5: text -> "" */
                 break;
