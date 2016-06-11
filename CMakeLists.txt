@@ -6,6 +6,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(ctache)
 
+# This enables libraries installed via the Ports tree (or pkg-ng) to be used
+if(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+    include_directories(/usr/local/include)
+    link_directories(/usr/local/lib)
+endif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+
 set(LIB_NAME ctache)
 set(EXE_NAME ctache-bin)
 
