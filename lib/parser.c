@@ -33,7 +33,7 @@ parse_table_check_match(enum ctache_token_type non_terminal,
     }
     return match;
 }
-    
+
 struct linked_list
 *ctache_parse(struct linked_list *tokens)
 {
@@ -44,12 +44,16 @@ struct linked_list
     int match;
     void *ptr;
     int *rule_ptr;
+    struct linked_list *stack;
 
     /* Set up the stack */
-    struct linked_list *stack = linked_list_create();
+    stack = linked_list_create();
+
     token_type_ptr = malloc(sizeof(*token_type_ptr));
     *token_type_ptr = CTACHE_TOK_EOI;
     linked_list_push(stack, token_type_ptr);
+
+    token_type_ptr = malloc(sizeof(*token_type_ptr));
     *token_type_ptr = CTACHE_TOK_TEMPLATE;
     linked_list_push(stack, token_type_ptr);
 
