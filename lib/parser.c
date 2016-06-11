@@ -22,7 +22,7 @@ parse_table_check_match(enum ctache_token_type non_terminal,
                         enum ctache_token_type terminal)
 {
     int match;
-    int row = non_terminal - CTACHE_NUM_NONTERMINALS;
+    int row = non_terminal - CTACHE_NUM_TERMINALS;
     int col = terminal;
     if (row < 0 || row >= CTACHE_NUM_NONTERMINALS) {
         match = -1;
