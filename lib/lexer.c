@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define STRVAL_INITIAL_BUFSIZE 10
+
 char *ctache_token_names[] = {
     "CTACHE_TOK_SECTION_TAG_START",
     "CTACHE_TOK_CLOSE_TAG_START",
@@ -38,21 +40,27 @@ add_char_to_strval(char *strval,
         strval = realloc(strval, *strval_bufsize_ptr);
         memset(strval, 0, *strval_bufsize_ptr);
         strcpy(strval, curr_strval);
+
         free(curr_strval);
-        if (strval == NULL) {
-            fprintf(stderr, "ctache_lex(): Out of memory\n");
-            exit(EXIT_FAILURE);
-        }
+        curr_strval = NULL;
+
         strval[*strval_len_ptr] = ch;
         (*strval_len_ptr)++;
     }
 }
 
-static void
-oom_error(const char* func_name)
+static struct ctache_token
+*token_create(enum ctache_token_type token_type, char *value)
 {
-    fprintf(stderr, "%s(): Out of memory", func_name);
-    exit(EXIT_FAILURE);
+    struct ctache_token *tok;
+    tok = malloc(sizeof(*tok));
+    if (tok == NULL) {
+        fprintf(stderr, "token_create(): Out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+    tok->tok_type = token_type;
+    tok->value = value;
+    return tok;
 }
 
 struct linked_list
@@ -60,13 +68,15 @@ struct linked_list
 {
     struct linked_list *tokens = linked_list_create();
     if (tokens == NULL) {
+        fprintf(stderr, "ctache_lex(): Cannot create tokens list\n");
         return NULL;
     }
 
     size_t strval_len = 0;
-    size_t strval_bufsize = 10;
+    size_t strval_bufsize = STRVAL_INITIAL_BUFSIZE;
     char *strval = malloc(strval_bufsize);
 
+    struct ctache_token *tok = NULL;
     int ch, i;
     for (i = 0; i < str_len; i++) {
         ch = str[i];
@@ -74,60 +84,33 @@ struct linked_list
         case '{':
             if (i + 3 < str_len) {
                 if (str[i + 1] == '{' && str[i + 2] == '#') {
-                    struct ctache_token *tok = malloc(sizeof(*tok));
-                    if (tok == NULL) {
-                        oom_error("ctache_lex");
-                    }
                     if (strval_len > 0) {
-                        tok->tok_type = CTACHE_TOK_STRING;
-                        tok->value = strdup(strval);
+                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
                         strval_len = 0;
                         memset(strval, 0, strval_bufsize);
                         linked_list_append(tokens, tok);
-                        tok = malloc(sizeof(*tok));
-                        if (tok == NULL) {
-                            oom_error("ctache_lex");
-                        }
                     }
-                    tok->tok_type = CTACHE_TOK_SECTION_TAG_START;
-                    tok->value = NULL;
+                    tok = token_create(CTACHE_TOK_SECTION_TAG_START, NULL);
                     linked_list_append(tokens, tok);
                     i += 2;
                 } else if (str[i + 1] == '{' && str[i + 2] == '/') {
-                    struct ctache_token *tok = malloc(sizeof(*tok));
-                    if (tok == NULL) {
-                        oom_error("ctache_lex");
-                    }
                     if (strval_len > 0) {
-                        tok->tok_type = CTACHE_TOK_STRING;
-                        tok->value = strdup(strval);
+                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
                         strval_len = 0;
                         linked_list_append(tokens, tok);
                         memset(strval, 0, strval_bufsize);
-                        tok = malloc(sizeof(*tok));
-                        if (tok == NULL) {
-                            oom_error("ctache_lex");
-                        }
                     }
-                    tok->tok_type = CTACHE_TOK_CLOSE_TAG_START;
-                    tok->value = NULL;
+                    tok = token_create(CTACHE_TOK_CLOSE_TAG_START, NULL);
                     linked_list_append(tokens, tok);
                     i += 2;
                 } else if (str[i + 1] == '{') {
-                    struct ctache_token *tok = malloc(sizeof(*tok));
-                    if (tok == NULL) {
-                        oom_error("ctache_lex");
-                    }
                     if (strval_len > 0) {
-                        tok->tok_type = CTACHE_TOK_STRING;
-                        tok->value = strdup(strval);
+                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
                         strval_len = 0;
                         linked_list_append(tokens, tok);
                         memset(strval, 0, strval_bufsize);
-                        tok = malloc(sizeof(*tok));
                     }
-                    tok->tok_type = CTACHE_TOK_VALUE_TAG_START;
-                    tok->value = NULL;
+                    tok = token_create(CTACHE_TOK_VALUE_TAG_START, NULL);
                     linked_list_append(tokens, tok);
                     i += 1;
                 } else {
@@ -142,20 +125,13 @@ struct linked_list
             break;
         case '}':
             if (i + 1 < str_len && str[i + 1] == '}') {
-                struct ctache_token *tok = malloc(sizeof(*tok));
-                if (tok == NULL) {
-                    oom_error("ctache_lex");
-                }
                 if (strval_len > 0) {
-                    tok->tok_type = CTACHE_TOK_STRING;
-                    tok->value = strdup(strval);
+                    tok = token_create(CTACHE_TOK_STRING, strdup(strval));
                     strval_len = 0;
                     linked_list_append(tokens, tok);
                     memset(strval, 0, strval_bufsize);
-                    tok = malloc(sizeof(*tok));
                 }
-                tok->tok_type = CTACHE_TOK_TAG_END;
-                tok->value = NULL;
+                tok = token_create(CTACHE_TOK_TAG_END, NULL);
                 linked_list_append(tokens, tok);
                 i += 1;
             } else {
@@ -168,21 +144,17 @@ struct linked_list
         }
     }
     if (strval_len > 0) {
-        struct ctache_token *tok = malloc(sizeof(*tok));
-        if (tok == NULL) {
-            oom_error("ctache_lex");
-        }
-        tok->tok_type = CTACHE_TOK_STRING;
-        tok->value = strdup(strval);
+        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
         linked_list_append(tokens, tok);
     }
     free(strval);
+    strval = NULL;
 
     /* Add a final EOI token */
-    struct ctache_token *tok = malloc(sizeof(*tok));
-    tok->tok_type = CTACHE_TOK_EOI;
-    tok->value = NULL;
+    tok = token_create(CTACHE_TOK_EOI, NULL);
     linked_list_append(tokens, tok);
 
     return tokens;
 }
+
+#undef STRVAL_INITIAL_BUFSIZE
