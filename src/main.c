@@ -78,14 +78,18 @@ main(int argc, char *argv[])
     data = data_from_yaml(yaml_file_name);
 
     /* Render the template */
-    int render_flags = 0x0;
-    if (print_tokens) {
-        render_flags |= CTACHE_RENDER_FLAG_PRINT_TOKENS;
+    if (data != NULL) {
+        int render_flags = 0x0;
+        if (print_tokens) {
+            render_flags |= CTACHE_RENDER_FLAG_PRINT_TOKENS;
+        }
+        if (print_parsed_rules) {
+            render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
+        }
+        ctache_render_file(in_fp, out_fp, data, render_flags);
+    } else {
+        fprintf(stderr, "Error parsing YAML file\n");
     }
-    if (print_parsed_rules) {
-        render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
-    }
-    ctache_render_file(in_fp, out_fp, data, render_flags);
     
 cleanup:
     /* Cleanup */
