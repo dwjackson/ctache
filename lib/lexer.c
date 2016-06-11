@@ -11,11 +11,12 @@
 #include <string.h>
 
 char *ctache_token_names[] = {
-    "CTACHE_TOK_STRING",
     "CTACHE_TOK_SECTION_TAG_START",
     "CTACHE_TOK_CLOSE_TAG_START",
     "CTACHE_TOK_VALUE_TAG_START",
-    "CTACHE_TOK_TAG_END"
+    "CTACHE_TOK_TAG_END",
+    "CTACHE_TOK_STRING",
+    "CTACHE_TOK_EOI"
 };
 
 static void

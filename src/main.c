@@ -111,7 +111,8 @@ main(int argc, char *argv[])
         printf("Tokens:\n");
         for (curr = tokens->first; curr != NULL; curr = curr->next) {
             struct ctache_token *tok = (struct ctache_token *)(curr->data);
-            printf("\t%s", ctache_token_names[tok->tok_type]);
+            enum ctache_token_type tok_type = tok->tok_type;
+            printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
             if (tok->tok_type == CTACHE_TOK_STRING) {
                 printf(" \"%s\"", tok->value);
             }
