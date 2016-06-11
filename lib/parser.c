@@ -135,8 +135,17 @@ struct linked_list
             char *token_name = ctache_token_names[tok_type];
             char *value = token->value;
             char *stack_token_name = ctache_token_names[*token_type_ptr];
+            struct linked_list_node *curr;
             fprintf(stderr, "token = (%s, \"%s\")\n", token_name, value);
             fprintf(stderr, "stack top = %s\n", stack_token_name);
+            fprintf(stderr, "Parsed rules: ");
+            for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+                fprintf(stderr, "%d", *((int*)curr->data));
+                if (curr->next != NULL) {
+                    fprintf(stderr, ", ");
+                }
+            }
+            fprintf(stderr, "\n");
 
             linked_list_destroy(parsed_rules);
             parsed_rules = NULL;
