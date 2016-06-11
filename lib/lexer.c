@@ -13,12 +13,19 @@
 #define STRVAL_INITIAL_BUFSIZE 10
 
 char *ctache_token_names[] = {
+    /* Terminals */
     "CTACHE_TOK_SECTION_TAG_START",
     "CTACHE_TOK_CLOSE_TAG_START",
     "CTACHE_TOK_VALUE_TAG_START",
     "CTACHE_TOK_TAG_END",
     "CTACHE_TOK_STRING",
-    "CTACHE_TOK_EOI"
+    "CTACHE_TOK_EOI",
+
+    /* Non-Terminals */
+    "CTACHE_TOK_TEMPLATE",
+    "CTACHE_TOK_TEXT",
+    "CTACHE_TOK_TAG",
+    "CTACHE_TOK_TAG_START"
 };
 
 static void

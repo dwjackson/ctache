@@ -129,6 +129,15 @@ struct linked_list
             append_parsed_rule(parsed_rules, match);
         } else {
             fprintf(stderr, "Syntax error\n");
+
+            enum ctache_token_type tok_type = token->tok_type;
+            extern char *ctache_token_names[];
+            char *token_name = ctache_token_names[tok_type];
+            char *value = token->value;
+            char *stack_token_name = ctache_token_names[*token_type_ptr];
+            fprintf(stderr, "token = (%s, \"%s\")\n", token_name, value);
+            fprintf(stderr, "stack top = %s\n", stack_token_name);
+
             linked_list_destroy(parsed_rules);
             parsed_rules = NULL;
             goto cleanup;
