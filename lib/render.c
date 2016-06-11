@@ -54,11 +54,13 @@ _ctache_render(struct linked_list *tokens,
             // TODO
             break;
         case 8: /* tag start -> value tag start */
+            token_node = token_node->next; /* Skip the {{ */
+
             token_ptr = token_node->data;
             value = ctache_data_hash_table_get(data, token_ptr->value);
             fprintf(out, "%s", value);
-            token_node = token_node->next; /* Skip the {{ */
-            token_node = token_node->next; /* Skip the string */
+
+            token_node = token_node->next; /* Move on to the }} */
             token_node = token_node->next; /* Skip the }} */
             break;
         default:
@@ -132,7 +134,8 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
         goto cleanup; /* Do nothing else */
     }
 
-    // TODO: Render the template to the file
+    /* Render the template to the file */
+    _ctache_render(tokens, parsed_rules, out_fp, data);
 
 cleanup:
     if (tokens != NULL) {
