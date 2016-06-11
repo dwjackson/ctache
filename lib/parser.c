@@ -129,7 +129,7 @@ struct linked_list
             }
             rule_ptr = malloc(sizeof(*rule_ptr));
             *rule_ptr = match;
-            linked_list_push(parsed_rules, rule_ptr);
+            linked_list_append(parsed_rules, rule_ptr);
         } else {
             fprintf(stderr, "Syntax error\n");
             linked_list_destroy(parsed_rules);
