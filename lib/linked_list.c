@@ -59,6 +59,7 @@ linked_list_push(struct linked_list *list, void *data)
     struct linked_list_node *node = malloc(sizeof(node));
     if (node != NULL) {
         node->data = data;
+        node->next = NULL;
         if (list->length == 0) {
             list->first = node;
             list->last = node;
