@@ -11,10 +11,10 @@
 
 static int
 parse_table[CTACHE_NUM_NONTERMINALS][CTACHE_NUM_TERMINALS] = {
-    { 1, -1, 1, -1,  0, -1 },
-    { 3,  3, 3,  3,  2,  3 },
-    { 4,  4, 4, -1, -1, -1 },
-    { 5,  6, 7, -1, -1, -1 }
+    { 1, -1, 1, -1,  0,  2 },
+    { 4,  4, 4,  4,  3,  4 },
+    { 5,  5, 5, -1, -1, -1 },
+    { 6,  7, 8, -1, -1, -1 }
 };
 
 static int
@@ -89,13 +89,15 @@ struct linked_list
                 *token_type_ptr = CTACHE_TOK_TAG;
                 linked_list_push(stack, token_type_ptr);
                 break;
-            case 2: /* Rule 3: text -> string */
+            case 2: /* Rule 3: template -> "" */
+                break;
+            case 3: /* Rule 4: text -> string */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_STRING;
                 break;
-            case 3: /* Rule 4: text -> "" */
+            case 4: /* Rule 5: text -> "" */
                 break;
-            case 4: /* Rule 5: tag -> tag start, string, tag end */
+            case 5: /* Rule 6: tag -> tag start, string, tag end */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_TAG_END;
                 linked_list_push(stack, token_type_ptr);
@@ -106,17 +108,17 @@ struct linked_list
                 *token_type_ptr = CTACHE_TOK_TAG_START;
                 linked_list_push(stack, token_type_ptr);
                 break;
-            case 5: /* Rule 6: tag start -> section tag start */
+            case 6: /* Rule 7: tag start -> section tag start */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_SECTION_TAG_START;
                 linked_list_push(stack, token_type_ptr);
                 break;
-            case 6: /* Rule 7: tag start -> close tag start */
+            case 7: /* Rule 8: tag start -> close tag start */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_CLOSE_TAG_START;
                 linked_list_push(stack, token_type_ptr);
                 break;
-            case 7: /* Rule 8: tag start -> value tag start */
+            case 8: /* Rule 9: tag start -> value tag start */
                 token_type_ptr = malloc(sizeof(*token_type_ptr));
                 *token_type_ptr = CTACHE_TOK_VALUE_TAG_START;
                 linked_list_push(stack, token_type_ptr);
