@@ -176,8 +176,13 @@ struct linked_list
         tok->value = strdup(strval);
         linked_list_append(tokens, tok);
     }
-
     free(strval);
+
+    /* Add a final EOI token */
+    struct ctache_token *tok = malloc(sizeof(*tok));
+    tok->tok_type = CTACHE_TOK_EOI;
+    tok->value = NULL;
+    linked_list_append(tokens, tok);
 
     return tokens;
 }
