@@ -22,29 +22,29 @@ char *ctache_token_names[] = {
 };
 
 static void
-add_char_to_strval(char *strval,
+add_char_to_strval(char **strval_ptr,
                    size_t *strval_bufsize_ptr,
                    size_t *strval_len_ptr,
                    int ch)
 {
     if (*strval_len_ptr + 1 < *strval_bufsize_ptr - 1) {
-        strval[*strval_len_ptr] = ch;
+        (*strval_ptr)[*strval_len_ptr] = ch;
         (*strval_len_ptr)++;
     } else {
         (*strval_bufsize_ptr) *= 2;
-        char *curr_strval = strdup(strval);
-        if (strval == NULL) {
+        char *curr_strval = strdup(*strval_ptr);
+        if (curr_strval == NULL) {
             fprintf(stderr, "ctache_lex(): Out of memory\n");
             exit(EXIT_FAILURE);
         }
-        strval = realloc(strval, *strval_bufsize_ptr);
-        memset(strval, 0, *strval_bufsize_ptr);
-        strcpy(strval, curr_strval);
+        *strval_ptr = realloc(*strval_ptr, *strval_bufsize_ptr);
+        memset(*strval_ptr, 0, *strval_bufsize_ptr);
+        strcpy(*strval_ptr, curr_strval);
 
         free(curr_strval);
         curr_strval = NULL;
 
-        strval[*strval_len_ptr] = ch;
+        (*strval_ptr)[*strval_len_ptr] = ch;
         (*strval_len_ptr)++;
     }
 }
@@ -114,13 +114,13 @@ struct linked_list
                     linked_list_append(tokens, tok);
                     i += 1;
                 } else {
-                    add_char_to_strval(strval,
+                    add_char_to_strval(&strval,
                                        &strval_bufsize,
                                        &strval_len,
                                        ch);
                 }
             } else {
-                add_char_to_strval(strval, &strval_bufsize, &strval_len, ch);
+                add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             }
             break;
         case '}':
@@ -135,11 +135,11 @@ struct linked_list
                 linked_list_append(tokens, tok);
                 i += 1;
             } else {
-                add_char_to_strval(strval, &strval_bufsize, &strval_len, ch);
+                add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             }
             break;
         default:
-            add_char_to_strval(strval, &strval_bufsize, &strval_len, ch);
+            add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             break;
         }
     }
