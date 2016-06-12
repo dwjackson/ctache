@@ -29,6 +29,13 @@ ctache_data_t
 {
     ctache_data_t *data = NULL;
     ctache_data_t *str_data = NULL;
+    yaml_parser_t parser;
+    yaml_event_t event;
+    int done;
+    unsigned char *file_content;
+    yaml_char_t *key;
+    yaml_char_t *value;
+    size_t value_len;
 
     struct stat statbuf;
     if (stat(file_name, &statbuf) < 0) {
@@ -42,16 +49,13 @@ ctache_data_t
             fprintf(stderr, "mmap() failed, errno = %s\n", strerror(errno));
             exit(EXIT_FAILURE);
         }
-        unsigned char *file_content = (unsigned char *)(region);
+        file_content = (unsigned char *)region;
 
-        yaml_parser_t parser;
-        yaml_event_t event;
-        int done = 0;
+        done = 0;
         yaml_parser_initialize(&parser);
         yaml_parser_set_input_string(&parser, file_content, file_size);
-        yaml_char_t *key = NULL;
-        yaml_char_t *value = NULL;
-        size_t value_len;
+        key = NULL;
+        value = NULL;
         while (!done) {
             if (!yaml_parser_parse(&parser, &event)) {
                 goto end;
