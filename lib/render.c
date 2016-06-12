@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "ctache_data.h"
 #include "linked_list.h"
 #include "lexer.h"
@@ -117,7 +118,19 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
             enum ctache_token_type tok_type = tok->tok_type;
             printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
             if (tok->tok_type == CTACHE_TOK_STRING) {
-                printf(" \"%s\"", tok->value);
+                int i;
+                size_t value_len = strlen(tok->value);
+                char ch;
+                printf(" \"");
+                for (i = 0; i < value_len; i++) {
+                    ch = (tok->value)[i];
+                    if (ch != '\n') {
+                        printf("%c", ch);
+                    } else {
+                        printf("\\n");
+                    }
+                }
+                printf("\"");
             }
             printf("\n");
         }
