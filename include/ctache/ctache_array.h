@@ -24,4 +24,7 @@ void
 void
 ctache_array_set(ctache_array_t *array, size_t index, void *data);
 
+void
+ctache_array_append(ctache_array_t **array_ptr, void *data);
+
 #endif /* CTACHE_ARRAY_H */
