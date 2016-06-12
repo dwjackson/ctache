@@ -7,12 +7,25 @@
 #ifndef CTACHE_DATA_H
 #define CTACHE_DATA_H
 
+#include <stdbool.h>
+
 enum ctache_data_type {
     CTACHE_DATA_HASH,
     CTACHE_DATA_ARRAY,
     CTACHE_DATA_STRING,
     CTACHE_DATA_NUMBER,
     CTACHE_DATA_BOOLEAN
+};
+
+struct ctache_data {
+    enum ctache_data_type data_type;
+    union {
+        struct ctache_hash_table *hash;
+        struct ctache_array *array;
+        char *string;
+        double number;
+        bool boolean;
+    } data;
 };
 
 typedef struct ctache_data ctache_data_t;

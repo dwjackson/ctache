@@ -6,9 +6,9 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "ctache_data.h"
 #include "linked_list.h"
 #include "lexer.h"
-#include "ctache_data.h"
 #include "render.h"
 #include "parser.h"
 
@@ -24,7 +24,8 @@ _ctache_render(struct linked_list *tokens,
     struct linked_list_node *token_node;
     struct ctache_token *token_ptr;
     int *rule_ptr;
-    char *value;
+    ctache_data_t *value_data;
+    char *str;
 
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
@@ -57,8 +58,9 @@ _ctache_render(struct linked_list *tokens,
             token_node = token_node->next; /* Skip the {{ */
 
             token_ptr = token_node->data;
-            value = ctache_data_hash_table_get(data, token_ptr->value);
-            fprintf(out, "%s", value);
+            value_data = ctache_data_hash_table_get(data, token_ptr->value);
+            str = value_data->data.string;
+            fprintf(out, "%s", str);
 
             token_node = token_node->next; /* Move on to the }} */
             token_node = token_node->next; /* Skip the }} */

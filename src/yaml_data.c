@@ -28,6 +28,7 @@ ctache_data_t
 *data_from_yaml(const char *file_name)
 {
     ctache_data_t *data = NULL;
+    ctache_data_t *str_data = NULL;
 
     struct stat statbuf;
     if (stat(file_name, &statbuf) < 0) {
@@ -50,6 +51,7 @@ ctache_data_t
         yaml_parser_set_input_string(&parser, file_content, file_size);
         yaml_char_t *key = NULL;
         yaml_char_t *value = NULL;
+        size_t value_len;
         while (!done) {
             if (!yaml_parser_parse(&parser, &event)) {
                 goto end;
@@ -72,12 +74,17 @@ ctache_data_t
                 } else {
                     value = yaml_strdup(event.data.scalar.value,
                                         event.data.scalar.length);
+                    value_len = event.data.scalar.length;
                 }
                 if (key != NULL && value != NULL) {
-                    ctache_data_hash_table_set(data, (char *)key, value);
+                    str_data = ctache_data_create_string((char*)value, 
+                                                         value_len);
+                    ctache_data_hash_table_set(data, (char *)key, str_data);
                     free(key);
                     key = NULL;
                     value = NULL;
+                    value_len = 0;
+                    str_data = NULL;
                 }
                 break;
             case YAML_MAPPING_END_EVENT:

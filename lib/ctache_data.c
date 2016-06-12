@@ -10,17 +10,6 @@
 #include "ctache_data.h"
 #include "ctache_array.h"
 
-struct ctache_data {
-    enum ctache_data_type data_type;
-    union {
-        struct ctache_hash_table *hash;
-        struct ctache_array *array;
-        char *string;
-        double number;
-        bool boolean;
-    } data;
-};
-
 ctache_data_t
 *ctache_data_create_array(size_t element_size, size_t num_elements)
 {
@@ -81,7 +70,6 @@ ctache_data_t
             ctache_data->data.boolean = *bp;
             break;
         default:
-            // TODO
             break;
         }
     }
@@ -97,6 +85,7 @@ ctache_data_destroy(void *data)
     struct linked_list_node *curr;
     struct ctache_hash_table_cell *cell;
     int i;
+    char *str;
 
     switch (ctache_data->data_type) { // TODO
     case CTACHE_DATA_HASH:
@@ -111,6 +100,10 @@ ctache_data_destroy(void *data)
             linked_list_destroy(list);
         }
         free(hash_table);
+        break;
+    case CTACHE_DATA_STRING:
+        str = ctache_data->data.string;
+        free(str);
         break;
     default:
         break;
