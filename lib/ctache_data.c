@@ -122,3 +122,9 @@ void
 {
     return ctache_hash_table_get(data->data.hash, key);
 }
+
+void
+ctache_data_array_append(ctache_data_t *data, void *value)
+{
+    ctache_array_append(&(data->data.array), value);
+}

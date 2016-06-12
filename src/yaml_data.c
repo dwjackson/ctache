@@ -36,6 +36,7 @@ ctache_data_t
     yaml_char_t *key;
     yaml_char_t *value;
     size_t value_len;
+    struct linked_list *data_stack;
 
     struct stat statbuf;
     if (stat(file_name, &statbuf) < 0) {
@@ -51,6 +52,7 @@ ctache_data_t
         }
         file_content = (unsigned char *)region;
 
+        data_stack = linked_list_create();
         done = 0;
         yaml_parser_initialize(&parser);
         yaml_parser_set_input_string(&parser, file_content, file_size);
@@ -72,30 +74,49 @@ ctache_data_t
                 key = NULL;
                 break;
             case YAML_SCALAR_EVENT:
-                if (key == NULL) {
-                    key = yaml_strdup(event.data.scalar.value,
-                                      event.data.scalar.length);
-                } else {
+                if (data->data_type == CTACHE_DATA_HASH) {
+                    if (key == NULL) {
+                        key = yaml_strdup(event.data.scalar.value,
+                                          event.data.scalar.length);
+                    } else {
+                        value = yaml_strdup(event.data.scalar.value,
+                                            event.data.scalar.length);
+                        value_len = event.data.scalar.length;
+                    }
+                    if (key != NULL && value != NULL) {
+                        str_data = ctache_data_create_string((char*)value, 
+                                                             value_len);
+                        ctache_data_hash_table_set(data, (char *)key, str_data);
+                        free(key);
+                        key = NULL;
+                        value = NULL;
+                        value_len = 0;
+                        str_data = NULL;
+                    }
+                } else if (data->data_type == CTACHE_DATA_ARRAY) {
                     value = yaml_strdup(event.data.scalar.value,
                                         event.data.scalar.length);
                     value_len = event.data.scalar.length;
-                }
-                if (key != NULL && value != NULL) {
-                    str_data = ctache_data_create_string((char*)value, 
+                    str_data = ctache_data_create_string((char*)value,
                                                          value_len);
-                    ctache_data_hash_table_set(data, (char *)key, str_data);
-                    free(key);
-                    key = NULL;
-                    value = NULL;
+                    ctache_data_array_append(data, str_data);
                     value_len = 0;
                     str_data = NULL;
+                } else {
+                    fprintf(stderr, "Unexpected data type\n");
+                    abort();
                 }
                 break;
             case YAML_MAPPING_END_EVENT:
                 // TODO
                 break;
             case YAML_SEQUENCE_START_EVENT:
-                // TODO
+                if (key == NULL) {
+                    fprintf(stderr, "Error: No key for array\n");
+                    abort();
+                }
+                linked_list_push(data_stack, data);
+                data = ctache_data_create_array(sizeof(ctache_data_t), 10);
                 break;
             case YAML_SEQUENCE_END_EVENT:
                 // TODO
@@ -109,6 +130,7 @@ ctache_data_t
             yaml_event_delete(&event);
         }
 end:
+        linked_list_destroy(data_stack);
         yaml_parser_delete(&parser);
         munmap(region, file_size);
         close(fd);
