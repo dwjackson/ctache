@@ -82,6 +82,7 @@ struct linked_list
     size_t strval_len = 0;
     size_t strval_bufsize = STRVAL_INITIAL_BUFSIZE;
     char *strval = malloc(strval_bufsize);
+    memset(strval, 0, strval_bufsize);
 
     struct ctache_token *tok = NULL;
     int ch, i;
