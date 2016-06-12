@@ -27,6 +27,9 @@ _ctache_render(struct linked_list *tokens,
     int *rule_ptr;
     ctache_data_t *value_data;
     char *str;
+    struct linked_list *data_stack = linked_list_create();
+    ctache_data_t *curr_data = data;
+    char *key;
 
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
@@ -50,18 +53,35 @@ _ctache_render(struct linked_list *tokens,
         case 5: /* tag -> tag start, string, tag end */
             break;
         case 6: /* tag start -> section tag start */
-            // TODO
+            token_node = token_node->next; /* Skip the {{# */
+
+            // TODO: Do something with the section tag name
+
+            token_node = token_node->next; /* Move to the }} */
+            token_node = token_node->next; /* Skip the }} */
             break;
         case 7: /* tag start -> close tag start */
-            // TODO
+            token_node = token_node->next; /* Skip the {{/ */
+            if (data_stack->length > 0) {
+                curr_data = linked_list_pop(data_stack);
+            }
+            token_node = token_node->next; /* Move to the }} */
+            token_node = token_node->next; /* Skip the }} */
             break;
         case 8: /* tag start -> value tag start */
             token_node = token_node->next; /* Skip the {{ */
 
             token_ptr = token_node->data;
-            value_data = ctache_data_hash_table_get(data, token_ptr->value);
-            str = value_data->data.string;
-            fprintf(out, "%s", str);
+            if (data->data_type == CTACHE_DATA_HASH) {
+                value_data = ctache_data_hash_table_get(data, token_ptr->value);
+                str = value_data->data.string;
+                fprintf(out, "%s", str);
+            } else if (data->data_type == CTACHE_DATA_ARRAY) {
+                if (token_ptr->value != NULL && token_ptr->value[0] == '.') {
+                    /* Immediate valu from the array */
+                    // TODO
+                }
+            }
 
             token_node = token_node->next; /* Move on to the }} */
             token_node = token_node->next; /* Skip the }} */
@@ -70,6 +90,8 @@ _ctache_render(struct linked_list *tokens,
             break;
         }
     }
+
+    linked_list_destroy(data_stack);
 }
 
 void
