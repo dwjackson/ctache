@@ -32,6 +32,7 @@ ctache_data_t
     yaml_parser_t parser;
     yaml_event_t event;
     int done;
+    void *region;
     unsigned char *file_content;
     yaml_char_t *key;
     yaml_char_t *value;
@@ -45,10 +46,10 @@ ctache_data_t
     off_t file_size = statbuf.st_size;
     int fd = open(file_name, O_RDONLY);
     if (fd >= 0) {
-        void *region = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
+        region = mmap(NULL, file_size, PROT_READ, MAP_PRIVATE, fd, 0);
         if (region == (void *) -1) {
             fprintf(stderr, "mmap() failed, errno = %s\n", strerror(errno));
-            exit(EXIT_FAILURE);
+            abort();
         }
         file_content = (unsigned char *)region;
 
@@ -108,7 +109,9 @@ ctache_data_t
                 }
                 break;
             case YAML_MAPPING_END_EVENT:
-                // TODO
+                if (data_stack->length > 0) {
+                    data = linked_list_pop(data_stack);
+                }
                 break;
             case YAML_SEQUENCE_START_EVENT:
                 if (key == NULL) {
@@ -119,7 +122,9 @@ ctache_data_t
                 data = ctache_data_create_array(sizeof(ctache_data_t), 10);
                 break;
             case YAML_SEQUENCE_END_EVENT:
-                // TODO
+                if (data_stack->length > 0) {
+                    data = linked_list_pop(data_stack);
+                }
                 break;
             default:
                 /* Do nothing */
