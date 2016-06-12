@@ -143,6 +143,7 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
     if (print_parsed_rules && parsed_rules != NULL) {
         int index = 0;
         printf("Parsed rules:\n");
+        printf("\t");
         for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
             int *rule_ptr = curr->data;
             printf("%d", *rule_ptr);
@@ -151,7 +152,7 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
             }
             index++;
             if (index % 10 == 0) {
-                printf("\n");
+                printf("\n\t");
             }
         }
         printf("\n");
