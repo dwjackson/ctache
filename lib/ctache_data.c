@@ -82,6 +82,7 @@ ctache_data_destroy(void *data)
 {
     struct ctache_data *ctache_data = (struct ctache_data *)(data);
     struct ctache_hash_table *hash_table;
+    struct ctache_array *array;
     struct linked_list *list;
     struct linked_list_node *curr;
     struct ctache_hash_table_cell *cell;
@@ -105,6 +106,11 @@ ctache_data_destroy(void *data)
     case CTACHE_DATA_STRING:
         str = ctache_data->data.string;
         free(str);
+        break;
+    case CTACHE_DATA_ARRAY:
+        array = ctache_data->data.array;
+        // TODO: Free the array cells
+        ctache_array_destroy(array);
         break;
     default:
         break;
