@@ -5,6 +5,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include "hash_table.h"
 #include "ctache_data.h"
@@ -120,6 +121,11 @@ ctache_data_hash_table_set(ctache_data_t *data, const char *key, void *value)
 void
 *ctache_data_hash_table_get(ctache_data_t *data, const char *key)
 {
+    enum ctache_data_type data_type = data->data_type;
+    if (data_type != CTACHE_DATA_HASH) {
+        fprintf(stderr, "ctache_data_t has wrong data type: %d\n", data_type);
+        abort();
+    }
     return ctache_hash_table_get(data->data.hash, key);
 }
 
