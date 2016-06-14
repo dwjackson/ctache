@@ -134,3 +134,9 @@ ctache_data_array_append(ctache_data_t *data, void *value)
 {
     ctache_array_append(&(data->data.array), value);
 }
+
+void
+*ctache_data_array_get(ctache_data_t *data, int index)
+{
+    return ctache_array_get(data->data.array, index);
+}

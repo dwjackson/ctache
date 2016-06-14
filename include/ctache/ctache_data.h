@@ -57,4 +57,7 @@ void
 void
 ctache_data_array_append(ctache_data_t *data, void *value);
 
+void
+*ctache_data_array_get(ctache_data_t *data, int index);
+
 #endif /* CTACHE_DATA_H */

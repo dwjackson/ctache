@@ -27,11 +27,14 @@ _ctache_render(struct linked_list *tokens,
     int *rule_ptr;
     ctache_data_t *value_data;
     char *str;
-    struct linked_list *data_stack = linked_list_create();
-    ctache_data_t *curr_data = data;
+    struct linked_list *data_stack;
+    ctache_data_t *curr_data;
     char *key;
     struct linked_list_node *curr;
+    int index; /* Array index */
 
+    curr_data = data;
+    data_stack = linked_list_create();
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
          rule_node != NULL;
@@ -56,7 +59,16 @@ _ctache_render(struct linked_list *tokens,
         case 6: /* tag start -> section tag start */
             token_node = token_node->next; /* Skip the {{# */
 
-            // TODO: Do something with the section tag name
+            /* Change the data context to be the child data */
+            if (curr_data->data_type == CTACHE_DATA_HASH) {
+                token_ptr = token_node->data;
+                key = token_ptr->value;
+                linked_list_push(data_stack, curr_data);
+                curr_data = ctache_data_hash_table_get(curr_data, key);
+                index = 0; /* Reset the array index */
+            } else {
+                fprintf(stderr, "Data is not a hash\n");
+            }
 
             token_node = token_node->next; /* Move to the }} */
             token_node = token_node->next; /* Skip the }} */
@@ -85,9 +97,11 @@ _ctache_render(struct linked_list *tokens,
                 }
             } else if (data->data_type == CTACHE_DATA_ARRAY) {
                 if (token_ptr->value != NULL && token_ptr->value[0] == '.') {
-                    /* Immediate valu from the array */
-                    // TODO
+                    /* Immediate value from the array */
+                    char *value = ctache_data_array_get(curr_data, index);
+                    fprintf(out, "%s", value);
                 }
+                index++;
             }
 
             token_node = token_node->next; /* Move on to the }} */
