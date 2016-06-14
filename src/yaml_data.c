@@ -38,6 +38,7 @@ ctache_data_t
     yaml_char_t *value;
     size_t value_len;
     struct linked_list *data_stack;
+    ctache_data_t *child_data;
 
     struct stat statbuf;
     if (stat(file_name, &statbuf) < 0) {
@@ -118,8 +119,10 @@ ctache_data_t
                     fprintf(stderr, "Error: No key for array\n");
                     abort();
                 }
+                child_data = ctache_data_create_array(sizeof(ctache_data_t), 0);
+                ctache_data_hash_table_set(data, (char*)key, child_data);
                 linked_list_push(data_stack, data);
-                data = ctache_data_create_array(sizeof(ctache_data_t), 10);
+                data = child_data;
                 break;
             case YAML_SEQUENCE_END_EVENT:
                 if (data_stack->length > 0) {
