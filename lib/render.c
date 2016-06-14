@@ -30,6 +30,7 @@ _ctache_render(struct linked_list *tokens,
     struct linked_list *data_stack = linked_list_create();
     ctache_data_t *curr_data = data;
     char *key;
+    struct linked_list_node *curr;
 
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
@@ -74,8 +75,14 @@ _ctache_render(struct linked_list *tokens,
             token_ptr = token_node->data;
             if (data->data_type == CTACHE_DATA_HASH) {
                 value_data = ctache_data_hash_table_get(data, token_ptr->value);
-                str = value_data->data.string;
-                fprintf(out, "%s", str);
+                if (value_data != NULL) {
+		    str = value_data->data.string;
+		    fprintf(out, "%s", str);
+                } else {
+                    char *err_fmt = "Key missing from hash: \"%s\"\n";
+                    fprintf(stderr, err_fmt, token_ptr->value);
+                    goto cleanup;
+                }
             } else if (data->data_type == CTACHE_DATA_ARRAY) {
                 if (token_ptr->value != NULL && token_ptr->value[0] == '.') {
                     /* Immediate valu from the array */
@@ -91,6 +98,10 @@ _ctache_render(struct linked_list *tokens,
         }
     }
 
+cleanup:
+    for (curr = data_stack->first; curr != NULL; curr = curr->next) {
+        ctache_data_destroy((ctache_data_t *)curr->data);
+    }
     linked_list_destroy(data_stack);
 }
 
