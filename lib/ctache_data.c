@@ -146,3 +146,21 @@ void
 {
     return ctache_array_get(data->data.array, index);
 }
+
+size_t
+ctache_data_length(ctache_data_t *data)
+{
+    size_t len = 0;
+    if (data->data_type == CTACHE_DATA_ARRAY) {
+        len = data->data.array->length;
+    } else {
+        abort();
+    }
+    return len;
+}
+
+bool
+ctache_data_is_array(ctache_data_t *data)
+{
+    return (data->data_type == CTACHE_DATA_ARRAY);
+}

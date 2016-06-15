@@ -7,6 +7,14 @@
 #ifndef CTACHE_ARRAY_H
 #define CTACHE_ARRAY_H
 
+typedef char byte;
+
+struct ctache_array {
+    size_t bufsize;
+    size_t length;
+    size_t element_size;
+    byte buffer[];
+};
 typedef struct ctache_array ctache_array_t;
 
 /*

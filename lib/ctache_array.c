@@ -9,15 +9,6 @@
 
 #define BUF_SIZE 10
 
-typedef char byte;
-
-struct ctache_array {
-    size_t bufsize;
-    size_t length;
-    size_t element_size;
-    byte buffer[];
-};
-
 ctache_array_t
 *ctache_array_create(size_t element_size, size_t num_elements)
 {

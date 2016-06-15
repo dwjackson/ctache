@@ -60,4 +60,10 @@ ctache_data_array_append(ctache_data_t *data, void *value);
 void
 *ctache_data_array_get(ctache_data_t *data, int index);
 
+size_t
+ctache_data_length(ctache_data_t *data);
+
+bool
+ctache_data_is_array(ctache_data_t *data);
+
 #endif /* CTACHE_DATA_H */
