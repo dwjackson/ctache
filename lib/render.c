@@ -85,21 +85,23 @@ _ctache_render(struct linked_list *tokens,
             token_node = token_node->next; /* Skip the {{ */
 
             token_ptr = token_node->data;
-            if (data->data_type == CTACHE_DATA_HASH) {
-                value_data = ctache_data_hash_table_get(data, token_ptr->value);
+            key = token_ptr->value;
+            if (curr_data->data_type == CTACHE_DATA_HASH) {
+                value_data = ctache_data_hash_table_get(curr_data, key);
                 if (value_data != NULL) {
-		    str = value_data->data.string;
-		    fprintf(out, "%s", str);
+                    str = value_data->data.string;
+                    fprintf(out, "%s", str);
                 } else {
                     char *err_fmt = "Key missing from hash: \"%s\"\n";
                     fprintf(stderr, err_fmt, token_ptr->value);
                     goto cleanup;
                 }
-            } else if (data->data_type == CTACHE_DATA_ARRAY) {
-                if (token_ptr->value != NULL && token_ptr->value[0] == '.') {
+            } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
+                if (token_ptr->value != NULL && key[0] == '.') {
                     /* Immediate value from the array */
-                    char *value = ctache_data_array_get(curr_data, index);
-                    fprintf(out, "%s", value);
+                    ctache_data_t *str_data;
+                    str_data = ctache_data_array_get(curr_data, index);
+                    fprintf(out, "%s", str_data->data.string);
                 }
                 index++;
             }
