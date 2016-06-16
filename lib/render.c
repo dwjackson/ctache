@@ -94,6 +94,11 @@ _ctache_render(struct linked_list *tokens,
                     && index >= ctache_data_length(curr_data)) {
                 linked_list_pop(token_node_stack);
                 linked_list_pop(rule_node_stack);
+                if (data_stack->length > 0) {
+                    curr_data = linked_list_pop(data_stack);
+                }
+                token_node = token_node->next; /* Move to the }} */
+                token_node = token_node->next; /* Skip the }} */
             } else {
                 if (data_stack->length > 0) {
                     curr_data = linked_list_pop(data_stack);
