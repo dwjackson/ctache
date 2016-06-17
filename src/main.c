@@ -14,7 +14,7 @@
 #include "yaml_data.h"
 
 void
-print_help(const char* prog_name);
+print_help(const char *prog_name);
 
 int
 main(int argc, char *argv[])
