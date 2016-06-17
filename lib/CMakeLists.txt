@@ -6,7 +6,11 @@ set(LIBRARY_SOURCES ctache_array.c ctache_data.c hash_table.c lexer.c
                     linked_list.c parser.c render.c)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include/ctache)
-add_library(${LIB_NAME} SHARED ${LIBRARY_SOURCES})
+add_library(${SHARED_LIB_NAME} SHARED ${LIBRARY_SOURCES})
+add_library(${STATIC_LIB_NAME} ${LIBRARY_SOURCES})
+set_target_properties(${SHARED_LIB_NAME} PROPERTIES OUTPUT_NAME ctache)
+set_target_properties(${STATIC_LIB_NAME} PROPERTIES OUTPUT_NAME ctache)
 
-install(TARGETS ${LIB_NAME}
-        LIBRARY DESTINATION lib)
+install(TARGETS ${SHARED_LIB_NAME} ${STATIC_LIB_NAME}
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

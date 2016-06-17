@@ -14,7 +14,8 @@ endif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
-set(LIB_NAME ctache)
+set(SHARED_LIB_NAME ctache-shared)
+set(STATIC_LIB_NAME ctache-static)
 set(EXE_NAME ctache-bin)
 
 add_subdirectory(lib)
