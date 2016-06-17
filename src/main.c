@@ -74,6 +74,11 @@ main(int argc, char *argv[])
         goto cleanup; /* Do nothing else */
     } 
 
+    if (yaml_file_name == NULL) {
+        print_help(argv[0]);
+        goto cleanup;
+    }
+
     /* Read the YAML data file */
     data = data_from_yaml(yaml_file_name);
 
@@ -124,5 +129,5 @@ print_help(const char *prog_name)
     printf("\t-i: specify input file name\n");
     printf("\t-o: Specify output file name\n");
     printf("\t-p: Print list of parsed rules (for debugging)\n");
-    printf("\t-y: Specify the YAML-formatted input data file");
+    printf("\t-y: Specify the YAML-formatted input data file\n");
 }
