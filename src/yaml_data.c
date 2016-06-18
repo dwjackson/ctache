@@ -71,7 +71,22 @@ ctache_data_t
                 if (data == NULL) {
                     data = ctache_data_create_hash();
                 } else {
-                    abort(); // TODO
+                    linked_list_push(data_stack, data);
+                    child_data = ctache_data_create_hash();
+                    if (data->data_type == CTACHE_DATA_HASH) {
+                        if (key == NULL) {
+                            fprintf(stderr, "No key for hash\n");
+                            abort();
+                        }
+                        char *key_str = (char*)key;
+                        ctache_data_hash_table_set(data, key_str, child_data);
+                    } else if (data->data_type == CTACHE_DATA_ARRAY) {
+                        ctache_data_array_append(data, child_data);
+                    } else {
+                        fprintf(stderr, "Invalid data type\n");
+                        abort();
+                    }
+                    data = child_data;
                 }
                 key = NULL;
                 break;
