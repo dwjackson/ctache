@@ -19,4 +19,5 @@ set(STATIC_LIB_NAME ctache-static)
 set(EXE_NAME ctache-bin)
 
 add_subdirectory(lib)
+add_subdirectory(include)
 add_subdirectory(src)
