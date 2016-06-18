@@ -63,7 +63,6 @@ main(int argc, char *argv[])
             yaml_file_name = strdup(optarg);
             break;
         default:
-            printf("Unrecognized option: %c\n", opt);
             exit(EXIT_FAILURE);
             break;
         }
