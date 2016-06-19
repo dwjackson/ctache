@@ -67,11 +67,11 @@ _ctache_render(struct linked_list *tokens,
             if (curr_data->data_type == CTACHE_DATA_HASH) {
                 token_ptr = token_node->data;
                 key = token_ptr->value;
-                linked_list_push(data_stack, curr_data);
-                curr_data = ctache_data_hash_table_get(curr_data, key);
-                if (curr_data == NULL) {
+                if (ctache_data_hash_table_has_key(curr_data, key)) {
+                    linked_list_push(data_stack, curr_data);
+                    curr_data = ctache_data_hash_table_get(curr_data, key);
+                } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
-                    abort();
                 }
             } else {
                 fprintf(stderr, "Data is not a hash\n");
