@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "linked_list.h"
 #include "hash_table.h"
 #include "parser.h"
@@ -104,6 +105,26 @@ void
         curr = curr->next;
     }
     return value;
+}
+
+bool
+ctache_hash_table_has_key(struct ctache_hash_table *table, const char *key)
+{
+    bool has_key = false;
+    uint32_t hash = sdbm_hash(key);
+    uint32_t index = hash % table->bufsize;
+    struct linked_list *list = (table->cells)[index];
+    struct linked_list_node *curr = list->first;
+    struct ctache_hash_table_cell *cell;
+    while (curr != NULL) {
+        cell = (struct ctache_hash_table_cell *)(curr->data);
+        if (strcmp(cell->key, key) == 0) {
+            has_key = true;
+            break;
+        }
+        curr = curr->next;
+    }
+    return has_key;
 }
 
 #undef DEFAULT_BUFSIZE 

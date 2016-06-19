@@ -35,4 +35,7 @@ ctache_hash_table_set(struct ctache_hash_table *table,
 void
 *ctache_hash_table_get(struct ctache_hash_table *table, const char *key);
 
+bool
+ctache_hash_table_has_key(struct ctache_hash_table *table, const char *key);
+
 #endif /* HASH_TABLE */
