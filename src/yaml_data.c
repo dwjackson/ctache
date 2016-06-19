@@ -119,6 +119,7 @@ ctache_data_t
                     ctache_data_array_append(data, str_data);
                     value_len = 0;
                     str_data = NULL;
+                    value = NULL;
                 } else {
                     fprintf(stderr, "Unexpected data type\n");
                     abort();
@@ -128,6 +129,7 @@ ctache_data_t
                 if (data_stack->length > 0) {
                     data = linked_list_pop(data_stack);
                 }
+                key = NULL;
                 break;
             case YAML_SEQUENCE_START_EVENT:
                 if (key == NULL) {
@@ -143,6 +145,7 @@ ctache_data_t
                 if (data_stack->length > 0) {
                     data = linked_list_pop(data_stack);
                 }
+                key = NULL;
                 break;
             default:
                 /* Do nothing */
