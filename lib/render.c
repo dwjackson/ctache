@@ -73,8 +73,10 @@ _ctache_render(struct linked_list *tokens,
                 } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
                 }
+            } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
+                // TODO
             } else {
-                fprintf(stderr, "Data is not a hash\n");
+                fprintf(stderr, "Data is not a hash or array\n");
             }
 
             token_node = token_node->next; /* Move to the }} */
