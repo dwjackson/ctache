@@ -30,6 +30,7 @@ _ctache_render(struct linked_list *tokens,
     struct linked_list *data_stack;
     struct linked_list *token_node_stack;
     struct linked_list *rule_node_stack;
+    struct linked_list *index_stack;
     ctache_data_t *curr_data;
     char *key;
     struct linked_list_node *curr;
@@ -39,6 +40,8 @@ _ctache_render(struct linked_list *tokens,
     data_stack = linked_list_create();
     token_node_stack = linked_list_create();
     rule_node_stack = linked_list_create();
+    index_stack = linked_list_create();
+
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
          rule_node != NULL;
@@ -147,6 +150,7 @@ _ctache_render(struct linked_list *tokens,
     }
 
 cleanup:
+    linked_list_destroy(index_stack);
     linked_list_destroy(rule_node_stack);
     linked_list_destroy(token_node_stack);
     for (curr = data_stack->first; curr != NULL; curr = curr->next) {
