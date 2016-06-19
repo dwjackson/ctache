@@ -72,12 +72,19 @@ _ctache_render(struct linked_list *tokens,
                 key = token_ptr->value;
                 if (ctache_data_hash_table_has_key(curr_data, key)) {
                     linked_list_push(data_stack, curr_data);
+                    int *ip = malloc(sizeof(int));
+                    *ip = index;
+                    linked_list_push(index_stack, ip);
                     curr_data = ctache_data_hash_table_get(curr_data, key);
                 } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
                 }
             } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
-                // TODO
+                linked_list_push(data_stack, curr_data);
+                int *ip = malloc(sizeof(int));
+                *ip = index;
+                linked_list_push(index_stack, ip);
+                curr_data = ctache_data_array_get(curr_data, index);
             } else {
                 fprintf(stderr, "Data is not a hash or array\n");
             }
@@ -105,6 +112,10 @@ _ctache_render(struct linked_list *tokens,
                 linked_list_pop(rule_node_stack);
                 if (data_stack->length > 0) {
                     curr_data = linked_list_pop(data_stack);
+                    int *ip = linked_list_pop(index_stack);
+                    index = *ip;
+                    free(ip);
+                    index++;
                 }
                 token_node = token_node->next; /* Move to the }} */
                 token_node = token_node->next; /* Skip the }} */
