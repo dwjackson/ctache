@@ -11,17 +11,65 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <stdbool.h>
 #include "ctache.h"
 #include "yaml_data.h"
 
-static yaml_char_t
-*yaml_strdup(yaml_char_t *src, size_t length)
+static bool
+is_whitespace(unsigned char ch)
 {
-    size_t size = length * sizeof(yaml_char_t) + 1;
-    yaml_char_t *dest_str = malloc(size);
-    memset(dest_str, 0, size);
-    memcpy(dest_str, src, length); 
-    return dest_str;
+    return (ch == ' ' || ch == '\n' || ch == '\r');
+}
+
+static yaml_char_t
+*yaml_strtrim(yaml_char_t *str, size_t length)
+{
+    yaml_char_t *trimmed_str = NULL;
+    int starting_whitespace = 0;
+    int ending_whitespace = 0;
+
+    int i;
+    unsigned char ch = '\0';
+    for (i = 0; i < length; i++) {
+        ch = str[i];
+        if (is_whitespace(ch)) {
+            starting_whitespace++;
+        } else {
+            break;
+        }
+    }
+
+    for (i = length - 1; i >= 0; i--) {
+        ch = str[i];
+        if (is_whitespace(ch)) {
+            ending_whitespace++;
+        } else {
+            break;
+        }
+    }
+
+    int trimmed_length = length - starting_whitespace - ending_whitespace;
+    if (trimmed_length > 0) {
+        size_t size = trimmed_length * sizeof(yaml_char_t) + 1;
+        trimmed_str = malloc(size);
+        memset(trimmed_str, 0, size);
+        memcpy(trimmed_str, str + starting_whitespace, trimmed_length);
+    }
+    return trimmed_str;
+}
+
+static yaml_char_t
+*yaml_strdup(yaml_char_t *src, size_t length, bool do_trim)
+{
+    if (!do_trim) {
+        size_t size = length * sizeof(yaml_char_t) + 1;
+        yaml_char_t *dest_str = malloc(size);
+        memset(dest_str, 0, size);
+        memcpy(dest_str, src, length); 
+        return dest_str;
+    } else {
+        return yaml_strtrim(src, length);
+    }
 }
     
 ctache_data_t
@@ -94,10 +142,12 @@ ctache_data_t
                 if (data->data_type == CTACHE_DATA_HASH) {
                     if (key == NULL) {
                         key = yaml_strdup(event.data.scalar.value,
-                                          event.data.scalar.length);
+                                          event.data.scalar.length,
+                                          false);
                     } else {
                         value = yaml_strdup(event.data.scalar.value,
-                                            event.data.scalar.length);
+                                            event.data.scalar.length,
+                                            false);
                         value_len = event.data.scalar.length;
                     }
                     if (key != NULL && value != NULL) {
@@ -112,14 +162,17 @@ ctache_data_t
                     }
                 } else if (data->data_type == CTACHE_DATA_ARRAY) {
                     value = yaml_strdup(event.data.scalar.value,
-                                        event.data.scalar.length);
-                    value_len = event.data.scalar.length;
-                    str_data = ctache_data_create_string((char*)value,
-                                                         value_len);
-                    ctache_data_array_append(data, str_data);
-                    value_len = 0;
-                    str_data = NULL;
-                    value = NULL;
+                                        event.data.scalar.length,
+                                        true);
+                    if (value != NULL) {
+                        value_len = event.data.scalar.length;
+                        str_data = ctache_data_create_string((char*)value,
+                                                             value_len);
+                        ctache_data_array_append(data, str_data);
+                        value_len = 0;
+                        str_data = NULL;
+                        value = NULL;
+                    }
                 } else {
                     fprintf(stderr, "Unexpected data type\n");
                     abort();
