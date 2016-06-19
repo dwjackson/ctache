@@ -84,7 +84,9 @@ _ctache_render(struct linked_list *tokens,
                 int *ip = malloc(sizeof(int));
                 *ip = index;
                 linked_list_push(index_stack, ip);
-                curr_data = ctache_data_array_get(curr_data, index);
+                if (ctache_data_array_get(curr_data, index) != NULL) {
+                    curr_data = ctache_data_array_get(curr_data, index);
+                }
             } else {
                 fprintf(stderr, "Data is not a hash or array\n");
             }
