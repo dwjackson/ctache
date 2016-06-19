@@ -176,7 +176,7 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
             in_buf_len++;
         } else {
             in_buf_size *= 2;
-            in_buf = realloc(in_buf, in_buf_len);
+            in_buf = realloc(in_buf, in_buf_size);
             if (in_buf == NULL) {
                 fprintf(stderr, "Out of memory\n");
                 exit(EXIT_FAILURE);
