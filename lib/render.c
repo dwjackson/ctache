@@ -150,8 +150,22 @@ _ctache_render(struct linked_list *tokens,
                     ctache_data_t *str_data;
                     str_data = ctache_data_array_get(curr_data, index);
                     fprintf(out, "%s", str_data->data.string);
+                    index++;
+                } else {
+                    ctache_data_t *arr_data = ctache_data_array_get(curr_data,
+                                                                    index);
+                    if (arr_data != NULL
+                            && arr_data->data_type == CTACHE_DATA_HASH) {
+                        ctache_data_t *str_data;
+                        if (ctache_data_hash_table_has_key(arr_data, key)) {
+                            str_data = ctache_data_hash_table_get(arr_data,
+                                                                  key);
+                            fprintf(out, "%s", str_data->data.string);
+                        } else {
+                            fprintf(stderr, "Key not in hash: %s\n", key);
+                        }
+                    }
                 }
-                index++;
             }
 
             token_node = token_node->next; /* Move on to the }} */
