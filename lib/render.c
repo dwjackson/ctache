@@ -56,10 +56,11 @@ _ctache_render(struct linked_list *tokens,
         case 6: /* tag start -> section tag start */
             token_node = token_node->next; /* Skip the {{# */
 
+            token_ptr = token_node->data;
+            key = token_ptr->value;
+
             /* Change the data context to be the child data */
             if (curr_data->data_type == CTACHE_DATA_HASH) {
-                token_ptr = token_node->data;
-                key = token_ptr->value;
                 if (ctache_data_hash_table_has_key(curr_data, key)) {
                     linked_list_push(data_stack, curr_data);
                     int *ip = malloc(sizeof(int));
@@ -75,7 +76,18 @@ _ctache_render(struct linked_list *tokens,
                 *ip = index;
                 linked_list_push(index_stack, ip);
                 if (ctache_data_array_get(curr_data, index) != NULL) {
-                    curr_data = ctache_data_array_get(curr_data, index);
+                    ctache_data_t *arr_data;
+                    arr_data = ctache_data_array_get(curr_data, index);
+                    if (arr_data->data_type == CTACHE_DATA_HASH) {
+                        if (ctache_data_hash_table_has_key(arr_data, key)) {
+                            curr_data = ctache_data_hash_table_get(arr_data,
+                                                                   key);
+                        } else {
+                            fprintf(stderr, "Key is not in hash: %s\n", key);
+                        }
+                    } else {
+                        fprintf(stderr, "Data in array is not a hash\n");
+                    }
                 }
             } else {
                 fprintf(stderr, "Data is not a hash or array\n");
