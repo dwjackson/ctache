@@ -36,7 +36,6 @@ _ctache_render(struct linked_list *tokens,
     struct ctache_token *token_ptr;
     int *rule_ptr;
     ctache_data_t *value_data;
-    char *str;
     struct linked_list *data_stack;
     struct linked_list *token_node_stack;
     struct linked_list *rule_node_stack;
@@ -147,7 +146,7 @@ _ctache_render(struct linked_list *tokens,
             if (curr_data->data_type == CTACHE_DATA_HASH) {
                 value_data = ctache_data_hash_table_get(curr_data, key);
                 if (value_data != NULL) {
-                    str = value_data->data.string;
+                    char *str = value_data->data.string;
                     fprintf(out, "%s", str);
                 } else {
                     char *err_fmt = "Key missing from hash: \"%s\"\n";
