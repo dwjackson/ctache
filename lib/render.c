@@ -48,20 +48,10 @@ _ctache_render(struct linked_list *tokens,
          rule_node = rule_node->next) {
         rule_ptr = rule_node->data;
         switch(*rule_ptr) {
-        case 0: /* template -> text, template */
-            break;
-        case 1: /* template -> tag, template */
-            break;
-        case 2: /* template -> "" */
-            break;
         case 3: /* text -> string */
             token_ptr = token_node->data;
             fprintf(out, "%s", token_ptr->value);
             token_node = token_node->next;
-            break;
-        case 4: /* text -> "" */
-            break;
-        case 5: /* tag -> tag start, string, tag end */
             break;
         case 6: /* tag start -> section tag start */
             token_node = token_node->next; /* Skip the {{# */
