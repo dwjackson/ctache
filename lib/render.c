@@ -15,6 +15,16 @@
 
 #define IN_BUF_SIZE_DEFAULT 1024
 
+/* text -> string */
+static void
+handle_rule3(struct linked_list_node **token_node_ptr, FILE *out)
+{
+    struct linked_list_node *token_node = *token_node_ptr;
+    struct ctache_token *token_ptr = token_node->data;
+    fprintf(out, "%s", token_ptr->value);
+    *token_node_ptr = (*token_node_ptr)->next;
+}
+
 static void
 _ctache_render(struct linked_list *tokens,
               struct linked_list *parsed_rules,
@@ -49,9 +59,7 @@ _ctache_render(struct linked_list *tokens,
         rule_ptr = rule_node->data;
         switch(*rule_ptr) {
         case 3: /* text -> string */
-            token_ptr = token_node->data;
-            fprintf(out, "%s", token_ptr->value);
-            token_node = token_node->next;
+            handle_rule3(&token_node, out);
             break;
         case 6: /* tag start -> section tag start */
             token_node = token_node->next; /* Skip the {{# */
