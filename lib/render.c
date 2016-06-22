@@ -62,8 +62,7 @@ handle_rule6(struct linked_list_node **token_node_ptr,
             arr_data = ctache_data_array_get(*curr_data_ptr, *index_ptr);
             if (arr_data->data_type == CTACHE_DATA_HASH) {
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
-                    *curr_data_ptr = ctache_data_hash_table_get(arr_data,
-                                                           key);
+                    *curr_data_ptr = ctache_data_hash_table_get(arr_data, key);
                 } else {
                     fprintf(stderr, "Key is not in hash: %s\n", key);
                 }
@@ -156,14 +155,12 @@ handle_rule8(struct linked_list_node **token_node_ptr,
             fprintf(out, "%s", str_data->data.string);
             (*index_ptr)++;
         } else {
-            ctache_data_t *arr_data = ctache_data_array_get(curr_data,
-                                                            *index_ptr);
-            if (arr_data != NULL
-                    && arr_data->data_type == CTACHE_DATA_HASH) {
+            ctache_data_t *arr_data;
+            arr_data = ctache_data_array_get(curr_data, *index_ptr);
+            if (arr_data != NULL && arr_data->data_type == CTACHE_DATA_HASH) {
                 ctache_data_t *str_data;
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
-                    str_data = ctache_data_hash_table_get(arr_data,
-                                                          key);
+                    str_data = ctache_data_hash_table_get(arr_data, key);
                     fprintf(out, "%s", str_data->data.string);
                 } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
