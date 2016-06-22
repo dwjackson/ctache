@@ -25,6 +25,57 @@ handle_rule3(struct linked_list_node **token_node_ptr, FILE *out)
     *token_node_ptr = (*token_node_ptr)->next;
 }
 
+/* tag start -> value tag start */
+static void
+handle_rule8(struct linked_list_node **token_node_ptr,
+             ctache_data_t **curr_data_ptr,
+             FILE *out,
+             int *index_ptr)
+{
+    *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{ */
+
+    struct ctache_token *token_ptr = (*token_node_ptr)->data;
+    char *key = token_ptr->value;
+    ctache_data_t *curr_data = *curr_data_ptr;
+    ctache_data_t *value_data;
+    char *str;
+
+    if (curr_data->data_type == CTACHE_DATA_HASH) {
+        value_data = ctache_data_hash_table_get(curr_data, key);
+        if (value_data != NULL) {
+            str = value_data->data.string;
+            fprintf(out, "%s", str);
+        } else {
+            fprintf(stderr, "Key not in hash: %s\n", token_ptr->value);
+        }
+    } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
+        if (token_ptr->value != NULL && key[0] == '.') {
+            /* Immediate value from the array */
+            ctache_data_t *str_data;
+            str_data = ctache_data_array_get(curr_data, *index_ptr);
+            fprintf(out, "%s", str_data->data.string);
+            (*index_ptr)++;
+        } else {
+            ctache_data_t *arr_data = ctache_data_array_get(curr_data,
+                                                            *index_ptr);
+            if (arr_data != NULL
+                    && arr_data->data_type == CTACHE_DATA_HASH) {
+                ctache_data_t *str_data;
+                if (ctache_data_hash_table_has_key(arr_data, key)) {
+                    str_data = ctache_data_hash_table_get(arr_data,
+                                                          key);
+                    fprintf(out, "%s", str_data->data.string);
+                } else {
+                    fprintf(stderr, "Key not in hash: %s\n", key);
+                }
+            }
+        }
+    }
+
+    *token_node_ptr = (*token_node_ptr)->next; /* Move on to the }} */
+    *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
+}
+
 static void
 _ctache_render(struct linked_list *tokens,
               struct linked_list *parsed_rules,
@@ -35,7 +86,6 @@ _ctache_render(struct linked_list *tokens,
     struct linked_list_node *token_node;
     struct ctache_token *token_ptr;
     int *rule_ptr;
-    ctache_data_t *value_data;
     struct linked_list *data_stack;
     struct linked_list *token_node_stack;
     struct linked_list *rule_node_stack;
@@ -139,53 +189,13 @@ _ctache_render(struct linked_list *tokens,
             }
             break;
         case 8: /* tag start -> value tag start */
-            token_node = token_node->next; /* Skip the {{ */
-
-            token_ptr = token_node->data;
-            key = token_ptr->value;
-            if (curr_data->data_type == CTACHE_DATA_HASH) {
-                value_data = ctache_data_hash_table_get(curr_data, key);
-                if (value_data != NULL) {
-                    char *str = value_data->data.string;
-                    fprintf(out, "%s", str);
-                } else {
-                    char *err_fmt = "Key missing from hash: \"%s\"\n";
-                    fprintf(stderr, err_fmt, token_ptr->value);
-                    goto cleanup;
-                }
-            } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
-                if (token_ptr->value != NULL && key[0] == '.') {
-                    /* Immediate value from the array */
-                    ctache_data_t *str_data;
-                    str_data = ctache_data_array_get(curr_data, index);
-                    fprintf(out, "%s", str_data->data.string);
-                    index++;
-                } else {
-                    ctache_data_t *arr_data = ctache_data_array_get(curr_data,
-                                                                    index);
-                    if (arr_data != NULL
-                            && arr_data->data_type == CTACHE_DATA_HASH) {
-                        ctache_data_t *str_data;
-                        if (ctache_data_hash_table_has_key(arr_data, key)) {
-                            str_data = ctache_data_hash_table_get(arr_data,
-                                                                  key);
-                            fprintf(out, "%s", str_data->data.string);
-                        } else {
-                            fprintf(stderr, "Key not in hash: %s\n", key);
-                        }
-                    }
-                }
-            }
-
-            token_node = token_node->next; /* Move on to the }} */
-            token_node = token_node->next; /* Skip the }} */
+            handle_rule8(&token_node, &curr_data, out, &index);
             break;
         default:
             break;
         }
     }
 
-cleanup:
     linked_list_destroy(index_stack);
     linked_list_destroy(rule_node_stack);
     linked_list_destroy(token_node_stack);
