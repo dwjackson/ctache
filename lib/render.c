@@ -85,6 +85,47 @@ handle_rule6(struct linked_list_node **token_node_ptr,
     }
 }
 
+/* tag start -> close tag start */
+static void
+handle_rule7(struct linked_list_node **token_node_ptr,
+             struct linked_list *token_node_stack,
+             ctache_data_t **curr_data_ptr,
+             struct linked_list_node **rule_node_ptr,
+             struct linked_list *rule_node_stack,
+             struct linked_list *data_stack,
+             int *index_ptr,
+             struct linked_list *index_stack)
+{
+    *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{/ */
+
+    if (token_node_stack->length > 0
+            && ctache_data_is_array(*curr_data_ptr)
+            && *index_ptr < ctache_data_length(*curr_data_ptr)) {
+        *token_node_ptr = linked_list_peek(token_node_stack);
+        *rule_node_ptr = linked_list_peek(rule_node_stack);
+    } else if (token_node_stack->length > 0
+            && ctache_data_is_array(*curr_data_ptr)
+            && *index_ptr >= ctache_data_length(*curr_data_ptr)) {
+        linked_list_pop(token_node_stack);
+        linked_list_pop(rule_node_stack);
+        if (data_stack->length > 0) {
+            *curr_data_ptr = linked_list_pop(data_stack);
+            int *ip = linked_list_pop(index_stack);
+            *index_ptr = *ip;
+            free(ip);
+            (*index_ptr)++;
+        }
+        *token_node_ptr = (*token_node_ptr)->next; /* Move to the }} */
+        *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
+    } else {
+        if (data_stack->length > 0) {
+            *curr_data_ptr = linked_list_pop(data_stack);
+        }
+        *token_node_ptr = (*token_node_ptr)->next; /* Move to the }} */
+        *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
+    }
+}
+
 /* tag start -> value tag start */
 static void
 handle_rule8(struct linked_list_node **token_node_ptr,
@@ -178,33 +219,14 @@ _ctache_render(struct linked_list *tokens,
                          rule_node);
             break;
         case 7: /* tag start -> close tag start */
-            token_node = token_node->next; /* Skip the {{/ */
-            if (token_node_stack->length > 0
-                    && ctache_data_is_array(curr_data)
-                    && index < ctache_data_length(curr_data)) {
-                token_node = linked_list_peek(token_node_stack);
-                rule_node = linked_list_peek(rule_node_stack);
-            } else if (token_node_stack->length > 0
-                    && ctache_data_is_array(curr_data)
-                    && index >= ctache_data_length(curr_data)) {
-                linked_list_pop(token_node_stack);
-                linked_list_pop(rule_node_stack);
-                if (data_stack->length > 0) {
-                    curr_data = linked_list_pop(data_stack);
-                    int *ip = linked_list_pop(index_stack);
-                    index = *ip;
-                    free(ip);
-                    index++;
-                }
-                token_node = token_node->next; /* Move to the }} */
-                token_node = token_node->next; /* Skip the }} */
-            } else {
-                if (data_stack->length > 0) {
-                    curr_data = linked_list_pop(data_stack);
-                }
-                token_node = token_node->next; /* Move to the }} */
-                token_node = token_node->next; /* Skip the }} */
-            }
+            handle_rule7(&token_node,
+                         token_node_stack,
+                         &curr_data,
+                         &rule_node,
+                         rule_node_stack,
+                         data_stack,
+                         &index,
+                         index_stack);
             break;
         case 8: /* tag start -> value tag start */
             handle_rule8(&token_node, curr_data, out, &index);
