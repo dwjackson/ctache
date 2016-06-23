@@ -114,7 +114,6 @@ handle_rule7(struct linked_list_node **token_node_ptr,
             int *ip = linked_list_pop(index_stack);
             *index_ptr = *ip;
             free(ip);
-            (*index_ptr)++;
         }
         *token_node_ptr = (*token_node_ptr)->next; /* Move to the }} */
         *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
