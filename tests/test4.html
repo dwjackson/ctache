@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Curriculum Vitae</title>
+    </head>
+    <body>
+        <div id="content">
+            <div id="contact-info">
+                {{#contact}}
+                <h1>{{name}}</h1>
+                <div class="contact-info-element"> phone:
+                    <span class="phone">{{phone}}</span>
+                </div >
+                <div class="contact-info-element"> email:
+                    <span class="email">{{email}}</span>
+                </div>
+                {{/contact}}
+            </div>
+            <div id="skills">
+                <h2>Skills</h2>
+                <ul>
+                    {{#skills}}
+                    <li>{{.}}</li>
+                    {{/skills}}
+                </ul>
+            </div>
+            <div id="experience">
+                <h2>Experience</h2>
+                {{#experience}}
+                <div class="job">
+                    <span class="job-time">{{time}}</span>
+                    <div class="job-description">
+                        <h3>{{title}}</h3>
+                        <span class="employer">{{employer}}</span>
+                        <p class="job-description">{{description}}</p>
+                        <ul class="responsibilities">
+                        {{#responsibilities}}
+                            <li>{{.}}</li>
+                        {{/responsibilities}}
+                        </ul>
+                    </div>
+                </div>
+                {{/experience}}
+            </div>
+            <div id="education">
+                <h2>Education</h2>
+                {{#education}}
+                <div class="education-entry">
+                    <div class="education-details">
+                        <h3>{{level}}</h3>
+                        <span class="education-description">
+                            {{description}}
+                        </span>
+                        <span class="education-institution">
+                            {{institution}}
+                        </span>
+                    </div>
+                    <span class="education-year">{{time}}</span>
+                </div>
+                {{/education}}
+            </div>
+        </div>
+    </body>
+</html>
