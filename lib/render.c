@@ -96,15 +96,17 @@ handle_rule7(struct linked_list_node **token_node_ptr,
              struct linked_list *index_stack)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{/ */
+    int max_index = ctache_data_length(*curr_data_ptr) - 1;
 
     if (token_node_stack->length > 0
             && ctache_data_is_array(*curr_data_ptr)
-            && *index_ptr < ctache_data_length(*curr_data_ptr)) {
+            && *index_ptr < max_index) {
         *token_node_ptr = linked_list_peek(token_node_stack);
         *rule_node_ptr = linked_list_peek(rule_node_stack);
+        (*index_ptr)++;
     } else if (token_node_stack->length > 0
             && ctache_data_is_array(*curr_data_ptr)
-            && *index_ptr >= ctache_data_length(*curr_data_ptr)) {
+            && *index_ptr >= max_index) {
         linked_list_pop(token_node_stack);
         linked_list_pop(rule_node_stack);
         if (data_stack->length > 0) {
@@ -153,7 +155,6 @@ handle_rule8(struct linked_list_node **token_node_ptr,
             ctache_data_t *str_data;
             str_data = ctache_data_array_get(curr_data, *index_ptr);
             fprintf(out, "%s", str_data->data.string);
-            (*index_ptr)++;
         } else {
             ctache_data_t *arr_data;
             arr_data = ctache_data_array_get(curr_data, *index_ptr);
