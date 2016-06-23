@@ -3,3 +3,6 @@ build
 
 # CScope
 cscope.out
+
+# CTags
+tags
