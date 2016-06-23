@@ -153,8 +153,6 @@ ctache_data_length(ctache_data_t *data)
     size_t len = 0;
     if (data->data_type == CTACHE_DATA_ARRAY) {
         len = data->data.array->length;
-    } else {
-        len = -1;
     }
     return len;
 }
