@@ -13,10 +13,13 @@ struct escape_char {
     size_t escaped_length;
 };
 
-char
-*escape_html(const char *str);
+enum escaping_type {
+    ESCAPE_HTML,
+    ESCAPE_LATEX,
+    ESCAPE_NONE
+};
 
 char
-*escape_tex(const char *str);
+*escape_text(const char *str, enum escaping_type);
 
 #endif /* ESCAPING_H */

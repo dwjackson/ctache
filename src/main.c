@@ -90,7 +90,7 @@ main(int argc, char *argv[])
         if (print_parsed_rules) {
             render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
         }
-        ctache_render_file(in_fp, out_fp, data, render_flags);
+        ctache_render_file(in_fp, out_fp, data, render_flags, ESCAPE_HTML);
     } else {
         fprintf(stderr, "Error parsing YAML file\n");
     }

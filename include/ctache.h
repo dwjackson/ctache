@@ -13,5 +13,6 @@
 #include "ctache/ctache_array.h"
 #include "ctache/parser.h"
 #include "ctache/render.h"
+#include "ctache/escaping.h"
 
 #endif /* CTACHE_H */

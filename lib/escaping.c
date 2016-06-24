@@ -65,7 +65,7 @@ static char
 }
 
 /* Return a dynamically-allocated, HTML-escaped string */
-char
+static char
 *escape_html(const char *str)
 {
     static struct escape_char escape_chars[] = {
@@ -79,7 +79,7 @@ char
 }
 
 /* Return a dynamically-allocated, TeX-escaped string */
-char
+static char
 *escape_tex(const char *str)
 {
     static struct escape_char escape_chars[] = {
@@ -98,4 +98,16 @@ char
     num_escape_chars = sizeof(escape_chars) / sizeof(struct escape_char); 
 
     return _escape(str, escape_chars, num_escape_chars);
+}
+
+static char *(*escape_functions[])(const char *) = {
+    escape_html,
+    escape_tex,
+    NULL
+};
+
+char
+*escape_text(const char *str, enum escaping_type escaping_type)
+{
+    return escape_functions[escaping_type](str);
 }

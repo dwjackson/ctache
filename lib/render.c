@@ -133,7 +133,7 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
                        ctache_data_t *curr_data,
                        FILE *out,
                        int *index_ptr,
-                       bool escaped)
+                       enum escaping_type escaping_type)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{ */
 
@@ -170,8 +170,9 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
         }
     }
 
+    bool escaped = escaping_type != ESCAPE_NONE;
     if (escaped && str != NULL) {
-        str = escape_html(str);
+        str = escape_text(str, escaping_type);
     }
 
     if (str != NULL) {
@@ -191,7 +192,8 @@ static void
 _ctache_render(struct linked_list *tokens,
               struct linked_list *parsed_rules,
               FILE *out,
-              ctache_data_t *data)
+              ctache_data_t *data,
+              enum escaping_type escaping_type)
 {
     struct linked_list_node *rule_node;
     struct linked_list_node *token_node;
@@ -240,10 +242,18 @@ _ctache_render(struct linked_list *tokens,
                          index_stack);
             break;
         case 8: /* tag start -> value tag start */
-            handle_value_tag_start(&token_node, curr_data, out, &index, true);
+            handle_value_tag_start(&token_node,
+                                   curr_data,
+                                   out,
+                                   &index,
+                                   escaping_type);
             break;
         case 9: /* tag start -> unescaped value tag start */
-            handle_value_tag_start(&token_node, curr_data, out, &index, false);
+            handle_value_tag_start(&token_node,
+                                   curr_data,
+                                   out,
+                                   &index,
+                                   ESCAPE_NONE);
             break;
         default:
             break;
@@ -260,7 +270,11 @@ _ctache_render(struct linked_list *tokens,
 }
 
 void
-ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
+ctache_render_file(FILE *in_fp,
+                   FILE *out_fp,
+                   ctache_data_t *data,
+                   int flags,
+                   enum escaping_type escaping_type)
 {
     struct linked_list *tokens = NULL;
     char *in_buf = NULL;
@@ -348,7 +362,7 @@ ctache_render_file(FILE *in_fp, FILE *out_fp, ctache_data_t *data, int flags)
 
     /* Render the template to the file */
     if (tokens != NULL && parsed_rules != NULL) {
-        _ctache_render(tokens, parsed_rules, out_fp, data);
+        _ctache_render(tokens, parsed_rules, out_fp, data, escaping_type);
     }
 
 cleanup:
