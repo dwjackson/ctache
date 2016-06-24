@@ -17,6 +17,7 @@ char *ctache_token_names[] = {
     "CTACHE_TOK_SECTION_TAG_START",
     "CTACHE_TOK_CLOSE_TAG_START",
     "CTACHE_TOK_VALUE_TAG_START",
+    "CTACHE_TOK_UNESC_VALUE_TAG_START",
     "CTACHE_TOK_TAG_END",
     "CTACHE_TOK_STRING",
     "CTACHE_TOK_EOI",
@@ -111,6 +112,17 @@ struct linked_list
                     tok = token_create(CTACHE_TOK_CLOSE_TAG_START, NULL);
                     linked_list_append(tokens, tok);
                     i += 2;
+                } else if (str[i + 1] == '{'
+                           && (str[i + 2] == '&' || str[i + 2] == '{')) {
+                    if (strval_len > 0) {
+                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                        strval_len = 0;
+                        linked_list_append(tokens, tok);
+                        memset(strval, 0, strval_bufsize);
+                    }
+                    tok = token_create(CTACHE_TOK_UNESC_VALUE_TAG_START, NULL);
+                    linked_list_append(tokens, tok);
+                    i += 2;
                 } else if (str[i + 1] == '{') {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING, strdup(strval));
@@ -132,7 +144,17 @@ struct linked_list
             }
             break;
         case '}':
-            if (i + 1 < str_len && str[i + 1] == '}') {
+            if (i + 2 < str_len && str[i + 1] == '}' && str[i + 2] == '}') {
+                if (strval_len > 0) {
+                    tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                    strval_len = 0;
+                    linked_list_append(tokens, tok);
+                    memset(strval, 0, strval_bufsize);
+                }
+                tok = token_create(CTACHE_TOK_TAG_END, NULL);
+                linked_list_append(tokens, tok);
+                i += 2;
+            } else if (i + 1 < str_len && str[i + 1] == '}') {
                 if (strval_len > 0) {
                     tok = token_create(CTACHE_TOK_STRING, strdup(strval));
                     strval_len = 0;

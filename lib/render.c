@@ -126,25 +126,91 @@ handle_rule7(struct linked_list_node **token_node_ptr,
     }
 }
 
+struct escape_char {
+    char unescaped;
+    char *escaped;
+    size_t escaped_length;
+};
+
+/* Return a dynamically-allocated, HTML-escaped string */
+static char
+*html_escape(const char *str)
+{
+    static struct escape_char escape_chars[] = {
+        { '&', "&amp;", 5 },
+        { '<', "&lt;",  4 },
+        { '>', "&gt;",  4 }
+    };
+    static size_t num_escape_chars = 3;
+    char *escaped_str = NULL;
+
+    size_t str_length = strlen(str);
+    size_t escaped_length = 0;
+
+    char ch;
+    int i, j;
+    struct escape_char ech;
+    bool found;
+    for (i = 0; i < str_length; i++) {
+        ch = str[i];
+        found = false;
+        for (j = 0; j < num_escape_chars; j++) {
+            ech = escape_chars[j];
+            if (ch == ech.unescaped) {
+                escaped_length += ech.escaped_length;
+                break;
+            }
+        }
+        if (!found) {
+            escaped_length++;
+        }
+    }
+
+    escaped_str = malloc(escaped_length + 1);
+    memset(escaped_str, 0, escaped_length + 1);
+    int escaped_index = 0;
+    if (escaped_str != NULL) {
+        for (i = 0; i < str_length; i++) {
+            ch = str[i];
+            found = false;
+            for (j = 0; j < num_escape_chars; j++) {
+                ech = escape_chars[j];
+                if (ch == ech.unescaped) {
+                    strcat(escaped_str, ech.escaped);
+                    escaped_index += ech.escaped_length;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                escaped_str[escaped_index] = ch;
+                escaped_index++;
+            }
+        }
+    }
+    
+    return escaped_str;
+}
+
 /* tag start -> value tag start */
 static void
-handle_rule8(struct linked_list_node **token_node_ptr,
-             ctache_data_t *curr_data,
-             FILE *out,
-             int *index_ptr)
+handle_value_tag_start(struct linked_list_node **token_node_ptr,
+                       ctache_data_t *curr_data,
+                       FILE *out,
+                       int *index_ptr,
+                       bool escaped)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{ */
 
     struct ctache_token *token_ptr = (*token_node_ptr)->data;
     char *key = token_ptr->value;
     ctache_data_t *value_data;
-    char *str;
+    char *str = NULL;
 
     if (curr_data->data_type == CTACHE_DATA_HASH) {
         value_data = ctache_data_hash_table_get(curr_data, key);
         if (value_data != NULL) {
             str = value_data->data.string;
-            fprintf(out, "%s", str);
         } else {
             fprintf(stderr, "Key not in hash: %s\n", token_ptr->value);
         }
@@ -153,7 +219,7 @@ handle_rule8(struct linked_list_node **token_node_ptr,
             /* Immediate value from the array */
             ctache_data_t *str_data;
             str_data = ctache_data_array_get(curr_data, *index_ptr);
-            fprintf(out, "%s", str_data->data.string);
+            str = str_data->data.string;
         } else {
             ctache_data_t *arr_data;
             arr_data = ctache_data_array_get(curr_data, *index_ptr);
@@ -161,12 +227,25 @@ handle_rule8(struct linked_list_node **token_node_ptr,
                 ctache_data_t *str_data;
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
                     str_data = ctache_data_hash_table_get(arr_data, key);
-                    fprintf(out, "%s", str_data->data.string);
+                    str = str_data->data.string;
                 } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
                 }
             }
         }
+    }
+
+    if (escaped && str != NULL) {
+        str = html_escape(str);
+    }
+
+    if (str != NULL) {
+        fprintf(out, "%s", str);
+    }
+
+    if (escaped && str != NULL) {
+        free(str);
+        str = NULL;
     }
 
     *token_node_ptr = (*token_node_ptr)->next; /* Move on to the }} */
@@ -226,7 +305,10 @@ _ctache_render(struct linked_list *tokens,
                          index_stack);
             break;
         case 8: /* tag start -> value tag start */
-            handle_rule8(&token_node, curr_data, out, &index);
+            handle_value_tag_start(&token_node, curr_data, out, &index, true);
+            break;
+        case 9: /* tag start -> unescaped value tag start */
+            handle_value_tag_start(&token_node, curr_data, out, &index, false);
             break;
         default:
             break;
