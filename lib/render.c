@@ -12,6 +12,7 @@
 #include "lexer.h"
 #include "render.h"
 #include "parser.h"
+#include "escaping.h"
 
 #define IN_BUF_SIZE_DEFAULT 1024
 
@@ -126,72 +127,6 @@ handle_rule7(struct linked_list_node **token_node_ptr,
     }
 }
 
-struct escape_char {
-    char unescaped;
-    char *escaped;
-    size_t escaped_length;
-};
-
-/* Return a dynamically-allocated, HTML-escaped string */
-static char
-*html_escape(const char *str)
-{
-    static struct escape_char escape_chars[] = {
-        { '&', "&amp;", 5 },
-        { '<', "&lt;",  4 },
-        { '>', "&gt;",  4 }
-    };
-    static size_t num_escape_chars = 3;
-    char *escaped_str = NULL;
-
-    size_t str_length = strlen(str);
-    size_t escaped_length = 0;
-
-    char ch;
-    int i, j;
-    struct escape_char ech;
-    bool found;
-    for (i = 0; i < str_length; i++) {
-        ch = str[i];
-        found = false;
-        for (j = 0; j < num_escape_chars; j++) {
-            ech = escape_chars[j];
-            if (ch == ech.unescaped) {
-                escaped_length += ech.escaped_length;
-                break;
-            }
-        }
-        if (!found) {
-            escaped_length++;
-        }
-    }
-
-    escaped_str = malloc(escaped_length + 1);
-    memset(escaped_str, 0, escaped_length + 1);
-    int escaped_index = 0;
-    if (escaped_str != NULL) {
-        for (i = 0; i < str_length; i++) {
-            ch = str[i];
-            found = false;
-            for (j = 0; j < num_escape_chars; j++) {
-                ech = escape_chars[j];
-                if (ch == ech.unescaped) {
-                    strcat(escaped_str, ech.escaped);
-                    escaped_index += ech.escaped_length;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                escaped_str[escaped_index] = ch;
-                escaped_index++;
-            }
-        }
-    }
-    
-    return escaped_str;
-}
-
 /* tag start -> value tag start */
 static void
 handle_value_tag_start(struct linked_list_node **token_node_ptr,
@@ -236,7 +171,7 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
     }
 
     if (escaped && str != NULL) {
-        str = html_escape(str);
+        str = escape_html(str);
     }
 
     if (str != NULL) {

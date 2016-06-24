@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 set(LIBRARY_SOURCES ctache_array.c ctache_data.c hash_table.c lexer.c
-                    linked_list.c parser.c render.c)
+                    linked_list.c parser.c render.c escaping.c)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include/ctache)
 add_library(${SHARED_LIB_NAME} SHARED ${LIBRARY_SOURCES})

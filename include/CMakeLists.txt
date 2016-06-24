@@ -5,7 +5,7 @@
 set(CTACHE_MAIN_HEADER ctache.h)
 set(CTACHE_HEADERS ctache/ctache_array.h ctache/ctache_data.h
                    ctache/hash_table.h ctache/lexer.h ctache/linked_list.h
-                   ctache/parser.h ctache/render.h)
+                   ctache/parser.h ctache/render.h ctache/escaping.h)
 
 install(FILES ${CTACHE_MAIN_HEADER} DESTINATION include)
 
