@@ -9,16 +9,11 @@
 #include <stdbool.h>
 #include "escaping.h"
 
-/* Return a dynamically-allocated, HTML-escaped string */
-char
-*escape_html(const char *str)
+static char
+*_escape(const char *str,
+         struct escape_char escape_chars[],
+         size_t num_escape_chars)
 {
-    static struct escape_char escape_chars[] = {
-        { '&', "&amp;", 5 },
-        { '<', "&lt;",  4 },
-        { '>', "&gt;",  4 }
-    };
-    static size_t num_escape_chars = 3;
     char *escaped_str = NULL;
 
     size_t str_length = strlen(str);
@@ -67,4 +62,18 @@ char
     }
     
     return escaped_str;
+}
+
+/* Return a dynamically-allocated, HTML-escaped string */
+char
+*escape_html(const char *str)
+{
+    static struct escape_char escape_chars[] = {
+        { '&', "&amp;", 5 },
+        { '<', "&lt;",  4 },
+        { '>', "&gt;",  4 }
+    };
+    static size_t num_escape_chars = 3;
+
+    return _escape(str, escape_chars, num_escape_chars);
 }
