@@ -28,12 +28,23 @@ main(int argc, char *argv[])
     char *yaml_file_name = NULL;
     ctache_data_t *data = NULL;
     bool print_parsed_rules = false;
+    enum escaping_type escaping_type = ESCAPE_HTML;
 
     extern char *optarg;
     extern int optind, opterr, optopt;
     int opt;
-    while ((opt = getopt(argc, argv, "o:i:thy:p")) != -1) {
+    while ((opt = getopt(argc, argv, "e:o:i:thy:p")) != -1) {
         switch (opt) {
+        case 'e':
+            if (strcmp(optarg, "html") == 0) {
+                escaping_type = ESCAPE_HTML;
+            } else if (strcmp(optarg, "tex") == 0) {
+                escaping_type = ESCAPE_TEX;
+            } else {
+                fprintf(stderr, "Unrecognized escaping type: %s\n", optarg);
+                exit(EXIT_FAILURE);
+            }
+            break;
         case 'h':
             help_flag_set = true;
             break;
@@ -90,7 +101,7 @@ main(int argc, char *argv[])
         if (print_parsed_rules) {
             render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
         }
-        ctache_render_file(in_fp, out_fp, data, render_flags, ESCAPE_HTML);
+        ctache_render_file(in_fp, out_fp, data, render_flags, escaping_type);
     } else {
         fprintf(stderr, "Error parsing YAML file\n");
     }
@@ -123,9 +134,10 @@ void
 print_help(const char *prog_name)
 {
     printf("Usage: %s [OPTIONS] ...\n", prog_name);
-    printf("\t-h: print this help message\n");
-    printf("\t-t: print lexer tokens (for debugging)\n");
-    printf("\t-i: specify input file name\n");
+    printf("\t-e: Select escaping type (allowed values: tex, html)\n");
+    printf("\t-h: Print this help message\n");
+    printf("\t-t: Print lexer tokens (for debugging)\n");
+    printf("\t-i: Specify input file name\n");
     printf("\t-o: Specify output file name\n");
     printf("\t-p: Print list of parsed rules (for debugging)\n");
     printf("\t-y: Specify the YAML-formatted input data file\n");

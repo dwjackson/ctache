@@ -15,7 +15,7 @@ struct escape_char {
 
 enum escaping_type {
     ESCAPE_HTML,
-    ESCAPE_LATEX,
+    ESCAPE_TEX,
     ESCAPE_NONE
 };
 
