@@ -16,4 +16,7 @@ struct escape_char {
 char
 *escape_html(const char *str);
 
+char
+*escape_tex(const char *str);
+
 #endif /* ESCAPING_H */

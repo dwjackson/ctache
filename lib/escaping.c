@@ -77,3 +77,25 @@ char
 
     return _escape(str, escape_chars, num_escape_chars);
 }
+
+/* Return a dynamically-allocated, TeX-escaped string */
+char
+*escape_tex(const char *str)
+{
+    static struct escape_char escape_chars[] = {
+        {  '{',  "\\{", 2 },
+        {  '}',  "\\}", 2 },
+        {  '&',  "\\&", 2 },
+        {  '%',  "\\%", 2 },
+        { '\\', "\\\\", 2 },
+        {  '_',  "\\_", 2 },
+        {  '#',  "\\#", 2 },
+        {  '^',  "\\^", 2 },
+        {  '~',  "\\~", 2 },
+        {  '$',  "\\$", 2 }
+    };
+    size_t num_escape_chars;
+    num_escape_chars = sizeof(escape_chars) / sizeof(struct escape_char); 
+
+    return _escape(str, escape_chars, num_escape_chars);
+}
