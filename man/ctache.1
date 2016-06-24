@@ -1,0 +1,48 @@
+.\" This Source Code Form is subject to the terms of the Mozilla Public
+.\" License, v. 2.0. If a copy of the MPL was not distributed with this
+.\" file, You can obtain one at http://mozilla.org/MPL/2.0/.
+.Dd Jun 24, 2016
+.Dt CTACHE 1
+.Os
+.Sh NAME
+.Nm ctache
+.Nd render mustache-style templates
+.Sh SYNOPSIS
+.Nm
+.Op Fl h t p
+.Op Fl y Ar yaml_data
+.Op Fl i Ar input_file
+.Op Fl o Ar output_file
+.Op Fl e Ar escaping_type
+.Sh DESCRIPTION
+The ctache command renders a mustache-style template. By default, the input
+template comes from standard input and the output is printed to standard
+output. The data that is to be inserted into the template must come from a
+file.
+.Pp
+The arguments are as follows:
+.Bl -tag -width Ds
+.It Fl h
+Print a help message
+.It Fl y Ar yaml_data
+Specify a YAML file that contains the data for insertion into the template
+.It Fl i Ar input_file
+Specify the input (template) file to render
+.It Fl o Ar output_file
+Specify the file to which to write the rendered template
+.It Fl e Ar escaping_type
+By default
+.Nm
+escapes all text interted into a template using HTML escpare characters. This
+flag allows you to choose how to escape the text. Acceptable values are
+.Qq html
+for HTML and
+.Qq tex
+for TeX/LaTeX escaping.
+.It Fl t
+Print the tokens from the tokenization process of the template (for debugging)
+.It Fl p
+Print the parsed rules from parsing the template (for debugging)
+.El
+.Sh EXIT STATUS
+.Ex -std
