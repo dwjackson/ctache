@@ -270,14 +270,14 @@ _ctache_render(struct linked_list *tokens,
 }
 
 void
-ctache_render_file(FILE *in_fp,
-                   FILE *out_fp,
-                   ctache_data_t *data,
-                   int flags,
-                   enum escaping_type escaping_type)
+ctache_render_string(const char *in_str,
+                     size_t in_str_len,
+                     FILE *out_fp,
+                     ctache_data_t *data,
+                     int flags,
+                     enum escaping_type escaping_type)
 {
     struct linked_list *tokens = NULL;
-    char *in_buf = NULL;
     struct linked_list_node *curr = NULL;
     struct linked_list *parsed_rules = NULL;
 
@@ -285,32 +285,8 @@ ctache_render_file(FILE *in_fp,
     bool print_tokens = flags & CTACHE_RENDER_FLAG_PRINT_TOKENS;
     bool print_parsed_rules = flags & CTACHE_RENDER_FLAG_PRINT_RULES;
 
-    /* Read the input file into a string */
-    size_t in_buf_size = IN_BUF_SIZE_DEFAULT;
-    size_t in_buf_len = 0;
-    in_buf = malloc(in_buf_size);
-    if (in_buf == NULL) {
-        fprintf(stderr, "Out of memory\n");
-        exit(EXIT_FAILURE);
-    }
-    int ch;
-    while ((ch = fgetc(in_fp)) != EOF) {
-        if (in_buf_len + 1 < in_buf_size - 1) { /* -1 is for '\0') */
-            in_buf[in_buf_len] = ch;
-            in_buf_len++;
-        } else {
-            in_buf_size *= 2;
-            in_buf = realloc(in_buf, in_buf_size);
-            if (in_buf == NULL) {
-                fprintf(stderr, "Out of memory\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-    }
-    in_buf[in_buf_len] = '\0';
-
     /* Perform lexical analysis */
-    tokens = ctache_lex(in_buf, in_buf_len);
+    tokens = ctache_lex(in_str, in_str_len);
     if (print_tokens) {
         extern char *ctache_token_names[];
         printf("Tokens:\n");
@@ -382,6 +358,48 @@ cleanup:
         }
         linked_list_destroy(parsed_rules);
     }
+}
+
+void
+ctache_render_file(FILE *in_fp,
+                   FILE *out_fp,
+                   ctache_data_t *data,
+                   int flags,
+                   enum escaping_type escaping_type)
+{
+    char *in_buf = NULL;
+
+    /* Read the input file into a string */
+    size_t in_buf_size = IN_BUF_SIZE_DEFAULT;
+    size_t in_buf_len = 0;
+    in_buf = malloc(in_buf_size);
+    if (in_buf == NULL) {
+        fprintf(stderr, "Out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+    int ch;
+    while ((ch = fgetc(in_fp)) != EOF) {
+        if (in_buf_len + 1 < in_buf_size - 1) { /* -1 is for '\0') */
+            in_buf[in_buf_len] = ch;
+            in_buf_len++;
+        } else {
+            in_buf_size *= 2;
+            in_buf = realloc(in_buf, in_buf_size);
+            if (in_buf == NULL) {
+                fprintf(stderr, "Out of memory\n");
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+    in_buf[in_buf_len] = '\0';
+
+    ctache_render_string(in_buf,
+                         in_buf_len,
+                         out_fp,
+                         data,
+                         flags,
+                         escaping_type);
+
     if (in_buf != NULL) {
         free(in_buf);
     }
