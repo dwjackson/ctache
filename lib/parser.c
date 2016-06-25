@@ -131,7 +131,9 @@ struct linked_list
             }
             append_parsed_rule(parsed_rules, match);
         } else {
-            fprintf(stderr, "Syntax error\n");
+            int line = token->line;
+            int col = token->character;
+            fprintf(stderr, "Syntax error at line %d, col %d\n", line, col);
 
             enum ctache_token_type tok_type = token->tok_type;
             extern char *ctache_token_names[];

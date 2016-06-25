@@ -30,8 +30,10 @@ enum ctache_token_type {
 #define CTACHE_NUM_NONTERMINALS (CTACHE_TOK_TAG_START - CTACHE_TOK_TEMPLATE + 1)
 
 struct ctache_token {
-    char *value;
-    enum ctache_token_type tok_type;
+    char *value; /* If not-NULL, the string content of the token */
+    enum ctache_token_type tok_type; /* The token's type */
+    int line; /* Line number in the original file where this token occurred */
+    int character; /* Character index in the line where this token occurred */
 };
 
 struct linked_list

@@ -58,7 +58,7 @@ add_char_to_strval(char **strval_ptr,
 }
 
 static struct ctache_token
-*token_create(enum ctache_token_type token_type, char *value)
+*token_create(enum ctache_token_type token_type, char *value, int row, int col)
 {
     struct ctache_token *tok;
     tok = malloc(sizeof(*tok));
@@ -68,6 +68,8 @@ static struct ctache_token
     }
     tok->tok_type = token_type;
     tok->value = value;
+    tok->line = row + 1;
+    tok->character = col + 1;
     return tok;
 }
 
@@ -85,6 +87,8 @@ struct linked_list
     char *strval = malloc(strval_bufsize);
     memset(strval, 0, strval_bufsize);
 
+    int row = 0;
+    int col = 0;
     struct ctache_token *tok = NULL;
     int ch, i;
     for (i = 0; i < str_len; i++) {
@@ -94,94 +98,139 @@ struct linked_list
             if (i + 3 < str_len) {
                 if (str[i + 1] == '{' && str[i + 2] == '#') {
                     if (strval_len > 0) {
-                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                        tok = token_create(CTACHE_TOK_STRING,
+                                           strdup(strval),
+                                           row,
+                                           col);
                         strval_len = 0;
                         memset(strval, 0, strval_bufsize);
                         linked_list_append(tokens, tok);
                     }
-                    tok = token_create(CTACHE_TOK_SECTION_TAG_START, NULL);
+                    tok = token_create(CTACHE_TOK_SECTION_TAG_START,
+                                       NULL,
+                                       row,
+                                       col);
                     linked_list_append(tokens, tok);
                     i += 2;
+                    col += 2;
                 } else if (str[i + 1] == '{' && str[i + 2] == '/') {
                     if (strval_len > 0) {
-                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                        tok = token_create(CTACHE_TOK_STRING,
+                                           strdup(strval),
+                                           row,
+                                           col);
                         strval_len = 0;
                         linked_list_append(tokens, tok);
                         memset(strval, 0, strval_bufsize);
                     }
-                    tok = token_create(CTACHE_TOK_CLOSE_TAG_START, NULL);
+                    tok = token_create(CTACHE_TOK_CLOSE_TAG_START,
+                                       NULL,
+                                       row,
+                                       col);
                     linked_list_append(tokens, tok);
                     i += 2;
+                    col += 2;
                 } else if (str[i + 1] == '{'
                            && (str[i + 2] == '&' || str[i + 2] == '{')) {
                     if (strval_len > 0) {
-                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                        tok = token_create(CTACHE_TOK_STRING,
+                                           strdup(strval),
+                                           row,
+                                           col);
                         strval_len = 0;
                         linked_list_append(tokens, tok);
                         memset(strval, 0, strval_bufsize);
                     }
-                    tok = token_create(CTACHE_TOK_UNESC_VALUE_TAG_START, NULL);
+                    tok = token_create(CTACHE_TOK_UNESC_VALUE_TAG_START,
+                                       NULL,
+                                       row,
+                                       col);
                     linked_list_append(tokens, tok);
                     i += 2;
+                    col += 2;
                 } else if (str[i + 1] == '{') {
                     if (strval_len > 0) {
-                        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                        tok = token_create(CTACHE_TOK_STRING,
+                                           strdup(strval),
+                                           row,
+                                           col);
                         strval_len = 0;
                         linked_list_append(tokens, tok);
                         memset(strval, 0, strval_bufsize);
                     }
-                    tok = token_create(CTACHE_TOK_VALUE_TAG_START, NULL);
+                    tok = token_create(CTACHE_TOK_VALUE_TAG_START,
+                                       NULL,
+                                       row,
+                                       col);
                     linked_list_append(tokens, tok);
                     i += 1;
+                    col += 1;
                 } else {
                     add_char_to_strval(&strval,
                                        &strval_bufsize,
                                        &strval_len,
                                        ch);
+                    col += 1;
                 }
             } else {
                 add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
+                col += 1;
             }
             break;
         case '}':
             if (i + 2 < str_len && str[i + 1] == '}' && str[i + 2] == '}') {
                 if (strval_len > 0) {
-                    tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                    tok = token_create(CTACHE_TOK_STRING,
+                                       strdup(strval),
+                                       row,
+                                       col);
                     strval_len = 0;
                     linked_list_append(tokens, tok);
                     memset(strval, 0, strval_bufsize);
                 }
-                tok = token_create(CTACHE_TOK_TAG_END, NULL);
+                tok = token_create(CTACHE_TOK_TAG_END, NULL, row, col);
                 linked_list_append(tokens, tok);
                 i += 2;
+                col += 2;
             } else if (i + 1 < str_len && str[i + 1] == '}') {
                 if (strval_len > 0) {
-                    tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+                    tok = token_create(CTACHE_TOK_STRING,
+                                       strdup(strval),
+                                       row,
+                                       col);
                     strval_len = 0;
                     linked_list_append(tokens, tok);
                     memset(strval, 0, strval_bufsize);
                 }
-                tok = token_create(CTACHE_TOK_TAG_END, NULL);
+                tok = token_create(CTACHE_TOK_TAG_END, NULL, row, col);
                 linked_list_append(tokens, tok);
                 i += 1;
+                col += 1;
             } else {
                 add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
+                col += 1;
             }
+            break;
+        case '\n':
+            row++;
+            col = 0;
             break;
         default:
             add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
+            col += 1;
             break;
         }
     }
     if (strval_len > 0) {
-        tok = token_create(CTACHE_TOK_STRING, strdup(strval));
+        tok = token_create(CTACHE_TOK_STRING, strdup(strval), row, col);
         linked_list_append(tokens, tok);
+        col += strval_len;
     }
     free(strval);
     strval = NULL;
 
     /* Add a final EOI token */
-    tok = token_create(CTACHE_TOK_EOI, NULL);
+    tok = token_create(CTACHE_TOK_EOI, NULL, row, col);
     linked_list_append(tokens, tok);
 
     return tokens;
