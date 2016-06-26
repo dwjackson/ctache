@@ -83,25 +83,12 @@ ctache_data_destroy(void *data)
     struct ctache_data *ctache_data = (struct ctache_data *)(data);
     struct ctache_hash_table *hash_table;
     struct ctache_array *array;
-    struct linked_list *list;
-    struct linked_list_node *curr;
-    struct ctache_hash_table_cell *cell;
-    int i;
     char *str;
 
     switch (ctache_data->data_type) { // TODO
     case CTACHE_DATA_HASH:
         hash_table = ctache_data->data.hash;
-        for (i = 0; i < hash_table->bufsize; i++) {
-            list = (hash_table->cells)[i];
-            for (curr = list->first; curr != NULL; curr = curr->next) {
-                cell = curr->data;
-                free(cell->key);
-                // TODO: Free the node data
-            }
-            linked_list_destroy(list);
-        }
-        free(hash_table);
+        ctache_hash_table_destroy(hash_table, ctache_data_destroy);
         break;
     case CTACHE_DATA_STRING:
         str = ctache_data->data.string;

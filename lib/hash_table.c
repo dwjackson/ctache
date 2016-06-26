@@ -53,6 +53,7 @@ ctache_hash_table_destroy(struct ctache_hash_table *table,
                 void *data = cell->value;
                 free_data(data);
                 free(cell->key);
+                free(cell);
             }
             linked_list_destroy(list);
         }
