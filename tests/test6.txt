@@ -1,0 +1,8 @@
+Testing:
+{{#not_shown}}
+You should not see this.
+{{/not_shown}}
+Testing again:
+{{#shown}}
+You should be able to see this.
+{{/shown}}
