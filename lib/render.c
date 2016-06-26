@@ -28,14 +28,14 @@ handle_rule3(struct linked_list_node **token_node_ptr, FILE *out)
 
 /* tag start -> section tag start */
 static void
-handle_rule6(struct linked_list_node **token_node_ptr,
-             ctache_data_t **curr_data_ptr,
-             struct linked_list *data_stack,
-             int *index_ptr,
-             struct linked_list *index_stack,
-             struct linked_list *token_node_stack,
-             struct linked_list *rule_node_stack,
-             struct linked_list_node *rule_node)
+handle_section_tag_start(struct linked_list_node **token_node_ptr,
+                         ctache_data_t **curr_data_ptr,
+                         struct linked_list *data_stack,
+                         int *index_ptr,
+                         struct linked_list *index_stack,
+                         struct linked_list *token_node_stack,
+                         struct linked_list *rule_node_stack,
+                         struct linked_list_node *rule_node)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{# */
 
@@ -222,14 +222,14 @@ _ctache_render(struct linked_list *tokens,
             handle_rule3(&token_node, out);
             break;
         case 6: /* tag start -> section tag start */
-            handle_rule6(&token_node,
-                         &curr_data,
-                         data_stack,
-                         &index,
-                         index_stack,
-                         token_node_stack,
-                         rule_node_stack,
-                         rule_node);
+            handle_section_tag_start(&token_node,
+                                     &curr_data,
+                                     data_stack,
+                                     &index,
+                                     index_stack,
+                                     token_node_stack,
+                                     rule_node_stack,
+                                     rule_node);
             break;
         case 7: /* tag start -> close tag start */
             handle_rule7(&token_node,
