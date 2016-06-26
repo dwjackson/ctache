@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef LEXER_H
-#define LEXER_H
+#ifndef CTACHE_LEXER_H
+#define CTACHE_LEXER_H
 
 #include <stdlib.h>
 #include "linked_list.h"
@@ -39,4 +39,4 @@ struct ctache_token {
 struct linked_list
 *ctache_lex(const char *str, size_t str_len);
 
-#endif /* LEXER_H */
+#endif /* CTACHE_LEXER_H */

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef LINKED_LIST_H
-#define LINKED_LIST_H
+#ifndef CTACHE_LINKED_LIST_H
+#define CTACHE_LINKED_LIST_H
 
 #include <stdlib.h>
 
@@ -57,4 +57,4 @@ void
 void
 *linked_list_peek(struct linked_list *list);
 
-#endif /* LINKED_LIST_H */
+#endif /* CTACHE_LINKED_LIST_H */

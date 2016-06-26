@@ -1,5 +1,11 @@
-#ifndef RENDER_H
-#define RENDER_H
+/* 
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef CTACHE_RENDER_H
+#define CTACHE_RENDER_H
 
 #include <stdio.h>
 #include "ctache_data.h"
@@ -23,4 +29,4 @@ ctache_render_file(FILE *in_fp,
                    int flags,
                    enum escaping_type escaping_type);
 
-#endif /* RENDER_H */
+#endif /* CTACHE_RENDER_H */

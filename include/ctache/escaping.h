@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef ESCAPING_H
-#define ESCAPING_H
+#ifndef CTACHE_ESCAPING_H
+#define CTACHE_ESCAPING_H
 
 struct escape_char {
     char unescaped;
@@ -22,4 +22,4 @@ enum escaping_type {
 char
 *escape_text(const char *str, enum escaping_type);
 
-#endif /* ESCAPING_H */
+#endif /* CTACHE_ESCAPING_H */

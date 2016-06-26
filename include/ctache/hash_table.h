@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef HASH_TABLE_H
-#define HASH_TABLE_H
+#ifndef CTACHE_HASH_TABLE_H
+#define CTACHE_HASH_TABLE_H
 
 #include "linked_list.h"
 
@@ -38,4 +38,4 @@ void
 bool
 ctache_hash_table_has_key(struct ctache_hash_table *table, const char *key);
 
-#endif /* HASH_TABLE */
+#endif /* CTACHE_HASH_TABLE */
