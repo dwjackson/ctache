@@ -130,11 +130,18 @@ ctache_data_t
                         ctache_data_hash_table_set(data, key_str, child_data);
                     } else if (data->data_type == CTACHE_DATA_ARRAY) {
                         ctache_data_array_append(data, child_data);
+                        free(child_data); /* N.B. array append copies data */
+                        child_data = NULL;
                     } else {
                         fprintf(stderr, "Invalid data type\n");
                         abort();
                     }
-                    data = child_data;
+                    if (child_data != NULL) {
+                        data = child_data;
+                    } else {
+                        int idx = data->data.array->length - 1;
+                        data = ctache_data_array_get(data, idx);
+                    }
                 }
                 key = NULL;
                 break;
@@ -169,12 +176,14 @@ ctache_data_t
                         str_data = ctache_data_create_string((char*)value,
                                                              value_len);
                         ctache_data_array_append(data, str_data);
+                        free(str_data); /* N.B. Array append copies data */
                         value_len = 0;
                         str_data = NULL;
                         value = NULL;
                     }
                 } else {
-                    fprintf(stderr, "Unexpected data type\n");
+                    enum ctache_data_type data_type = data->data_type;
+                    fprintf(stderr, "Unexpected data type: %d\n", data_type);
                     abort();
                 }
                 break;
