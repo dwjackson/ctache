@@ -90,7 +90,6 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_array *array;
     char *str;
     int i;
-    bool *bool_ptr;
 
     switch (ctache_data->data_type) {
     case CTACHE_DATA_HASH:
