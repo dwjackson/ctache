@@ -18,7 +18,7 @@
 
 /* text -> string */
 static void
-handle_rule3(struct linked_list_node **token_node_ptr, FILE *out)
+handle_text(struct linked_list_node **token_node_ptr, FILE *out)
 {
     struct linked_list_node *token_node = *token_node_ptr;
     struct ctache_token *token_ptr = token_node->data;
@@ -219,7 +219,7 @@ _ctache_render(struct linked_list *tokens,
         rule_ptr = rule_node->data;
         switch(*rule_ptr) {
         case 3: /* text -> string */
-            handle_rule3(&token_node, out);
+            handle_text(&token_node, out);
             break;
         case 6: /* tag start -> section tag start */
             handle_section_tag_start(&token_node,
