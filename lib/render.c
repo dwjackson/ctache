@@ -260,6 +260,10 @@ _ctache_render(struct linked_list *tokens,
         }
     }
 
+    while (index_stack->length > 0) {
+        void *ptr = linked_list_pop(index_stack);
+        free(ptr);
+    }
     linked_list_destroy(index_stack);
     linked_list_destroy(rule_node_stack);
     linked_list_destroy(token_node_stack);
