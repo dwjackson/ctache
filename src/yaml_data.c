@@ -143,6 +143,9 @@ ctache_data_t
                         data = ctache_data_array_get(data, idx);
                     }
                 }
+                if (key != NULL) {
+                    free(key);
+                }
                 key = NULL;
                 break;
             case YAML_SCALAR_EVENT:
@@ -219,6 +222,9 @@ ctache_data_t
             yaml_event_delete(&event);
         }
 end:
+        if (key != NULL) {
+            free(key);
+        }
         linked_list_destroy(data_stack);
         yaml_parser_delete(&parser);
         munmap(region, file_size);
