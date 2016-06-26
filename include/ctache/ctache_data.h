@@ -67,6 +67,12 @@ bool
 ctache_data_is_array(ctache_data_t *data);
 
 bool
+ctache_data_is_boolean(ctache_data_t *data);
+
+bool
+ctache_data_is_hash(ctache_data_t *data);
+
+bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key);
 
 #endif /* CTACHE_DATA_H */

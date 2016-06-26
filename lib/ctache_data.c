@@ -168,6 +168,18 @@ ctache_data_is_array(ctache_data_t *data)
 }
 
 bool
+ctache_data_is_boolean(ctache_data_t *data)
+{
+    return (data->data_type == CTACHE_DATA_BOOLEAN);
+}
+
+bool
+ctache_data_is_hash(ctache_data_t *data)
+{
+    return (data->data_type == CTACHE_DATA_HASH);
+}
+
+bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key)
 {
     return ctache_hash_table_has_key(data->data.hash, key);
