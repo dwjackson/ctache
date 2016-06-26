@@ -198,6 +198,7 @@ ctache_data_t
                 if (data_stack->length > 0) {
                     data = linked_list_pop(data_stack);
                 }
+                free(key);
                 key = NULL;
                 break;
             default:
