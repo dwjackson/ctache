@@ -212,6 +212,7 @@ struct linked_list
             }
             break;
         case '\n':
+            add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             row++;
             col = 0;
             break;
