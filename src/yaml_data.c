@@ -180,6 +180,7 @@ ctache_data_t
                         ctache_data_hash_table_set(data, (char*)key, bool_data);
                         free(key);
                         key = NULL;
+                        free(value);
                         value = NULL;
                         value_len = 0;
                         str_data = NULL;
@@ -191,6 +192,7 @@ ctache_data_t
                         ctache_data_hash_table_set(data, (char*)key, bool_data);
                         free(key);
                         key = NULL;
+                        free(value);
                         value = NULL;
                         value_len = 0;
                         str_data = NULL;
