@@ -18,24 +18,27 @@
 
 /* text -> string */
 static void
-handle_text(struct linked_list_node **token_node_ptr, FILE *out)
+handle_text(struct linked_list_node **token_node_ptr, FILE *out, bool hidden)
 {
     struct linked_list_node *token_node = *token_node_ptr;
     struct ctache_token *token_ptr = token_node->data;
-    fprintf(out, "%s", token_ptr->value);
+    if (!hidden) {
+        fprintf(out, "%s", token_ptr->value);
+    }
     *token_node_ptr = (*token_node_ptr)->next;
 }
 
 /* tag start -> section tag start */
 static void
-handle_section_tag_start(struct linked_list_node **token_node_ptr,
-                         ctache_data_t **curr_data_ptr,
-                         struct linked_list *data_stack,
-                         int *index_ptr,
-                         struct linked_list *index_stack,
-                         struct linked_list *token_node_stack,
-                         struct linked_list *rule_node_stack,
-                         struct linked_list_node *rule_node)
+handle_section_tag(struct linked_list_node **token_node_ptr,
+                   ctache_data_t **curr_data_ptr,
+                   struct linked_list *data_stack,
+                   int *index_ptr,
+                   struct linked_list *index_stack,
+                   struct linked_list *token_node_stack,
+                   struct linked_list *rule_node_stack,
+                   struct linked_list_node *rule_node,
+                   bool *hidden_ptr)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{# */
 
@@ -43,17 +46,26 @@ handle_section_tag_start(struct linked_list_node **token_node_ptr,
     char *key = token_ptr->value;
 
     /* Change the data context to be the child data */
-    if ((*curr_data_ptr)->data_type == CTACHE_DATA_HASH) {
+    if (ctache_data_is_hash(*curr_data_ptr)) {
         if (ctache_data_hash_table_has_key(*curr_data_ptr, key)) {
             linked_list_push(data_stack, *curr_data_ptr);
             int *ip = malloc(sizeof(int));
             *ip = *index_ptr;
             linked_list_push(index_stack, ip);
-            *curr_data_ptr = ctache_data_hash_table_get(*curr_data_ptr, key);
+
+            ctache_data_t *child_data;
+            child_data = ctache_data_hash_table_get(*curr_data_ptr, key);
+            if (!ctache_data_is_boolean(child_data)) {
+                *curr_data_ptr = child_data;
+            } else {
+                if (child_data->data.boolean == false) {
+                    *hidden_ptr = true;
+                }
+            }
         } else {
             fprintf(stderr, "Key not in hash: %s\n", key);
         }
-    } else if ((*curr_data_ptr)->data_type == CTACHE_DATA_ARRAY) {
+    } else if (ctache_data_is_array(*curr_data_ptr)) {
         linked_list_push(data_stack, *curr_data_ptr);
         int *ip = malloc(sizeof(int));
         *ip = *index_ptr;
@@ -61,7 +73,7 @@ handle_section_tag_start(struct linked_list_node **token_node_ptr,
         if (ctache_data_array_get(*curr_data_ptr, *index_ptr) != NULL) {
             ctache_data_t *arr_data;
             arr_data = ctache_data_array_get(*curr_data_ptr, *index_ptr);
-            if (arr_data->data_type == CTACHE_DATA_HASH) {
+            if (ctache_data_is_hash(arr_data)) {
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
                     *curr_data_ptr = ctache_data_hash_table_get(arr_data, key);
                 } else {
@@ -78,7 +90,7 @@ handle_section_tag_start(struct linked_list_node **token_node_ptr,
     *token_node_ptr = (*token_node_ptr)->next; /* Move to the }} */
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
 
-    if ((*curr_data_ptr)->data_type == CTACHE_DATA_ARRAY) {
+    if (ctache_data_is_array(*curr_data_ptr)) {
         linked_list_push(token_node_stack, *token_node_ptr);
         linked_list_push(rule_node_stack, rule_node);
         *index_ptr = 0; /* Reset the array index */
@@ -87,17 +99,20 @@ handle_section_tag_start(struct linked_list_node **token_node_ptr,
 
 /* tag start -> close tag start */
 static void
-handle_rule7(struct linked_list_node **token_node_ptr,
-             struct linked_list *token_node_stack,
-             ctache_data_t **curr_data_ptr,
-             struct linked_list_node **rule_node_ptr,
-             struct linked_list *rule_node_stack,
-             struct linked_list *data_stack,
-             int *index_ptr,
-             struct linked_list *index_stack)
+handle_close_tag(struct linked_list_node **token_node_ptr,
+                 struct linked_list *token_node_stack,
+                 ctache_data_t **curr_data_ptr,
+                 struct linked_list_node **rule_node_ptr,
+                 struct linked_list *rule_node_stack,
+                 struct linked_list *data_stack,
+                 int *index_ptr,
+                 struct linked_list *index_stack,
+                 bool *hidden_ptr)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{/ */
     int max_index = ctache_data_length(*curr_data_ptr) - 1;
+    struct ctache_token *token = (*token_node_ptr)->data;
+    char *key = token->value;
 
     if (token_node_stack->length > 0
             && ctache_data_is_array(*curr_data_ptr)
@@ -119,6 +134,16 @@ handle_rule7(struct linked_list_node **token_node_ptr,
         *token_node_ptr = (*token_node_ptr)->next; /* Move to the }} */
         *token_node_ptr = (*token_node_ptr)->next; /* Skip the }} */
     } else {
+        ctache_data_t *child_data = NULL;
+        if (ctache_data_is_hash(*curr_data_ptr)
+            && ctache_data_hash_table_has_key(*curr_data_ptr, key)) {
+            child_data = ctache_data_hash_table_get(*curr_data_ptr, key);
+            if (ctache_data_is_boolean(child_data)
+                && *hidden_ptr == true
+                && child_data->data.boolean == false) {
+                *hidden_ptr = false;
+            }
+        }
         if (data_stack->length > 0) {
             *curr_data_ptr = linked_list_pop(data_stack);
         }
@@ -129,11 +154,12 @@ handle_rule7(struct linked_list_node **token_node_ptr,
 
 /* tag start -> value tag start */
 static void
-handle_value_tag_start(struct linked_list_node **token_node_ptr,
+handle_value_tag(struct linked_list_node **token_node_ptr,
                        ctache_data_t *curr_data,
                        FILE *out,
                        int *index_ptr,
-                       enum escaping_type escaping_type)
+                       enum escaping_type escaping_type,
+                       bool hidden)
 {
     *token_node_ptr = (*token_node_ptr)->next; /* Skip the {{ */
 
@@ -142,14 +168,14 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
     ctache_data_t *value_data;
     char *str = NULL;
 
-    if (curr_data->data_type == CTACHE_DATA_HASH) {
+    if (ctache_data_is_hash(curr_data)) {
         value_data = ctache_data_hash_table_get(curr_data, key);
         if (value_data != NULL) {
             str = value_data->data.string;
         } else {
             fprintf(stderr, "Key not in hash: %s\n", token_ptr->value);
         }
-    } else if (curr_data->data_type == CTACHE_DATA_ARRAY) {
+    } else if (ctache_data_is_array(curr_data)) {
         if (token_ptr->value != NULL && key[0] == '.') {
             /* Immediate value from the array */
             ctache_data_t *str_data;
@@ -158,7 +184,7 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
         } else {
             ctache_data_t *arr_data;
             arr_data = ctache_data_array_get(curr_data, *index_ptr);
-            if (arr_data != NULL && arr_data->data_type == CTACHE_DATA_HASH) {
+            if (arr_data != NULL && ctache_data_is_hash(arr_data)) {
                 ctache_data_t *str_data;
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
                     str_data = ctache_data_hash_table_get(arr_data, key);
@@ -175,7 +201,7 @@ handle_value_tag_start(struct linked_list_node **token_node_ptr,
         str = escape_text(str, escaping_type);
     }
 
-    if (str != NULL) {
+    if (str != NULL && !hidden) {
         fprintf(out, "%s", str);
     }
 
@@ -205,12 +231,14 @@ _ctache_render(struct linked_list *tokens,
     ctache_data_t *curr_data;
     struct linked_list_node *curr;
     int index; /* Array index */
+    bool hidden;
 
     curr_data = data;
     data_stack = linked_list_create();
     token_node_stack = linked_list_create();
     rule_node_stack = linked_list_create();
     index_stack = linked_list_create();
+    hidden = false;
 
     token_node = tokens->first;
     for (rule_node = parsed_rules->first;
@@ -219,41 +247,45 @@ _ctache_render(struct linked_list *tokens,
         rule_ptr = rule_node->data;
         switch(*rule_ptr) {
         case 3: /* text -> string */
-            handle_text(&token_node, out);
+            handle_text(&token_node, out, hidden);
             break;
         case 6: /* tag start -> section tag start */
-            handle_section_tag_start(&token_node,
-                                     &curr_data,
-                                     data_stack,
-                                     &index,
-                                     index_stack,
-                                     token_node_stack,
-                                     rule_node_stack,
-                                     rule_node);
+            handle_section_tag(&token_node,
+                               &curr_data,
+                               data_stack,
+                               &index,
+                               index_stack,
+                               token_node_stack,
+                               rule_node_stack,
+                               rule_node,
+                               &hidden);
             break;
         case 7: /* tag start -> close tag start */
-            handle_rule7(&token_node,
-                         token_node_stack,
-                         &curr_data,
-                         &rule_node,
-                         rule_node_stack,
-                         data_stack,
-                         &index,
-                         index_stack);
+            handle_close_tag(&token_node,
+                             token_node_stack,
+                             &curr_data,
+                             &rule_node,
+                             rule_node_stack,
+                             data_stack,
+                             &index,
+                             index_stack,
+                             &hidden);
             break;
         case 8: /* tag start -> value tag start */
-            handle_value_tag_start(&token_node,
-                                   curr_data,
-                                   out,
-                                   &index,
-                                   escaping_type);
+            handle_value_tag(&token_node,
+                             curr_data,
+                             out,
+                             &index,
+                             escaping_type,
+                             hidden);
             break;
         case 9: /* tag start -> unescaped value tag start */
-            handle_value_tag_start(&token_node,
-                                   curr_data,
-                                   out,
-                                   &index,
-                                   ESCAPE_NONE);
+            handle_value_tag(&token_node,
+                             curr_data,
+                             out,
+                             &index,
+                             ESCAPE_NONE,
+                             hidden);
             break;
         default:
             break;

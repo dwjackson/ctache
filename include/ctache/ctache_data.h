@@ -75,4 +75,7 @@ ctache_data_is_hash(ctache_data_t *data);
 bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key);
 
+ctache_data_t
+*ctache_data_create_boolean(bool value);
+
 #endif /* CTACHE_DATA_H */

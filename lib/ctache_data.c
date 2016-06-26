@@ -90,6 +90,7 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_array *array;
     char *str;
     int i;
+    bool *bool_ptr;
 
     switch (ctache_data->data_type) {
     case CTACHE_DATA_HASH:
@@ -183,4 +184,10 @@ bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key)
 {
     return ctache_hash_table_has_key(data->data.hash, key);
+}
+
+ctache_data_t
+*ctache_data_create_boolean(bool value)
+{
+    return ctache_data_create(CTACHE_DATA_BOOLEAN, &value, -1, -1);
 }

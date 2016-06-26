@@ -160,10 +160,35 @@ ctache_data_t
                                             false);
                         value_len = event.data.scalar.length;
                     }
-                    if (key != NULL && value != NULL) {
+                    if (key != NULL
+                        && value != NULL
+                        && strcmp((char*)value, "true") != 0
+                        && strcmp((char*)value, "false") != 0) {
                         str_data = ctache_data_create_string((char*)value, 
                                                              value_len);
                         ctache_data_hash_table_set(data, (char *)key, str_data);
+                        free(key);
+                        key = NULL;
+                        value = NULL;
+                        value_len = 0;
+                        str_data = NULL;
+                    } else if (key != NULL
+                               && value != NULL
+                               && strcmp((char*)value, "true") == 0) {
+                        ctache_data_t *bool_data;
+                        bool_data = ctache_data_create_boolean(true);
+                        ctache_data_hash_table_set(data, (char*)key, bool_data);
+                        free(key);
+                        key = NULL;
+                        value = NULL;
+                        value_len = 0;
+                        str_data = NULL;
+                    } else if (key != NULL
+                               && value != NULL
+                               && strcmp((char*)value, "false") == 0) {
+                        ctache_data_t *bool_data;
+                        bool_data = ctache_data_create_boolean(false);
+                        ctache_data_hash_table_set(data, (char*)key, bool_data);
                         free(key);
                         key = NULL;
                         value = NULL;
