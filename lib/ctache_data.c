@@ -77,15 +77,21 @@ ctache_data_t
     return ctache_data;
 }
 
-void
-ctache_data_destroy(void *data)
+/*
+ * Note: Do not set free_ctache_data when freeing from an array because the
+ * array's cells are copies of pointer data, not the actual malloc'd pointers
+ * themselves -- those should already have been freed.
+ */
+static void
+_ctache_data_destroy(void *data, bool free_ctache_data)
 {
     struct ctache_data *ctache_data = (struct ctache_data *)(data);
     struct ctache_hash_table *hash_table;
     struct ctache_array *array;
     char *str;
+    int i;
 
-    switch (ctache_data->data_type) { // TODO
+    switch (ctache_data->data_type) {
     case CTACHE_DATA_HASH:
         hash_table = ctache_data->data.hash;
         ctache_hash_table_destroy(hash_table, ctache_data_destroy);
@@ -96,13 +102,24 @@ ctache_data_destroy(void *data)
         break;
     case CTACHE_DATA_ARRAY:
         array = ctache_data->data.array;
-        // TODO: Free the array cells
+        for (i = 0; i < array->length; i++) {
+            void *ptr = ctache_array_get(array, i);
+            _ctache_data_destroy(ptr, false);
+        }
         ctache_array_destroy(array);
         break;
     default:
         break;
     }
-    free(ctache_data);
+    if (free_ctache_data) {
+        free(ctache_data);
+    }
+}
+
+void
+ctache_data_destroy(void *data)
+{
+    _ctache_data_destroy(data, true);
 }
 
 void
