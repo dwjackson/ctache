@@ -46,3 +46,15 @@ Print the parsed rules from parsing the template (for debugging)
 .El
 .Sh EXIT STATUS
 .Ex -std
+.Sh EXAMPLES
+To render an HTML template to a file called out.html:
+.Pp
+.Bd
+.D1 ctache -y data.yml -i template.html > out.html
+.Ed
+.Pp
+To render a LaTeX file (with LaTeX-escaped characters) to stdout:
+.Pp
+.Bd
+.D1 ctache -y data.yml -i template.tex -e tex
+.Ed
