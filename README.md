@@ -43,17 +43,20 @@ This section explains how to use Ctache.
 
 ### Command-Line Tool
 
-By default, `ctache` reads input from `stdin` and writes output to `stdout`.
+Note: By default, `ctache` reads input from `stdin` and writes output to
+`stdout`.
+
+To render an HTML template:
+
+```sh
+ctache -y data.yml -i template.html -o output.html
+```
 
 ### Library Use
 
-First, you must include the ctache header file:
-
-```c
-#include <ctache.h>
-```
-
-TODO
+For an explanation of the Ctache library, libctache, see the man pages
+`ctache_render(3)` and `ctache_data(3)`. These man pages are installed with
+Ctache.
 
 ## License
 
@@ -64,8 +67,3 @@ the MPLv2 used by the Ctache project *is* compatible with the GPL. If you want
 to use the code from Ctache in a GPL'd project, that's perfectly fine. A copy
 of the MPLv2 should be included with this project in a file called
 `LICENSE.md`.
-
-There *may* be parts of the Ctache project that are licensed under a more
-permissive license than the MPLv2 -- e.g. the MIT/BSD license. These files
-will contain a header that clearly specifies the license for the files. Files
-with no header are licensed under the MPLv2.
