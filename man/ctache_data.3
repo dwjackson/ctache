@@ -10,4 +10,23 @@
 .In ctache.h
 .Ft ctache_data_t
 .Fn ctache_data_create_hash
+.Ft ctache_data_t
+.Fo ctache_data_create_string
+.Fa "char *str" "size_t len"
 .Fc
+.Sh DESCRIPTION
+Ctache uses a generic data format (the ctache_data_t) structure to contain
+several different possible types of data (e.g. boolean, string, array, hash)
+such that none of the templates require any logic. For example, if a section
+tag (
+.Qq {{#section}}
+) corresponds to an array, the content of the section tag will be repeated,
+once for each element in the array. If it is a hash, the hash will become the
+new
+.Qq context
+for the rendering such. If the section tag corresponds to a boolean, the text
+inside the section will not be rendered if the boolean value is false.
+.Pp
+Note that the ctache_data_t structure, while documented, is not meant to be
+public and direct access by users is not supported. Its internal composition
+is not guaranteed to stay the same between releases.

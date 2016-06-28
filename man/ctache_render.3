@@ -16,3 +16,8 @@
 .Fo ctache_render_file
 .Fa "FILE *in_fp" "FILE *out_fp" "ctache_data_t *data" "int flags" "enum escaping_type escaping_type"
 .Fc
+.Sh DESCRIPTION
+The ctache_render family of functions is used to render a mustache-style
+template using data in a ctache_data_t format. The ctache_render_string()
+function renders a template in string form, whereas the ctache_render_file()
+function render a template directly from a file pointer.
