@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-prefix = /usr/local
 EXE_NAME = ctache
 EXE_OBJECTS = main.o yaml_data.o
 EXE_SOURCES = main.c yaml_data.c

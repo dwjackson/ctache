@@ -4,6 +4,8 @@
 
 PROJECT_NAME = ctache
 VERSION = 0.1.0
+prefix = /usr/local
+export prefix
 
 all: libraries executable
 
@@ -13,12 +15,8 @@ executable: libraries
 libraries:
 	cd lib && $(MAKE)
 
-clean:
-	cd lib && $(MAKE) clean
-	cd src && $(MAKE) clean
-
-install:
-	cd lib && $(MAKE) install
-	cd src && $(MAKE) install
+clean install:
+	cd lib && $(MAKE) $@
+	cd src && $(MAKE) $@
 
 .PHONY: all clean install
