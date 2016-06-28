@@ -29,7 +29,11 @@ clean:
 	rm -f $(SHARED_LIBRARY)
 
 install: $(SHARED_LIBRARY) $(STATIC_LIBRARY)
-	install $(SHARED_LIBRARY) $(prefix)/lib
-	install $(STATIC_LIBRARY) $(prefix)/lib
+	install $(SHARED_LIBRARY) $(prefix)/lib/$(SHARED_LIBRARY)
+	install $(STATIC_LIBRARY) $(prefix)/lib/$(STATIC_LIBRARY)
 
-.PHONY: all clean install
+uninstall:
+	rm $(prefix)/lib/$(SHARED_LIBRARY)
+	rm $(prefix)/lib/$(STATIC_LIBRARY)
+
+.PHONY: all clean install uninstall

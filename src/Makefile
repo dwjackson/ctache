@@ -21,6 +21,9 @@ clean:
 	rm -f $(EXE_NAME)
 
 install: $(EXE_NAME)
-	install $(EXE_NAME) $(prefix)/bin
+	install $(EXE_NAME) $(prefix)/bin/$(EXE_NAME)
 
-.PHONY: all clean install
+uninstall:
+	rm $(prefix)/bin/$(EXE_NAME)
+
+.PHONY: all clean install uninstall

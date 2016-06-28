@@ -10,8 +10,12 @@ CTACHE_HEADERS = ctache/ctache_array.h ctache/ctache_data.h \
 all:
 
 install:
-	install $(CTACHE_MAIN_HEADER) $(prefix)/include
-	install -f $(prefix)/include/ctache
-	install $(CTACHE_HEADERS) $(prefix)/include/ctache
+	install $(CTACHE_MAIN_HEADER) $(prefix)/include/$(CTACHE_MAIN_HEADER)
+	install -d $(prefix)/include/ctache
+	install $(CTACHE_HEADERS) $(prefix)/include/ctache/$(CTACHE_HEADERS)
 
-.PHONY: all install 
+uninstall:
+	rm $(prefix)/include/$(CTACHE_MAIN_HEADER)
+	rm -rf $(prefix)/include/ctache
+
+.PHONY: all install uninstall

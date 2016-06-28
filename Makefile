@@ -15,7 +15,7 @@ executable: libraries
 libraries:
 	cd lib && $(MAKE)
 
-clean install:
+clean install uninstall:
 	cd lib && $(MAKE) $@
 	cd src && $(MAKE) $@
 

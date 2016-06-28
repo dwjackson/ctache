@@ -6,11 +6,18 @@ CTACHE_MAN_PAGE = ctache.1
 CTACHE_RENDER_MAN_PAGE = ctache_render.3
 CTACHE_DATA_MAN_PAGE = ctache_data.3
 
+MAN_DIR = $(prefix)/share/man
+
 all:
 
 install:
-	install $(CTACHE_MAN_PAGE) $(prefix)/share/man/man1
-	install $(CTACHE_RENDER_MAN_PAGE) $(prefix)/share/man/man3
-	install $(CTACHE_DATA_MAN_PAGE) $(prefix)/share/man/man3
+	install $(CTACHE_MAN_PAGE) $(MAN_DIR)/man1/$(CTACHE_MAN_PAGE)
+	install $(CTACHE_RENDER_MAN_PAGE) $(MAN_DIR)/man3/$(CTACHE_RENDER_MAN_PAGE)
+	install $(CTACHE_DATA_MAN_PAGE) $(MAN_DIR)/man3/$(CTACHE_DATA_MAN_PAGE)
 
-.PHONY: all install
+uninstall:
+	rm $(MAN_DIR)/man1/$(CTACHE_MAN_PAGE)
+	rm $(MAN_DIR)/man3/$(CTACHE_RENDER_MAN_PAGE)
+	rm $(MAN_DIR)/man3/$(CTACHE_DATA_MAN_PAGE)
+
+.PHONY: all install uninstall
