@@ -17,4 +17,8 @@ clean:
 	cd lib && $(MAKE) clean
 	cd src && $(MAKE) clean
 
-.PHONY: all clean
+install:
+	cd lib && $(MAKE) install
+	cd src && $(MAKE) install
+
+.PHONY: all clean install
