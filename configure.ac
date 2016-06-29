@@ -3,10 +3,10 @@
 
 AC_PREREQ([2.69])
 AC_INIT([ctache], [0.1.0], [dwjackson@users.noreply.github.com])
-AC_CONFIG_SRCDIR([build/CMakeFiles/feature_tests.c])
+AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE
 LT_INIT
+AM_INIT_AUTOMAKE([-Wall foreign])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -31,11 +31,6 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap strdup strerror])
 
 AC_CONFIG_FILES([Makefile
-                 build/Makefile
-                 build/include/Makefile
-                 build/lib/Makefile
-                 build/man/Makefile
-                 build/src/Makefile
                  include/Makefile
                  lib/Makefile
                  man/Makefile
