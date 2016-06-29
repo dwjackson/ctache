@@ -1,0 +1,9 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+AM_CFLAGS = -I$(top_srcdir)/include
+
+bin_PROGRAMS = ctache
+ctache_SOURCES = main.c yaml_data.c
+ctache_LDADD = $(top_srcdir)/lib/libctache.la yaml
