@@ -7,8 +7,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 # Ctache
 
 Ctache (pronounced "stash" as in "stache" as in "moustache" you see) is an
-implementation of [mustache](https://mustache.github.io/) templates in C. It is
-implemented as the command-line tool `ctache` and also in library form as
+implementation of [mustache](https://mustache.github.io/) templates in C
+(though I have not yet checked whether it fully implements the spec). It is
+available as the command-line tool `ctache` and also in library form as
 `libctache`.
 
 ## Building & Installing
