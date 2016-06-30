@@ -1,6 +1,3 @@
-# CMake Build Directory
-build
-
 # CScope
 cscope.out
 
