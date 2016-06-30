@@ -28,13 +28,20 @@ machine and from the ports tree on my FreeBSD machine.
 
 ### Compiling
 
-To build Ctache, you need to have CMake installed. To build:
+If you downloaded an archive of Ctache that does not include an executable
+`configure` script, you'll need the Autotools to generate it. To do that, run
 
 ```sh
-mkdir build
-cd build
-cmake ..
+autoreconf -iv
+```
+
+If a `configure` script already exists, you can compile and install Ctache as
+follows (note that you may need to be root to run the install step):
+
+```sh
+./configure
 make
+make install
 ```
 
 ## Usage
