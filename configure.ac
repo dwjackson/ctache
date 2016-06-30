@@ -12,6 +12,7 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_INSTALL
+AM_PROG_AR
 
 # Checks for libraries.
 
