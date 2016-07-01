@@ -3,3 +3,41 @@ cscope.out
 
 # CTags
 tags
+
+# Autotools
+Makefile
+Makefile.in
+aclocal.m4
+ar-lib
+autom4te.cache/
+compile
+config.guess
+config.h
+config.h.in
+config.log
+config.status
+config.sub
+configure
+depcomp
+include/Makefile
+include/Makefile.in
+install-sh
+lib/.deps/
+lib/.libs/
+lib/Makefile
+lib/Makefile.in
+lib/*.lo
+lib/*.o
+lib/*.la
+libtool
+ltmain.sh
+man/Makefile
+man/Makefile.in
+missing
+src/.deps/
+src/.libs/
+src/Makefile
+src/Makefile.in
+src/ctache
+src/*.o
+stamp-h1
