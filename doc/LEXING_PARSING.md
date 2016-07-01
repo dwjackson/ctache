@@ -19,6 +19,7 @@ SECTION_TAG_START         = {{#
 CLOSE_TAG_START           = {{/
 VALUE_VALUE_START         = {{
 UNESCAPED_VALUE_TAG_START = {{& | {{{
+PARTIAL_TAG_START         = {{>
 TAG_END                   = }} | }}}
 STRING                    = *
 ```
@@ -38,7 +39,7 @@ template  = text, template | tag, template
 text      = string | ""
 tag       = tag start, string, tag end
 tag start = section tag start | close tag start | value tag start
-            | unescaped value tag start
+            | unescaped value tag start | partial tag start
 ```
 
 The rules that follow from the above grammar as as follows:
@@ -53,15 +54,16 @@ The rules that follow from the above grammar as as follows:
  8. `tag start -> close tag start`
  9. `tag start -> value tag start`
 10. `tag start -> unescaped value tag start`
+11. `tag start -> partial tag start`
 
 ### Parsing Table
 
-|           | {{# | {{/ | {{ | {{& / {{{ | }} | string | $ |
-|-----------|-----|-----|----|-----------|----|--------|---|
-| template  |  2  |  2  |  2 |     2     |  - |    1   | 3 |
-| text      |  5  |  5  |  5 |     5     |  5 |    4   | 5 |
-| tag       |  6  |  6  |  6 |     6     |  6 |    -   | - |
-| tag start |  7  |  8  |  9 |     10    |  9 |    -   | - |
+|           | {{# | {{/ | {{ | {{& / {{{ | {{> | }} | string | $ |
+|-----------|-----|-----|----|-----------|-----|----|--------|---|
+| template  |  2  |  2  |  2 |     2     |  2  |  - |    1   | 3 |
+| text      |  5  |  5  |  5 |     5     |  5  |  5 |    4   | 5 |
+| tag       |  6  |  6  |  6 |     6     |  6  |  6 |    -   | - |
+| tag start |  7  |  8  |  9 |     10    | 11  |  - |    -   | - |
 
 Note that when the parsing table is translated into actual C code, the rule
 indices will be zero-indexed, as opposed to beginning the indices at one. This

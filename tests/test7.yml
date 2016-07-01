@@ -1,0 +1,2 @@
+partial: "this is a {{test_key}}"
+test_key: "test"

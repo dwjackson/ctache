@@ -215,11 +215,51 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
 }
 
 static void
+handle_partial(struct linked_list_node **token_node_ptr,
+               ctache_data_t *curr_data,
+               FILE *out,
+               int *index_ptr,
+               enum escaping_type escaping_type)
+{
+    (*token_node_ptr) = (*token_node_ptr)->next; /* Skip the {{> */
+
+    struct ctache_token *token = (*token_node_ptr)->data;
+    if (ctache_data_is_array(curr_data)) {
+        curr_data = ctache_data_array_get(curr_data, *index_ptr);
+        *index_ptr += 1;
+    }
+
+    if (!ctache_data_is_hash(curr_data)) {
+        fprintf(stderr, "ERROR: current data is not a hash\n");
+        abort();
+    }
+
+    /* Render what's inside the partial, then continue */
+    char *key = token->value;
+    if (ctache_data_hash_table_has_key(curr_data, key)) {
+        ctache_data_t *partial_data;
+        partial_data = ctache_data_hash_table_get(curr_data, key);
+        char *partial = partial_data->data.string;
+        ctache_render_string(partial,
+                             strlen(partial),
+                             out,
+                             curr_data,
+                             0, /* flags */
+                             escaping_type);
+    } else {
+        fprintf(stderr, "ERROR: Key missing from hash: %s\n", key);
+    }
+
+    (*token_node_ptr) = (*token_node_ptr)->next; /* Skip past the string */
+    (*token_node_ptr) = (*token_node_ptr)->next; /* Skip the }} */
+}
+
+static void
 _ctache_render(struct linked_list *tokens,
-              struct linked_list *parsed_rules,
-              FILE *out,
-              ctache_data_t *data,
-              enum escaping_type escaping_type)
+               struct linked_list *parsed_rules,
+               FILE *out,
+               ctache_data_t *data,
+               enum escaping_type escaping_type)
 {
     struct linked_list_node *rule_node;
     struct linked_list_node *token_node;
@@ -286,6 +326,13 @@ _ctache_render(struct linked_list *tokens,
                              &index,
                              ESCAPE_NONE,
                              hidden);
+            break;
+        case 10: /* tag start -> partial tag */
+            handle_partial(&token_node,
+                           curr_data,
+                           out,
+                           &index,
+                           escaping_type);
             break;
         default:
             break;

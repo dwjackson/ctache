@@ -18,6 +18,7 @@ char *ctache_token_names[] = {
     "CTACHE_TOK_CLOSE_TAG_START",
     "CTACHE_TOK_VALUE_TAG_START",
     "CTACHE_TOK_UNESC_VALUE_TAG_START",
+    "CTACHE_TOK_PARTIAL_TAG",
     "CTACHE_TOK_TAG_END",
     "CTACHE_TOK_STRING",
     "CTACHE_TOK_EOI",
@@ -130,6 +131,22 @@ struct linked_list
                     linked_list_append(tokens, tok);
                     i += 2;
                     col += 2;
+                } else if (str[i + 1] == '{' && str[i + 2] == '>') {
+                    if (strval_len > 0) {
+                        tok = token_create(CTACHE_TOK_STRING,
+                                           strdup(strval),
+                                           row,
+                                           col);
+                        strval_len = 0;
+                        linked_list_append(tokens, tok);
+                        memset(strval, 0, strval_bufsize);
+                    }
+                    tok = token_create(CTACHE_TOK_PARTIAL_TAG,
+                                       NULL,
+                                       row,
+                                       col);
+                    linked_list_append(tokens, tok);
+                    i += 2;
                 } else if (str[i + 1] == '{'
                            && (str[i + 2] == '&' || str[i + 2] == '{')) {
                     if (strval_len > 0) {

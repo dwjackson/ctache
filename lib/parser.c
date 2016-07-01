@@ -11,10 +11,10 @@
 
 static int
 parse_table[CTACHE_NUM_NONTERMINALS][CTACHE_NUM_TERMINALS] = {
-    { 1, 1, 1,  1, -1,  0,  2 },
-    { 4, 4, 4,  4,  4,  3,  4 },
-    { 5, 5, 5,  5, -1, -1, -1 },
-    { 6, 7, 8,  9, -1, -1, -1 }
+    { 1, 1, 1,  1,  1, -1,  0,  2 },
+    { 4, 4, 4,  4,  4,  4,  3,  4 },
+    { 5, 5, 5,  5,  5, -1, -1, -1 },
+    { 6, 7, 8,  9, 10, -1, -1, -1 }
 };
 
 static int
@@ -125,6 +125,9 @@ struct linked_list
                 break;
             case 9: /* Rule 10: tag start -> unescaped tag start */
                 push_token_onto_stack(stack, CTACHE_TOK_UNESC_VALUE_TAG_START);
+                break;
+            case 10: /* Rule 11: tag start -> partial tag */
+                push_token_onto_stack(stack, CTACHE_TOK_PARTIAL_TAG);
                 break;
             default:
                 break;
