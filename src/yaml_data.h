@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/*
+ * Copyright (c) 2016 David Jackson
+ */
+
 #ifndef YAML_DATA_H
 #define YAML_DATA_H
 

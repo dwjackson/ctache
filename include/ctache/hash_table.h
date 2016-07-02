@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/*
+ * Copyright (c) 2016 David Jackson
+ */
+
 #ifndef CTACHE_HASH_TABLE_H
 #define CTACHE_HASH_TABLE_H
 

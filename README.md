@@ -68,10 +68,12 @@ Ctache.
 
 ## License
 
+Copyright 2016 David Jackson
+
 Ctache is licensed under the [MPLv2](https://www.mozilla.org/en-US/MPL/2.0/).
 If you don't know how the MPLv2 works, there is an
 [FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/). Note that the version of
 the MPLv2 used by the Ctache project *is* compatible with the GPL. If you want
 to use the code from Ctache in a GPL'd project, that's perfectly fine. A copy
 of the MPLv2 should be included with this project in a file called
-`LICENSE.md`.
+`LICENSE`.

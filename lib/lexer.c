@@ -4,6 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+/*
+ * Copyright (c) 2016 David Jackson
+ */
+
 #include "lexer.h"
 #include "linked_list.h"
 #include <stdlib.h>
