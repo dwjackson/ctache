@@ -60,6 +60,8 @@ To render an HTML template:
 ctache -y data.yml -i template.html -o output.html
 ```
 
+For more information about flags and options, see the `ctache(1)` man page.
+
 ### Library Use
 
 For an explanation of the Ctache library, libctache, see the man pages
