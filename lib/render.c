@@ -472,6 +472,8 @@ ctache_render_file(FILE *in_fp,
                 fprintf(stderr, "Out of memory\n");
                 exit(EXIT_FAILURE);
             }
+            in_buf[in_buf_len] = ch;
+            in_buf_len++;
         }
     }
     in_buf[in_buf_len] = '\0';
