@@ -17,7 +17,8 @@ ctache_array_t
     if (num_elements < BUF_SIZE) {
         bufsize = BUF_SIZE;
     }
-    array = malloc(bufsize * element_size);
+    size_t array_size = sizeof(struct ctache_array) + bufsize * element_size;
+    array = malloc(array_size);
     if (array != NULL) {
         array->bufsize = bufsize;
         array->length = 0;
