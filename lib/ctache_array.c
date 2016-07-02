@@ -65,7 +65,9 @@ ctache_array_append(ctache_array_t **array_ptr, void *data)
     struct ctache_array *array = *array_ptr;
     if (array->length + 1 >= array->bufsize) {
         size_t bufsize = array->bufsize *= 2;
-        *array_ptr = realloc(*array_ptr, sizeof(struct ctache_array) + bufsize);
+        size_t bufsize_bytes = bufsize * array->element_size;
+        size_t array_size = sizeof(struct ctache_array) + bufsize_bytes;
+        *array_ptr = realloc(*array_ptr, array_size);
         array = *array_ptr;
     }
     ctache_array_set(*array_ptr, array->length, data);
