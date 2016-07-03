@@ -16,7 +16,8 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <stdbool.h>
-#include "ctache.h"
+#include "ctache/ctache.h"
+#include "ctache/linked_list.h"
 #include "yaml_data.h"
 
 static bool

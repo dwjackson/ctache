@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <yaml.h>
-#include "ctache.h"
+#include "ctache/ctache.h"
 #include "yaml_data.h"
 
 void

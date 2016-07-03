@@ -11,12 +11,9 @@
 #ifndef CTACHE_H
 #define CTACHE_H
 
-#include "ctache/linked_list.h"
-#include "ctache/lexer.h"
-#include "ctache/ctache_data.h"
-#include "ctache/ctache_array.h"
-#include "ctache/parser.h"
-#include "ctache/render.h"
-#include "ctache/escaping.h"
+#include "ctache_data.h"
+#include "ctache_array.h"
+#include "render.h"
+#include "escaping.h"
 
 #endif /* CTACHE_H */
