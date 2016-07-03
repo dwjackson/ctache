@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include "ctache/ctache.h"
 #include "ctache/linked_list.h"
+#include "ctache/ctache_array.h"
 #include "yaml_data.h"
 
 static bool

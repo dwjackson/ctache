@@ -12,8 +12,6 @@
 #define CTACHE_H
 
 #include "ctache_data.h"
-#include "ctache_array.h"
 #include "render.h"
-#include "escaping.h"
 
 #endif /* CTACHE_H */
