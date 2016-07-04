@@ -13,5 +13,6 @@
 
 #include "ctache_data.h"
 #include "render.h"
+#include "escaping.h"
 
 #endif /* CTACHE_H */

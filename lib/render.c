@@ -202,7 +202,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
 
     bool escaped = escaping_type != ESCAPE_NONE;
     if (escaped && str != NULL) {
-        str = escape_text(str, escaping_type);
+        str = ctache_escape_text(str, escaping_type);
     }
 
     if (str != NULL && !hidden) {

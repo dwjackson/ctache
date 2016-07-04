@@ -8,7 +8,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([ctache], [0.2.4], [dwjackson@users.noreply.github.com])
+AC_INIT([ctache], [0.2.5], [dwjackson@users.noreply.github.com])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 LT_INIT

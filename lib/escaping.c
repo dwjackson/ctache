@@ -111,7 +111,7 @@ static char *(*escape_functions[])(const char *) = {
 };
 
 char
-*escape_text(const char *str, enum escaping_type escaping_type)
+*ctache_escape_text(const char *str, enum escaping_type escaping_type)
 {
     return escape_functions[escaping_type](str);
 }

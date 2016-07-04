@@ -24,6 +24,6 @@ enum escaping_type {
 };
 
 char
-*escape_text(const char *str, enum escaping_type);
+*ctache_escape_text(const char *str, enum escaping_type);
 
 #endif /* CTACHE_ESCAPING_H */
