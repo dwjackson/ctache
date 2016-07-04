@@ -20,6 +20,13 @@
 
 #define IN_BUF_SIZE_DEFAULT 1024
 
+static void
+_ctache_render(struct linked_list *tokens,
+               struct linked_list *parsed_rules,
+               FILE *out,
+               ctache_data_t *data,
+               enum escaping_type escaping_type);
+
 /* text -> string */
 static void
 handle_text(struct linked_list_node **token_node_ptr, FILE *out, bool hidden)
@@ -219,6 +226,97 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
 }
 
 static void
+_ctache_render_string(const char *in_str,
+                     size_t in_str_len,
+                     FILE *out_fp,
+                     ctache_data_t *data,
+                     int flags,
+                     enum escaping_type escaping_type)
+{
+    struct linked_list *tokens = NULL;
+    struct linked_list_node *curr = NULL;
+    struct linked_list *parsed_rules = NULL;
+
+    /* Flags */
+    bool print_tokens = flags & CTACHE_RENDER_FLAG_PRINT_TOKENS;
+    bool print_parsed_rules = flags & CTACHE_RENDER_FLAG_PRINT_RULES;
+
+    /* Perform lexical analysis */
+    tokens = ctache_lex(in_str, in_str_len);
+    if (print_tokens) {
+        extern char *ctache_token_names[];
+        printf("Tokens:\n");
+        for (curr = tokens->first; curr != NULL; curr = curr->next) {
+            struct ctache_token *tok = (struct ctache_token *)(curr->data);
+            enum ctache_token_type tok_type = tok->tok_type;
+            printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
+            if (tok->tok_type == CTACHE_TOK_STRING) {
+                int i;
+                size_t value_len = strlen(tok->value);
+                char ch;
+                printf(" \"");
+                for (i = 0; i < value_len; i++) {
+                    ch = (tok->value)[i];
+                    if (ch != '\n') {
+                        printf("%c", ch);
+                    } else {
+                        printf("\\n");
+                    }
+                }
+                printf("\"");
+            }
+            printf("\n");
+        }
+        if (!print_parsed_rules) {
+            goto cleanup; /* Do not perform actual parsing */
+        }
+    }
+
+    parsed_rules = ctache_parse(tokens);
+    if (print_parsed_rules && parsed_rules != NULL) {
+        int index = 0;
+        printf("Parsed rules:\n");
+        printf("\t");
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            int *rule_ptr = curr->data;
+            printf("%d", *rule_ptr);
+            if (curr->next != NULL) {
+                printf(", ");
+            }
+            index++;
+            if (index % 10 == 0) {
+                printf("\n\t");
+            }
+        }
+        printf("\n");
+        goto cleanup; /* Do nothing else */
+    }
+
+    /* Render the template to the file */
+    if (tokens != NULL && parsed_rules != NULL) {
+        _ctache_render(tokens, parsed_rules, out_fp, data, escaping_type);
+    }
+
+cleanup:
+    if (tokens != NULL) {
+        for (curr = tokens->first; curr != NULL; curr = curr->next) {
+            struct ctache_token *tok = (struct ctache_token *)(curr->data);
+            if (tok->value != NULL) {
+                free(tok->value);
+            }
+            free(tok);
+        }
+        linked_list_destroy(tokens);
+    }
+    if (parsed_rules != NULL) {
+        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
+            free(curr->data);
+        }
+        linked_list_destroy(parsed_rules);
+    }
+}
+
+static void
 handle_partial(struct linked_list_node **token_node_ptr,
                ctache_data_t *curr_data,
                FILE *out,
@@ -244,12 +342,12 @@ handle_partial(struct linked_list_node **token_node_ptr,
         ctache_data_t *partial_data;
         partial_data = ctache_data_hash_table_get(curr_data, key);
         char *partial = partial_data->data.string;
-        ctache_render_string(partial,
-                             strlen(partial),
-                             out,
-                             curr_data,
-                             0, /* flags */
-                             escaping_type);
+        _ctache_render_string(partial,
+                              strlen(partial),
+                              out,
+                              curr_data,
+                              0, /* flags */
+                              escaping_type);
     } else {
         fprintf(stderr, "ERROR: Key missing from hash: %s\n", key);
     }
@@ -361,94 +459,13 @@ ctache_render_string(const char *in_str,
                      size_t in_str_len,
                      FILE *out_fp,
                      ctache_data_t *data,
-                     int flags,
                      enum escaping_type escaping_type)
 {
-    struct linked_list *tokens = NULL;
-    struct linked_list_node *curr = NULL;
-    struct linked_list *parsed_rules = NULL;
-
-    /* Flags */
-    bool print_tokens = flags & CTACHE_RENDER_FLAG_PRINT_TOKENS;
-    bool print_parsed_rules = flags & CTACHE_RENDER_FLAG_PRINT_RULES;
-
-    /* Perform lexical analysis */
-    tokens = ctache_lex(in_str, in_str_len);
-    if (print_tokens) {
-        extern char *ctache_token_names[];
-        printf("Tokens:\n");
-        for (curr = tokens->first; curr != NULL; curr = curr->next) {
-            struct ctache_token *tok = (struct ctache_token *)(curr->data);
-            enum ctache_token_type tok_type = tok->tok_type;
-            printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
-            if (tok->tok_type == CTACHE_TOK_STRING) {
-                int i;
-                size_t value_len = strlen(tok->value);
-                char ch;
-                printf(" \"");
-                for (i = 0; i < value_len; i++) {
-                    ch = (tok->value)[i];
-                    if (ch != '\n') {
-                        printf("%c", ch);
-                    } else {
-                        printf("\\n");
-                    }
-                }
-                printf("\"");
-            }
-            printf("\n");
-        }
-        if (!print_parsed_rules) {
-            goto cleanup; /* Do not perform actual parsing */
-        }
-    }
-
-    parsed_rules = ctache_parse(tokens);
-    if (print_parsed_rules && parsed_rules != NULL) {
-        int index = 0;
-        printf("Parsed rules:\n");
-        printf("\t");
-        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
-            int *rule_ptr = curr->data;
-            printf("%d", *rule_ptr);
-            if (curr->next != NULL) {
-                printf(", ");
-            }
-            index++;
-            if (index % 10 == 0) {
-                printf("\n\t");
-            }
-        }
-        printf("\n");
-        goto cleanup; /* Do nothing else */
-    }
-
-    /* Render the template to the file */
-    if (tokens != NULL && parsed_rules != NULL) {
-        _ctache_render(tokens, parsed_rules, out_fp, data, escaping_type);
-    }
-
-cleanup:
-    if (tokens != NULL) {
-        for (curr = tokens->first; curr != NULL; curr = curr->next) {
-            struct ctache_token *tok = (struct ctache_token *)(curr->data);
-            if (tok->value != NULL) {
-                free(tok->value);
-            }
-            free(tok);
-        }
-        linked_list_destroy(tokens);
-    }
-    if (parsed_rules != NULL) {
-        for (curr = parsed_rules->first; curr != NULL; curr = curr->next) {
-            free(curr->data);
-        }
-        linked_list_destroy(parsed_rules);
-    }
+    _ctache_render_string(in_str, in_str_len, out_fp, data, 0, escaping_type);
 }
 
 void
-ctache_render_file(FILE *in_fp,
+_ctache_render_file(FILE *in_fp,
                    FILE *out_fp,
                    ctache_data_t *data,
                    int flags,
@@ -482,14 +499,23 @@ ctache_render_file(FILE *in_fp,
     }
     in_buf[in_buf_len] = '\0';
 
-    ctache_render_string(in_buf,
-                         in_buf_len,
-                         out_fp,
-                         data,
-                         flags,
-                         escaping_type);
+    _ctache_render_string(in_buf,
+                          in_buf_len,
+                          out_fp,
+                          data,
+                          flags,
+                          escaping_type);
 
     if (in_buf != NULL) {
         free(in_buf);
     }
+}
+
+void
+ctache_render_file(FILE *in_fp,
+                   FILE *out_fp,
+                   ctache_data_t *data,
+                   enum escaping_type escaping_type)
+{
+    _ctache_render_file(in_fp, out_fp, data, 0, escaping_type);
 }

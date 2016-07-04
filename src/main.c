@@ -17,6 +17,14 @@
 #include "ctache/ctache.h"
 #include "yaml_data.h"
 
+/* Non-public render function prototype */
+void
+_ctache_render_file(FILE *in_fp,
+                   FILE *out_fp,
+                   ctache_data_t *data,
+                   int flags,
+                   enum escaping_type escaping_type);
+
 void
 print_help(const char *prog_name);
 
@@ -105,7 +113,7 @@ main(int argc, char *argv[])
         if (print_parsed_rules) {
             render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
         }
-        ctache_render_file(in_fp, out_fp, data, render_flags, escaping_type);
+        _ctache_render_file(in_fp, out_fp, data, render_flags, escaping_type);
     } else {
         fprintf(stderr, "Error parsing YAML file\n");
     }

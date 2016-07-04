@@ -23,14 +23,12 @@ ctache_render_string(const char *in_str,
                      size_t in_str_len,
                      FILE *out_fp,
                      ctache_data_t *data,
-                     int flags,
                      enum escaping_type escaping_type);
 
 void
 ctache_render_file(FILE *in_fp,
                    FILE *out_fp,
                    ctache_data_t *data,
-                   int flags,
                    enum escaping_type escaping_type);
 
 #endif /* CTACHE_RENDER_H */
