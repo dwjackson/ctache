@@ -16,11 +16,11 @@
 .In ctache/ctache.h
 .Ft void
 .Fo ctache_render_string
-.Fa "const char *in_str" "size_t in_str_len" "FILE *out_fp" "ctache_data_t *data" "int flags" "enum escaping_type escaping_type"
+.Fa "const char *in_str" "size_t in_str_len" "FILE *out_fp" "ctache_data_t *data" "enum escaping_type escaping_type"
 .Fc
 .Ft void
 .Fo ctache_render_file
-.Fa "FILE *in_fp" "FILE *out_fp" "ctache_data_t *data" "int flags" "enum escaping_type escaping_type"
+.Fa "FILE *in_fp" "FILE *out_fp" "ctache_data_t *data" "enum escaping_type escaping_type"
 .Fc
 .Sh DESCRIPTION
 The ctache_render family of functions is used to render a mustache-style
