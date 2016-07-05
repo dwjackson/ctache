@@ -127,7 +127,9 @@ ctache_data_destroy(void *data)
 }
 
 void
-ctache_data_hash_table_set(ctache_data_t *data, const char *key, void *value)
+ctache_data_hash_table_set(ctache_data_t *data,
+                           const char *key,
+                           ctache_data_t *value)
 {
     ctache_hash_table_set(data->data.hash, key, value);
 }
@@ -144,7 +146,7 @@ void
 }
 
 void
-ctache_data_array_append(ctache_data_t *data, void *value)
+ctache_data_array_append(ctache_data_t *data, ctache_data_t *value)
 {
     ctache_array_append(&(data->data.array), value);
 }
