@@ -134,7 +134,7 @@ ctache_data_hash_table_set(ctache_data_t *data,
     ctache_hash_table_set(data->data.hash, key, value);
 }
 
-void
+ctache_data_t
 *ctache_data_hash_table_get(ctache_data_t *data, const char *key)
 {
     enum ctache_data_type data_type = data->data_type;
@@ -151,7 +151,7 @@ ctache_data_array_append(ctache_data_t *data, ctache_data_t *value)
     ctache_array_append(&(data->data.array), value);
 }
 
-void
+ctache_data_t
 *ctache_data_array_get(ctache_data_t *data, int index)
 {
     return ctache_array_get(data->data.array, index);

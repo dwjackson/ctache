@@ -57,13 +57,13 @@ ctache_data_hash_table_set(ctache_data_t *data,
                            const char *key,
                            ctache_data_t *value);
 
-void
+ctache_data_t
 *ctache_data_hash_table_get(ctache_data_t *data, const char *key);
 
 void
 ctache_data_array_append(ctache_data_t *data, ctache_data_t *value);
 
-void
+ctache_data_t
 *ctache_data_array_get(ctache_data_t *data, int index);
 
 size_t
