@@ -4,7 +4,7 @@
 
 # Copyright (c) 2016 David Jackson
 
-AM_CFLAGS = -I$(top_srcdir)/include
+AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib
 
 bin_PROGRAMS = ctache
 ctache_SOURCES = main.c yaml_data.c

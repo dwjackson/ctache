@@ -4,7 +4,5 @@
 
 # Copyright (c) 2016 David Jackson
 
-nobase_include_HEADERS = ctache/ctache.h ctache/ctache_array.h \
-						 ctache/ctache_data.h ctache/hash_table.h \
-						 ctache/lexer.h ctache/linked_list.h \
-						 ctache/parser.h ctache/render.h ctache/escaping.h
+nobase_include_HEADERS = ctache/ctache.h ctache/ctache_data.h ctache/render.h \
+						 ctache/escaping.h
