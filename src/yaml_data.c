@@ -234,7 +234,7 @@ ctache_data_t
                     fprintf(stderr, "Error: No key for array\n");
                     abort();
                 }
-                child_data = ctache_data_create_array(sizeof(ctache_data_t), 0);
+                child_data = ctache_data_create_array(0);
                 ctache_data_hash_table_set(data, (char*)key, child_data);
                 linked_list_push(data_stack, data);
                 data = child_data;

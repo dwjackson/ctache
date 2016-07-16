@@ -35,7 +35,7 @@ struct ctache_data {
 typedef struct ctache_data ctache_data_t;
 
 ctache_data_t
-*ctache_data_create_array(size_t element_size, size_t num_elements);
+*ctache_data_create_array(size_t num_elements);
 
 ctache_data_t
 *ctache_data_create_string(char *str, size_t len);

@@ -16,8 +16,9 @@
 #include "ctache_array.h"
 
 ctache_data_t
-*ctache_data_create_array(size_t element_size, size_t num_elements)
+*ctache_data_create_array(size_t num_elements)
 {
+    size_t element_size = sizeof(ctache_data_t);
     return ctache_data_create(CTACHE_DATA_ARRAY,
                               NULL,
                               element_size,
