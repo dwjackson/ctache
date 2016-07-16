@@ -24,6 +24,10 @@
 .Fo *ctache_data_create_array
 .Fa "size_t num_elements"
 .Fc
+.Ft void
+.Fo ctache_data_hash_table_set
+.Fa "ctache_data_t *data" "const char *key" "ctache_data_t *value"
+.Fc
 .Sh DESCRIPTION
 Ctache uses a generic data format (the ctache_data_t) structure to contain
 several different possible types of data (e.g. boolean, string, array, hash)
@@ -41,7 +45,22 @@ Note that the ctache_data_t structure, while documented, is not meant to be
 public and direct access by users is not supported. Its internal composition
 is not guaranteed to stay the same between releases.
 .Pp
-The ctache_create_hash() function will create a ctache_data_t that is a hash
-table (maps string keys to ctache_data_t values). The ctache_create_array
-function will create an array of num_elements elements (or a sensible default
+The
+.Fn ctache_create_hash
+function will create a ctache_data_t that is a hash
+table (maps string keys to ctache_data_t values). The
+.Fn ctache_create_array
+function will create an array of
+.Fa num_elements
+elements (or a sensible default
 if 0 is passed) also of type ctache_data_t.
+.Pp
+The
+.Fn ctache_data_hash_table_set
+function is used to set a key/value pair in a ctache_data_t hash table. The
+.Fa data
+argument is the hash table into which to insert the key/value pair. The
+.Fa key
+argument is the string key and the
+.Fa value
+argument is the ctache_data_t value to set.
