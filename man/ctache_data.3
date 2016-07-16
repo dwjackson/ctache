@@ -28,6 +28,10 @@
 .Fo ctache_data_hash_table_set
 .Fa "ctache_data_t *data" "const char *key" "ctache_data_t *value"
 .Fc
+.Ft void
+.Fo ctache_data_array_append
+.Fa "ctache_data_t *data" "ctache_data_t *value"
+.Fc
 .Sh DESCRIPTION
 Ctache uses a generic data format (the ctache_data_t) structure to contain
 several different possible types of data (e.g. boolean, string, array, hash)
@@ -63,4 +67,8 @@ argument is the hash table into which to insert the key/value pair. The
 .Fa key
 argument is the string key and the
 .Fa value
-argument is the ctache_data_t value to set.
+argument is the ctache_data_t value to set. The
+.Fn ctache_data_array_append
+function adds a ctache_data_t structure to the end of the array pointed to
+by
+.Fa data. 
