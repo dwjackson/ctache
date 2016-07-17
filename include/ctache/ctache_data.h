@@ -12,13 +12,15 @@
 #define CTACHE_DATA_H
 
 #include <stdbool.h>
+#include <time.h>
 
 enum ctache_data_type {
     CTACHE_DATA_HASH,
     CTACHE_DATA_ARRAY,
     CTACHE_DATA_STRING,
     CTACHE_DATA_NUMBER,
-    CTACHE_DATA_BOOLEAN
+    CTACHE_DATA_BOOLEAN,
+    CTACHE_DATA_TIME
 };
 
 struct ctache_data {
@@ -29,6 +31,7 @@ struct ctache_data {
         char *string;
         double number;
         bool boolean;
+        time_t time;
     } data;
 };
 
@@ -83,5 +86,8 @@ ctache_data_hash_table_has_key(ctache_data_t *data, const char *key);
 
 ctache_data_t
 *ctache_data_create_boolean(bool value);
+
+ctache_data_t
+*ctache_data_create_time(time_t time);
 
 #endif /* CTACHE_DATA_H */

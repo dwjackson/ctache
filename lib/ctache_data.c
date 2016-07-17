@@ -50,6 +50,7 @@ ctache_data_t
     double *dp;
     bool *bp;
     char *str;
+    time_t *tp;
 
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
     if (ctache_data) {
@@ -74,6 +75,10 @@ ctache_data_t
         case CTACHE_DATA_BOOLEAN:
             bp = (bool *)(data);
             ctache_data->data.boolean = *bp;
+            break;
+        case CTACHE_DATA_TIME:
+            tp = (time_t *)data;
+            ctache_data->data.time = *tp;
             break;
         default:
             break;
@@ -196,4 +201,10 @@ ctache_data_t
 *ctache_data_create_boolean(bool value)
 {
     return ctache_data_create(CTACHE_DATA_BOOLEAN, &value, -1, -1);
+}
+
+ctache_data_t
+*ctache_data_create_time(time_t time)
+{
+    return ctache_data_create(CTACHE_DATA_TIME, &time, -1, -1);
 }
