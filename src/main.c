@@ -16,6 +16,7 @@
 #include <yaml.h>
 #include "ctache/ctache.h"
 #include "yaml_data.h"
+#include "config.h"
 
 /* Non-public render function prototype */
 void
@@ -45,7 +46,7 @@ main(int argc, char *argv[])
     extern char *optarg;
     extern int optind, opterr, optopt;
     int opt;
-    while ((opt = getopt(argc, argv, "e:o:i:thy:p")) != -1) {
+    while ((opt = getopt(argc, argv, "e:o:i:thy:pV")) != -1) {
         switch (opt) {
         case 'e':
             if (strcmp(optarg, "html") == 0) {
@@ -81,6 +82,10 @@ main(int argc, char *argv[])
             break;
         case 't':
             print_tokens = true;
+            break;
+        case 'V':
+            printf("ctache %s\n", PACKAGE_VERSION);
+            exit(EXIT_SUCCESS);
             break;
         case 'y':
             yaml_file_name = strdup(optarg);
