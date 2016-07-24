@@ -90,4 +90,7 @@ ctache_data_t
 ctache_data_t
 *ctache_data_create_time(time_t time);
 
+ctache_data_t
+*ctache_data_hash_get_keys_as_array(ctache_data_t *data);
+
 #endif /* CTACHE_DATA_H */

@@ -238,7 +238,9 @@ ctache_data_t
 
     keys_array = ctache_data_create_array(keys_list->length);
     for (curr = keys_list->first; curr != NULL; curr = curr->next) {
-        // TODO
+        key = curr->data;
+        key_data = ctache_data_create_string(key, strlen(key));
+        ctache_data_array_append(keys_array, key_data);
     }
 
     linked_list_destroy(keys_list);
