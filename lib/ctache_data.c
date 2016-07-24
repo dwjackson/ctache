@@ -247,3 +247,43 @@ ctache_data_t
 
     return keys_array;
 }
+
+ctache_data_t
+*ctache_data_merge_hashes(ctache_data_t *first, ctache_data_t *second)
+{
+    ctache_data_t *merged;
+    ctache_data_t *first_keys_array;
+    ctache_data_t *second_keys_array;
+    size_t length;
+    int i;
+    ctache_data_t *key_data;
+    char *key;
+    ctache_data_t *value_data;
+
+    merged = ctache_data_create_hash();
+    first_keys_array = ctache_data_hash_get_keys_as_array(first);
+    second_keys_array = ctache_data_hash_get_keys_as_array(second);
+
+    /* Add everything from the first hash */
+    length = ctache_data_length(first_keys_array);
+    for (i = 0; i < length; i++) {
+        key_data = ctache_data_array_get(first_keys_array, i);
+        key = key_data->data.string;
+        value_data = ctache_data_hash_table_get(first, key);
+        ctache_data_hash_table_set(merged, key, value_data);
+    }
+
+    /* Add everything from the second hash */
+    length = ctache_data_length(second_keys_array);
+    for (i = 0; i < length; i++) {
+        key_data = ctache_data_array_get(second_keys_array, i);
+        key = key_data->data.string;
+        value_data = ctache_data_hash_table_get(second, key);
+        ctache_data_hash_table_set(merged, key, value_data);
+    }
+
+    ctache_data_destroy(second_keys_array);
+    ctache_data_destroy(first_keys_array);
+
+    return merged;
+}

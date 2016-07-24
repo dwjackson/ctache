@@ -93,4 +93,7 @@ ctache_data_t
 ctache_data_t
 *ctache_data_hash_get_keys_as_array(ctache_data_t *data);
 
+ctache_data_t
+*ctache_data_merge_hashes(ctache_data_t *first, ctache_data_t *second);
+
 #endif /* CTACHE_DATA_H */
