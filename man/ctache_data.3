@@ -32,6 +32,10 @@
 .Fo ctache_data_array_append
 .Fa "ctache_data_t *data" "ctache_data_t *value"
 .Fc
+.Ft ctache_data_t
+.Fo *ctache_data_merge_hashes
+.Fa "ctache_data_t *first" "ctache_data_t *second"
+.Fc
 .Sh DESCRIPTION
 Ctache uses a generic data format (the ctache_data_t) structure to contain
 several different possible types of data (e.g. boolean, string, array, hash)
@@ -72,3 +76,7 @@ argument is the ctache_data_t value to set. The
 function adds a ctache_data_t structure to the end of the array pointed to
 by
 .Fa data. 
+The
+.Fn ctache_data_merge_hashes
+function is used to merge two ctache_data_t hash tables with non-overlapping
+sets of keys.
