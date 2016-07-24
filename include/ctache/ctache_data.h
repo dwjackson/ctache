@@ -25,6 +25,7 @@ enum ctache_data_type {
 
 struct ctache_data {
     enum ctache_data_type data_type;
+    int refcount;
     union {
         struct ctache_hash_table *hash;
         struct ctache_array *array;

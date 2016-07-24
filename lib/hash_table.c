@@ -8,13 +8,14 @@
  * Copyright (c) 2016 David Jackson
  */
 
+#include "ctache_data.h"
+#include "linked_list.h"
+#include "hash_table.h"
+#include "parser.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "linked_list.h"
-#include "hash_table.h"
-#include "parser.h"
 
 #define DEFAULT_BUFSIZE 10
 
@@ -54,8 +55,11 @@ ctache_hash_table_destroy(struct ctache_hash_table *table,
         if (list != NULL) {
             for (curr = list->first; curr != NULL; curr = curr->next) {
                 cell = curr->data;
-                void *data = cell->value;
-                free_data(data);
+                ctache_data_t *data = cell->value;
+                data->refcount--;
+                if (data->refcount <= 0) {
+                    free_data(data);
+                }
                 free(cell->key);
                 free(cell);
             }

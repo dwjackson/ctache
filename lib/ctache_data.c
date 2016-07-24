@@ -56,6 +56,7 @@ ctache_data_t
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
     if (ctache_data) {
         ctache_data->data_type = data_type;
+        ctache_data->refcount = 0;
         switch (data_type) {
         case CTACHE_DATA_HASH:
             tbl = (struct ctache_hash_table *)(data);
@@ -279,6 +280,7 @@ ctache_data_t
         key_data = ctache_data_array_get(second_keys_array, i);
         key = key_data->data.string;
         value_data = ctache_data_hash_table_get(second, key);
+        value_data->refcount++;
         ctache_data_hash_table_set(merged, key, value_data);
     }
 
