@@ -174,6 +174,7 @@ ctache_data_t
                                                              value_len);
                         ctache_data_hash_table_set(data, (char *)key, str_data);
                         free(key);
+                        free(value);
                         key = NULL;
                         value = NULL;
                         value_len = 0;
@@ -215,6 +216,7 @@ ctache_data_t
                         free(str_data); /* N.B. Array append copies data */
                         value_len = 0;
                         str_data = NULL;
+                        free(value);
                         value = NULL;
                     }
                 } else {

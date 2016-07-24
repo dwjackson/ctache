@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "hash_table.h"
 #include "ctache_data.h"
 #include "ctache_array.h"
@@ -66,7 +67,7 @@ ctache_data_t
             break;
         case CTACHE_DATA_STRING:
             str = (char *)(data);
-            ctache_data->data.string = str;
+            ctache_data->data.string = strdup(str);
             break;
         case CTACHE_DATA_NUMBER:
             dp = (double *)(data);
@@ -207,4 +208,40 @@ ctache_data_t
 *ctache_data_create_time(time_t time)
 {
     return ctache_data_create(CTACHE_DATA_TIME, &time, -1, -1);
+}
+
+ctache_data_t
+*ctache_data_hash_get_keys_as_array(ctache_data_t *data)
+{
+    ctache_data_t *keys_array;
+    struct ctache_hash_table_cell *cell;
+    struct linked_list *cells;
+    struct linked_list_node *curr;
+    struct linked_list *keys_list;
+    ctache_data_t *key_data;
+    char *key;
+    int i;
+
+    keys_list = linked_list_create();
+
+    for (i = 0; i < data->data.hash->bufsize; i++) {
+        cells = data->data.hash->cells[i];
+        if (cells != NULL) {
+            curr = cells->first;
+            while (curr != NULL) {
+                cell = curr->data;
+                linked_list_append(keys_list, cell->key);
+                curr = curr->next;
+            }
+        }
+    }
+
+    keys_array = ctache_data_create_array(keys_list->length);
+    for (curr = keys_list->first; curr != NULL; curr = curr->next) {
+        // TODO
+    }
+
+    linked_list_destroy(keys_list);
+
+    return keys_array;
 }
