@@ -56,7 +56,7 @@ ctache_data_t
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
     if (ctache_data) {
         ctache_data->data_type = data_type;
-        ctache_data->refcount = 0;
+        ctache_data->refcount = 1;
         switch (data_type) {
         case CTACHE_DATA_HASH:
             tbl = (struct ctache_hash_table *)(data);
@@ -102,6 +102,11 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_array *array;
     char *str;
     int i;
+
+    ctache_data->refcount--;
+    if (ctache_data->refcount > 0) {
+        return; /* Do not delete if data is still in use somewhere */
+    }
 
     switch (ctache_data->data_type) {
     case CTACHE_DATA_HASH:
