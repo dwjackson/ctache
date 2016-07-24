@@ -276,6 +276,7 @@ ctache_data_t
         key_data = ctache_data_array_get(first_keys_array, i);
         key = key_data->data.string;
         value_data = ctache_data_hash_table_get(first, key);
+        value_data->refcount++;
         ctache_data_hash_table_set(merged, key, value_data);
     }
 
