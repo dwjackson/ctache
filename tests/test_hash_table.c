@@ -17,6 +17,11 @@ test_hash_get_set()
 
     int num_failures = 0;
     num_failures += u_assert(ctache_data_hash_table_has_key(hash, key));
+    ctache_data_t *check_data;
+    check_data = ctache_data_hash_table_get(hash, key);
+    num_failures += u_assert(check_data != NULL);
+    num_failures += u_assert_int_eq(check_data->data_type, CTACHE_DATA_STRING);
+    num_failures += u_assert_str_eq("test_value", check_data->data.string);
 
     ctache_data_destroy(hash);
 

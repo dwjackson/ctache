@@ -6,7 +6,6 @@
 int
 u_assert(int expr)
 {
-    printf("Error in %s at %d\n", __FILE__, __LINE__);
     return !expr;
 }
 
