@@ -44,7 +44,6 @@ ctache_data_t
                     void *data,
                     size_t element_size,
                     size_t num_elements)
-
 {
     struct ctache_hash_table *tbl;
     struct ctache_array *array;
