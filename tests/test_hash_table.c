@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 UTEST_BEGIN(test_hash_get_set)
 {
@@ -74,6 +75,43 @@ UTEST_BEGIN(test_get_keys)
 }
 UTEST_END
 
+UTEST_BEGIN(test_hash_merge)
+{
+    ctache_data_t *value_data;
+    char value[100];
+
+    ctache_data_t *hash1 = ctache_data_create_hash();
+    strcpy(value, "value1");
+    value_data = ctache_data_create_string(value, strlen(value));
+    ctache_data_hash_table_set(hash1, "key1", value_data);
+
+    ctache_data_t *hash2 = ctache_data_create_hash();
+    strcpy(value, "value2");
+    value_data = ctache_data_create_string(value, strlen(value));
+    ctache_data_hash_table_set(hash2, "key2", value_data);
+
+    ctache_data_t *merged_hash = ctache_data_merge_hashes(hash1, hash2);
+    ctache_data_t *keys_array;
+    keys_array = ctache_data_hash_get_keys_as_array(merged_hash);
+    int num_keys = ctache_data_length(keys_array);
+    u_assert_int_eq(2, num_keys, "Wrong number of keys in merged hash");
+    bool has_key = ctache_data_hash_table_has_key(merged_hash, "key2");
+    u_assert(has_key, "Key missing from merged hash");
+    value_data = ctache_data_hash_table_get(merged_hash, "key2");
+    u_assert_str_eq(value_data->data.string, "value2", "Wrong value for key2");
+    u_assert_int_eq(2, value_data->refcount, "Wrong reference count");
+
+    ctache_data_destroy(keys_array);
+    ctache_data_destroy(merged_hash);
+
+    value_data = ctache_data_hash_table_get(hash2, "key2");
+    u_assert_int_eq(1, value_data->refcount, "Wrong reference count");
+
+    ctache_data_destroy(hash2);
+    ctache_data_destroy(hash1);
+}
+UTEST_END
+
 int
 main(void)
 {
@@ -83,6 +121,7 @@ main(void)
     suite = utest_suite_create();
     utest_suite_add_test(suite, test_hash_get_set, NULL);
     utest_suite_add_test(suite, test_get_keys, NULL);
+    utest_suite_add_test(suite, test_hash_merge, NULL);
     utest_suite_run(suite);
     num_failures = utest_suite_num_failures(suite);
     utest_suite_destroy(suite);

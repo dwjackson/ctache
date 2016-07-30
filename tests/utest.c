@@ -123,22 +123,22 @@ utest_suite_num_failures(struct utest_suite *suite)
 }
 
 void
-utest_print_failure_int(int expected,
-                        int actual,
-                        const char *failure_message,
-                        const char *file,
-                        int line)
+utest_print_fail_int(int expected,
+                     int actual,
+                     const char *failure_message,
+                     const char *file,
+                     int line)
 {
     char fmt[] = "%s:%d - %s; expected %d, was %d\n";
     printf(fmt, file, line, failure_message, expected, actual);
 }
 
 void
-utest_print_failure_str(const char *expected,
-                        const char *actual,
-                        const char *failure_message,
-                        const char *file,
-                        int line)
+utest_print_fail_str(const char *expected,
+                     const char *actual,
+                     const char *failure_message,
+                     const char *file,
+                     int line)
 {
     char fmt[] = "%s:%d - %s; expected \"%s\", was \"%s\"\n";
     printf(fmt, file, line, failure_message, expected, actual);

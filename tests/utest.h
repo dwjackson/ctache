@@ -50,18 +50,18 @@ utest_suite_num_failures(struct utest_suite *suite);
  ****************************************************************************/
 
 void
-utest_print_failure_int(int expected,
-                        int actual,
-                        const char *failure_message,
-                        const char *file,
-                        int line);
+utest_print_fail_int(int expected,
+                     int actual,
+                     const char *failure_message,
+                     const char *file,
+                     int line);
 
 void
-utest_print_failure_str(const char *expected,
-                        const char *actual,
-                        const char *failure_message,
-                        const char *file,
-                        int line);
+utest_print_fail_str(const char *expected,
+                     const char *actual,
+                     const char *failure_message,
+                     const char *file,
+                     int line);
 
 
 /*****************************************************************************
@@ -77,17 +77,21 @@ utest_print_failure_str(const char *expected,
 } while (0)
 
 /* Assert that two integers are equal */
-#define u_assert_int_eq(expected, actual, msg)                              \
-    if ((expected) != (actual)) {                                           \
-        utest_print_failure_int(expected, actual, msg, __FILE__, __LINE__); \
-        return msg;                                                         \
-    }
+#define u_assert_int_eq(expected, actual, msg)                               \
+    do {                                                                     \
+        if ((expected) != (actual)) {                                        \
+            utest_print_fail_int(expected, actual, msg, __FILE__, __LINE__); \
+            return msg;                                                      \
+        }                                                                    \
+    } while (0)
 
 /* Assert that two strings are equal */
-#define u_assert_str_eq(expected, actual, msg)                              \
-    if (strcmp((expected), (actual)) != 0) {                                \
-        utest_print_failure_str(expected, actual, msg, __FILE__, __LINE__); \
-        return msg;                                                         \
-    }
+#define u_assert_str_eq(expected, actual, msg)                               \
+    do {                                                                     \
+        if (strcmp((expected), (actual)) != 0) {                             \
+            utest_print_fail_str(expected, actual, msg, __FILE__, __LINE__); \
+            return msg;                                                      \
+        }                                                                    \
+    } while (0)
 
 #endif /* UTEST_H */
