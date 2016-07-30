@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #define DEFAULT_BUFSIZE 10
 
@@ -78,10 +81,26 @@ utest_suite_run(struct utest_suite *suite)
     num_failures = 0;
     for (i = 0; i < suite->length; i++) {
         harness = &(suite->harnesses)[i];
-        message = (harness->test)(harness->args);
-        if (message != NULL) {
-            num_failures++;
-            printf("%s\n", message);
+        pid_t pid = fork();
+        if (pid < 0) {
+            fprintf(stderr, "ERROR: Could not fork()\n");
+            exit(EXIT_FAILURE);
+        } else if (pid == 0) {
+            /* In the child, run the test and exit */
+            message = (harness->test)(harness->args);
+            if (message == NULL) {
+                exit(EXIT_SUCCESS);
+            } else {
+                printf("%s\n", message);
+                exit(EXIT_FAILURE);
+            }
+        } else {
+            /* In the parent, wait for the child to finish the test */
+            int status;
+            waitpid(pid, &status, 0);
+            if (status != 0) {
+                num_failures++;
+            }
         }
         num_tests++;
     }
