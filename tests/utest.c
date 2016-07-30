@@ -75,6 +75,7 @@ utest_suite_run(struct utest_suite *suite)
         }
         num_tests++;
     }
+    suite->num_failures = num_failures;
     if (num_failures == 0) {
         printf("----------------------------------------\n");
         printf(" ALL TESTS PASSED\n");
@@ -84,4 +85,10 @@ utest_suite_run(struct utest_suite *suite)
         printf(" %d FAILURES / %d TESTS\n", num_failures, num_tests);
         printf("----------------------------------------\n");
     }
+}
+
+int
+utest_suite_num_failures(struct utest_suite *suite)
+{
+    return suite->num_failures;
 }

@@ -4,4 +4,4 @@
 
 ## Copyright (c) 2016 David Jackson
 
-SUBDIRS = include lib man src
+SUBDIRS = include lib man src tests

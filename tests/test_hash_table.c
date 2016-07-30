@@ -32,10 +32,14 @@ UTEST_END
 int
 main(void)
 {
-    struct utest_suite *suite = utest_suite_create();
+    int num_failures;
+    struct utest_suite *suite;
+
+    suite = utest_suite_create();
     utest_suite_add_test(suite, test_hash_get_set, NULL);
     utest_suite_run(suite);
+    num_failures = utest_suite_num_failures(suite);
     utest_suite_destroy(suite);
 
-    return 0;
+    return (num_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

@@ -31,6 +31,9 @@ utest_suite_add_test(struct utest_suite *suite,
 void
 utest_suite_run(struct utest_suite *suite);
 
+int
+utest_suite_num_failures(struct utest_suite *suite);
+
 /*****************************************************************************
  * ASSERTS                                                                   *
  *****************************************************************************/
