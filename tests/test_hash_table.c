@@ -64,7 +64,6 @@ UTEST_BEGIN(test_get_keys)
     ctache_data_t *key_data;
     key_data = ctache_data_array_get(keys_array, 0);
     u_assert_str_eq("test_key1", key_data->data.string, "Wrong first key");
-    u_assert_int_eq(2, key_data->refcount, "Wrong number of references");
     key_data = ctache_data_array_get(keys_array, 1);
     u_assert_str_eq("test_key2", key_data->data.string, "Wrong second key");
     key_data = ctache_data_array_get(keys_array, 2);
