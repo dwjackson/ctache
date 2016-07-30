@@ -17,6 +17,7 @@
 #include <sys/wait.h>
 
 #define DEFAULT_BUFSIZE 10
+#define FAIL_FMT
 
 struct utest_harness {
     utest_ret_t (*test)(void*);
@@ -91,7 +92,6 @@ utest_suite_run(struct utest_suite *suite)
             if (message == NULL) {
                 exit(EXIT_SUCCESS);
             } else {
-                printf("%s\n", message);
                 exit(EXIT_FAILURE);
             }
         } else {
@@ -120,4 +120,26 @@ int
 utest_suite_num_failures(struct utest_suite *suite)
 {
     return suite->num_failures;
+}
+
+void
+utest_print_failure_int(int expected,
+                        int actual,
+                        const char *failure_message,
+                        const char *file,
+                        int line)
+{
+    char fmt[] = "%s:%d - %s; expected %d, was %d\n";
+    printf(fmt, file, line, failure_message, expected, actual);
+}
+
+void
+utest_print_failure_str(const char *expected,
+                        const char *actual,
+                        const char *failure_message,
+                        const char *file,
+                        int line)
+{
+    char fmt[] = "%s:%d - %s; expected \"%s\", was \"%s\"\n";
+    printf(fmt, file, line, failure_message, expected, actual);
 }
