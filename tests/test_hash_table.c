@@ -112,6 +112,17 @@ UTEST_BEGIN(test_hash_merge)
 }
 UTEST_END
 
+UTEST_BEGIN(test_empty_hash)
+{
+    ctache_data_t *empty_hash = ctache_data_create_hash();
+    ctache_data_t *keys_array = ctache_data_hash_get_keys_as_array(empty_hash);
+    int num_keys = ctache_data_length(keys_array);
+    u_assert_int_eq(0, num_keys, "Wrong number of keys in \"empty\" hash");
+    ctache_data_destroy(keys_array);
+    ctache_data_destroy(empty_hash);
+}
+UTEST_END
+
 int
 main(void)
 {
@@ -122,6 +133,7 @@ main(void)
     utest_suite_add_test(suite, test_hash_get_set, NULL);
     utest_suite_add_test(suite, test_get_keys, NULL);
     utest_suite_add_test(suite, test_hash_merge, NULL);
+    utest_suite_add_test(suite, test_empty_hash, NULL);
     utest_suite_run(suite);
     num_failures = utest_suite_num_failures(suite);
     utest_suite_destroy(suite);
