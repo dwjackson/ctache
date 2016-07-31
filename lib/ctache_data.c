@@ -55,7 +55,7 @@ ctache_data_t
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
     if (ctache_data) {
         ctache_data->data_type = data_type;
-        ctache_data->refcount = 1;
+        ctache_data->refcount = 0;
         switch (data_type) {
         case CTACHE_DATA_HASH:
             tbl = (struct ctache_hash_table *)(data);
@@ -143,6 +143,7 @@ ctache_data_hash_table_set(ctache_data_t *data,
                            const char *key,
                            ctache_data_t *value)
 {
+    value->refcount++;
     ctache_hash_table_set(data->data.hash, key, value);
 }
 
@@ -160,6 +161,7 @@ ctache_data_t
 void
 ctache_data_array_append(ctache_data_t *data, ctache_data_t *value)
 {
+    value->refcount++;
     ctache_array_append(&(data->data.array), value);
 }
 
