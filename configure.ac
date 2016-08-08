@@ -19,9 +19,11 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AM_PROG_AR
 
+# Initialize Libtool
 LT_INIT
 
 # Checks for libraries.
+AC_CHECK_LIB([yaml], [yaml_parser_initialize])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stdint.h stdlib.h string.h unistd.h])
@@ -31,11 +33,13 @@ AC_CHECK_HEADER_STDBOOL
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
 AC_TYPE_UINT32_T
+AC_TYPE_PID_T
 
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
+AC_FUNC_FORK
 AC_CHECK_FUNCS([memset munmap strdup strerror])
 
 AC_CONFIG_FILES([Makefile
