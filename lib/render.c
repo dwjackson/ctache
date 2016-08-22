@@ -19,6 +19,7 @@
 #include "escaping.h"
 
 #define IN_BUF_SIZE_DEFAULT 1024
+#define DATE_FORMAT "YYYY-MM-DD"
 
 static void
 _ctache_render(struct linked_list *tokens,
@@ -163,6 +164,54 @@ handle_close_tag(struct linked_list_node **token_node_ptr,
     }
 }
 
+/* Get a (dynamically-allocated) string representation of a ctache_data_t */
+static char
+*string_from_ctache_data(ctache_data_t *value)
+{
+    char *str;
+    struct tm date_tm;
+
+    switch(value->data_type) {
+    case CTACHE_DATA_STRING:
+        str = strdup(value->data.string);
+        if (str == NULL) {
+            fprintf(stderr, "ERROR: Could not allocate string\n");
+        }
+        break;
+    case CTACHE_DATA_NUMBER:
+        asprintf(&str, "%lf", value->data.number);
+        if (str == NULL) {
+            fprintf(stderr, "ERROR: Could not allocate string\n");
+        }
+        break;
+    case CTACHE_DATA_TIME:
+        localtime_r(&(value->data.time), &date_tm);
+        str = malloc(strlen(DATE_FORMAT) + 1);
+        if (str != NULL) {
+            strftime(str, strlen(DATE_FORMAT) + 1, "%Y-%m-%d", &date_tm);
+        } else {
+            fprintf(stderr, "ERROR: Could not allocate string\n");
+        }
+        break;
+    case CTACHE_DATA_BOOLEAN:
+        str = malloc(strlen("false") + 1);
+        if (str != NULL) {
+            if (value->data.boolean) {
+                strcpy(str, "true");
+            } else {
+                strcpy(str, "false");
+            }
+        } else {
+            fprintf(stderr, "ERROR: Could not allocate string\n");
+        }
+        break;
+    default:
+        str = NULL;
+        break;
+    }
+    return str;
+}
+
 /* tag start -> value tag start */
 static void
 handle_value_tag(struct linked_list_node **token_node_ptr,
@@ -182,7 +231,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
     if (ctache_data_is_hash(curr_data)) {
         value_data = ctache_data_hash_table_get(curr_data, key);
         if (value_data != NULL) {
-            str = value_data->data.string;
+            str = string_from_ctache_data(value_data);
         } else {
             fprintf(stderr, "Key not in hash: %s\n", token_ptr->value);
         }
@@ -191,7 +240,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
             /* Immediate value from the array */
             ctache_data_t *str_data;
             str_data = ctache_data_array_get(curr_data, *index_ptr);
-            str = str_data->data.string;
+            str = string_from_ctache_data(str_data);
         } else {
             ctache_data_t *arr_data;
             arr_data = ctache_data_array_get(curr_data, *index_ptr);
@@ -199,7 +248,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
                 ctache_data_t *str_data;
                 if (ctache_data_hash_table_has_key(arr_data, key)) {
                     str_data = ctache_data_hash_table_get(arr_data, key);
-                    str = str_data->data.string;
+                    str = string_from_ctache_data(str_data);
                 } else {
                     fprintf(stderr, "Key not in hash: %s\n", key);
                 }
@@ -208,15 +257,24 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
     }
 
     bool escaped = escaping_type != ESCAPE_NONE;
+    char *escaped_str = NULL;
     if (escaped && str != NULL) {
-        str = ctache_escape_text(str, escaping_type);
+        escaped_str = ctache_escape_text(str, escaping_type);
     }
 
-    if (str != NULL && !hidden) {
-        fprintf(out, "%s", str);
+    if (!hidden && (str != NULL || escaped_str != NULL)) {
+        if (escaped) {
+            fprintf(out, "%s", escaped_str);
+        } else {
+            fprintf(out, "%s", str);
+        }
     }
 
-    if (escaped && str != NULL) {
+    if (escaped_str != NULL) {
+        free(escaped_str);
+        escaped_str = NULL;
+    }
+    if (str != NULL) {
         free(str);
         str = NULL;
     }
