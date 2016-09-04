@@ -105,7 +105,7 @@ UTEST_BEGIN(test_hash_merge)
     ctache_data_destroy(merged_hash);
 
     value_data = ctache_data_hash_table_get(hash2, "key2");
-    u_assert_int_eq(1, value_data->refcount, "Wrong reference count");
+    u_assert_int_eq(3, value_data->refcount, "Wrong reference count");
 
     ctache_data_destroy(hash2);
     ctache_data_destroy(hash1);
