@@ -42,6 +42,9 @@ struct ctache_token {
 };
 
 struct linked_list
-*ctache_lex(const char *str, size_t str_len);
+*ctache_lex(const char *str,
+            size_t str_len,
+            const char *delim_begin,
+            const char *delim_end);
 
 #endif /* CTACHE_LEXER_H */

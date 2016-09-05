@@ -4,8 +4,14 @@
 
 ## Copyright (c) 2016 David Jackson
 
-TESTS = test_hash_table
-bin_PROGRAMS = test_hash_table
+TESTS = test_hash_table test_delimiters
+
+bin_PROGRAMS = test_hash_table test_delimiters
+
 test_hash_table_SOURCES = test_hash_table.c utest.c
 test_hash_table_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
 test_hash_table_LDADD = $(top_builddir)/lib/libctache.la
+
+test_delimiters_SOURCES = test_delimiters.c utest.c
+test_delimiters_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
+test_delimiters_LDADD = $(top_builddir)/lib/libctache.la

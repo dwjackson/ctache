@@ -79,7 +79,10 @@ static struct ctache_token
 }
 
 struct linked_list
-*ctache_lex(const char *str, size_t str_len)
+*ctache_lex(const char *str,
+            size_t str_len,
+            const char *delim_begin,
+            const char *delim_end)
 {
     struct linked_list *tokens = linked_list_create();
     if (tokens == NULL) {
@@ -87,6 +90,8 @@ struct linked_list
         return NULL;
     }
 
+    size_t delim_begin_len = strlen(delim_begin);
+    size_t delim_end_len = strlen(delim_end);
     size_t strval_len = 0;
     size_t strval_bufsize = STRVAL_INITIAL_BUFSIZE;
     char *strval = malloc(strval_bufsize);
@@ -98,10 +103,10 @@ struct linked_list
     int ch, i;
     for (i = 0; i < str_len; i++) {
         ch = str[i];
-        switch (ch) {
-        case '{':
-            if (i + 3 < str_len) {
-                if (str[i + 1] == '{' && str[i + 2] == '#') {
+        if (ch == delim_begin[0]) {
+            if (i + delim_begin_len + 1 < str_len) {
+                if (strncmp(str + i, delim_begin, delim_begin_len) == 0
+                    && str[i + delim_begin_len] == '#') {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING,
                                            strdup(strval),
@@ -116,9 +121,10 @@ struct linked_list
                                        row,
                                        col);
                     linked_list_append(tokens, tok);
-                    i += 2;
-                    col += 2;
-                } else if (str[i + 1] == '{' && str[i + 2] == '/') {
+                    i += delim_begin_len;
+                    col += delim_begin_len;
+                } else if (strncmp(str + i, delim_begin, delim_begin_len) == 0
+                           && str[i + delim_begin_len] == '/') {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING,
                                            strdup(strval),
@@ -133,9 +139,10 @@ struct linked_list
                                        row,
                                        col);
                     linked_list_append(tokens, tok);
-                    i += 2;
-                    col += 2;
-                } else if (str[i + 1] == '{' && str[i + 2] == '>') {
+                    i += delim_begin_len;
+                    col += delim_begin_len;
+                } else if (strncmp(str + i, delim_begin, delim_begin_len) == 0
+                           && str[i + delim_begin_len] == '>') {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING,
                                            strdup(strval),
@@ -150,9 +157,10 @@ struct linked_list
                                        row,
                                        col);
                     linked_list_append(tokens, tok);
-                    i += 2;
-                } else if (str[i + 1] == '{'
-                           && (str[i + 2] == '&' || str[i + 2] == '{')) {
+                    i += delim_begin_len;
+                } else if (strncmp(str + i, delim_begin, delim_begin_len) == 0
+                           && (str[i + delim_begin_len] == '&'
+                               || str[i + delim_begin_len] == delim_begin[0])) {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING,
                                            strdup(strval),
@@ -167,9 +175,9 @@ struct linked_list
                                        row,
                                        col);
                     linked_list_append(tokens, tok);
-                    i += 2;
-                    col += 2;
-                } else if (str[i + 1] == '{') {
+                    i += delim_begin_len;
+                    col += delim_begin_len;
+                } else if (strncmp(str + i, delim_begin, delim_begin_len) == 0) {
                     if (strval_len > 0) {
                         tok = token_create(CTACHE_TOK_STRING,
                                            strdup(strval),
@@ -184,22 +192,22 @@ struct linked_list
                                        row,
                                        col);
                     linked_list_append(tokens, tok);
-                    i += 1;
-                    col += 1;
+                    i += delim_begin_len - 1;
+                    col += delim_begin_len - 1;
                 } else {
                     add_char_to_strval(&strval,
                                        &strval_bufsize,
                                        &strval_len,
                                        ch);
-                    col += 1;
+                    col += delim_begin_len - 1;
                 }
             } else {
                 add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
-                col += 1;
+                col += delim_begin_len - 1;
             }
-            break;
-        case '}':
-            if (i + 2 < str_len && str[i + 1] == '}' && str[i + 2] == '}') {
+        } else if (ch == delim_end[0]) {
+            if (strncmp(str + i, delim_end, delim_end_len) == 0
+                && str[i + delim_end_len] == delim_end[0]) {
                 if (strval_len > 0) {
                     tok = token_create(CTACHE_TOK_STRING,
                                        strdup(strval),
@@ -211,9 +219,9 @@ struct linked_list
                 }
                 tok = token_create(CTACHE_TOK_TAG_END, NULL, row, col);
                 linked_list_append(tokens, tok);
-                i += 2;
-                col += 2;
-            } else if (i + 1 < str_len && str[i + 1] == '}') {
+                i += delim_end_len;
+                col += delim_end_len;
+            } else if (strncmp(str + i, delim_end, delim_end_len) == 0) {
                 if (strval_len > 0) {
                     tok = token_create(CTACHE_TOK_STRING,
                                        strdup(strval),
@@ -225,22 +233,19 @@ struct linked_list
                 }
                 tok = token_create(CTACHE_TOK_TAG_END, NULL, row, col);
                 linked_list_append(tokens, tok);
-                i += 1;
-                col += 1;
+                i += delim_end_len - 1;
+                col += delim_end_len - 1;
             } else {
                 add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
-                col += 1;
+                col += delim_end_len - 1;
             }
-            break;
-        case '\n':
+        } else if (ch == '\n') {
             add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             row++;
             col = 0;
-            break;
-        default:
+        } else {
             add_char_to_strval(&strval, &strval_bufsize, &strval_len, ch);
             col += 1;
-            break;
         }
     }
     if (strval_len > 0) {

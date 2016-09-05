@@ -26,7 +26,9 @@ _ctache_render(struct linked_list *tokens,
                struct linked_list *parsed_rules,
                FILE *out,
                ctache_data_t *data,
-               enum escaping_type escaping_type);
+               enum escaping_type escaping_type,
+               const char *delim_begin,
+               const char *delim_end);
 
 /* text -> string */
 static void
@@ -289,7 +291,9 @@ _ctache_render_string(const char *in_str,
                      FILE *out_fp,
                      ctache_data_t *data,
                      int flags,
-                     enum escaping_type escaping_type)
+                     enum escaping_type escaping_type,
+                     const char *delim_begin,
+                     const char *delim_end)
 {
     struct linked_list *tokens = NULL;
     struct linked_list_node *curr = NULL;
@@ -300,7 +304,7 @@ _ctache_render_string(const char *in_str,
     bool print_parsed_rules = flags & CTACHE_RENDER_FLAG_PRINT_RULES;
 
     /* Perform lexical analysis */
-    tokens = ctache_lex(in_str, in_str_len);
+    tokens = ctache_lex(in_str, in_str_len, delim_begin, delim_end);
     if (print_tokens) {
         extern char *ctache_token_names[];
         printf("Tokens:\n");
@@ -352,7 +356,13 @@ _ctache_render_string(const char *in_str,
 
     /* Render the template to the file */
     if (tokens != NULL && parsed_rules != NULL) {
-        _ctache_render(tokens, parsed_rules, out_fp, data, escaping_type);
+        _ctache_render(tokens,
+                       parsed_rules,
+                       out_fp,
+                       data,
+                       escaping_type,
+                       delim_begin,
+                       delim_end);
     }
 
 cleanup:
@@ -379,7 +389,9 @@ handle_partial(struct linked_list_node **token_node_ptr,
                ctache_data_t *curr_data,
                FILE *out,
                int *index_ptr,
-               enum escaping_type escaping_type)
+               enum escaping_type escaping_type,
+               const char *delim_begin,
+               const char *delim_end)
 {
     (*token_node_ptr) = (*token_node_ptr)->next; /* Skip the {{> */
 
@@ -405,7 +417,9 @@ handle_partial(struct linked_list_node **token_node_ptr,
                               out,
                               curr_data,
                               0, /* flags */
-                              escaping_type);
+                              escaping_type,
+                              delim_begin,
+                              delim_end);
     } else {
         fprintf(stderr, "ERROR: Key missing from hash: %s\n", key);
     }
@@ -419,7 +433,9 @@ _ctache_render(struct linked_list *tokens,
                struct linked_list *parsed_rules,
                FILE *out,
                ctache_data_t *data,
-               enum escaping_type escaping_type)
+               enum escaping_type escaping_type,
+               const char *delim_begin,
+               const char *delim_end)
 {
     struct linked_list_node *rule_node;
     struct linked_list_node *token_node;
@@ -492,7 +508,9 @@ _ctache_render(struct linked_list *tokens,
                            curr_data,
                            out,
                            &index,
-                           escaping_type);
+                           escaping_type,
+                           delim_begin,
+                           delim_end);
             break;
         default:
             break;
@@ -517,9 +535,18 @@ ctache_render_string(const char *in_str,
                      size_t in_str_len,
                      FILE *out_fp,
                      ctache_data_t *data,
-                     enum escaping_type escaping_type)
+                     enum escaping_type escaping_type,
+                     const char *delim_begin,
+                     const char *delim_end)
 {
-    _ctache_render_string(in_str, in_str_len, out_fp, data, 0, escaping_type);
+    _ctache_render_string(in_str,
+                          in_str_len,
+                          out_fp,
+                          data,
+                          0,
+                          escaping_type,
+                          delim_begin,
+                          delim_end);
 }
 
 void
@@ -527,7 +554,9 @@ _ctache_render_file(FILE *in_fp,
                    FILE *out_fp,
                    ctache_data_t *data,
                    int flags,
-                   enum escaping_type escaping_type)
+                   enum escaping_type escaping_type,
+                   const char *delim_begin,
+                   const char *delim_end)
 {
     char *in_buf = NULL;
 
@@ -562,7 +591,9 @@ _ctache_render_file(FILE *in_fp,
                           out_fp,
                           data,
                           flags,
-                          escaping_type);
+                          escaping_type,
+                          delim_begin,
+                          delim_end);
 
     if (in_buf != NULL) {
         free(in_buf);
@@ -573,7 +604,15 @@ void
 ctache_render_file(FILE *in_fp,
                    FILE *out_fp,
                    ctache_data_t *data,
-                   enum escaping_type escaping_type)
+                   enum escaping_type escaping_type,
+                   const char *delim_begin,
+                   const char *delim_end)
 {
-    _ctache_render_file(in_fp, out_fp, data, 0, escaping_type);
+    _ctache_render_file(in_fp,
+                        out_fp,
+                        data,
+                        0,
+                        escaping_type,
+                        delim_begin,
+                        delim_end);
 }

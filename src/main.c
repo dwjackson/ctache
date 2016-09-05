@@ -18,13 +18,18 @@
 #include "yaml_data.h"
 #include "config.h"
 
+#define DELIM_BEGIN "{{"
+#define DELIM_END "}}"
+
 /* Non-public render function prototype */
 void
 _ctache_render_file(FILE *in_fp,
                    FILE *out_fp,
                    ctache_data_t *data,
                    int flags,
-                   enum escaping_type escaping_type);
+                   enum escaping_type escaping_type,
+                   const char *delim_begin,
+                   const char *delim_end);
 
 void
 print_help(const char *prog_name);
@@ -42,12 +47,24 @@ main(int argc, char *argv[])
     ctache_data_t *data = NULL;
     bool print_parsed_rules = false;
     enum escaping_type escaping_type = ESCAPE_HTML;
+    char *delim_begin = DELIM_BEGIN;
+    char *delim_end = DELIM_END;
 
     extern char *optarg;
     extern int optind, opterr, optopt;
     int opt;
-    while ((opt = getopt(argc, argv, "e:o:i:thy:pV")) != -1) {
+    while ((opt = getopt(argc, argv, "d:D:e:o:i:thy:pV")) != -1) {
         switch (opt) {
+        case 'd':
+            if (strcmp(optarg, DELIM_BEGIN) != 0) {
+                delim_begin = strdup(optarg);
+            }
+            break;
+        case 'D':
+            if (strcmp(optarg, DELIM_END) != 0) {
+                delim_end = strdup(optarg);
+            }
+            break;
         case 'e':
             if (strcmp(optarg, "html") == 0) {
                 escaping_type = ESCAPE_HTML;
@@ -118,7 +135,13 @@ main(int argc, char *argv[])
         if (print_parsed_rules) {
             render_flags |= CTACHE_RENDER_FLAG_PRINT_RULES;
         }
-        _ctache_render_file(in_fp, out_fp, data, render_flags, escaping_type);
+        _ctache_render_file(in_fp,
+                            out_fp,
+                            data,
+                            render_flags,
+                            escaping_type,
+                            delim_begin,
+                            delim_end);
     } else {
         fprintf(stderr, "Error parsing YAML file\n");
     }
@@ -142,6 +165,12 @@ cleanup:
     }
     if (yaml_file_name != NULL) {
         free(yaml_file_name);
+    }
+    if (strcmp(delim_begin, DELIM_BEGIN) != 0) {
+        free(delim_begin);
+    }
+    if (strcmp(delim_end, DELIM_END) != 0) {
+        free(delim_end);
     }
 
     return 0;
