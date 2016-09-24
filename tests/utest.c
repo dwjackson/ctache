@@ -19,8 +19,8 @@
 #define DEFAULT_BUFSIZE 10
 #define FAIL_FMT
 
-struct utest_harness {
-    utest_ret_t (*test)(void*);
+struct utest_test {
+    utest_ret_t (*run)(void*);
     void *args;
 };
 
@@ -28,7 +28,7 @@ struct utest_suite {
     int num_failures;
     size_t bufsize;
     size_t length;
-    struct utest_harness harnesses[];
+    struct utest_test tests[];
 };
 
 struct utest_suite
@@ -36,7 +36,7 @@ struct utest_suite
 {
     struct utest_suite *suite;
     size_t size = sizeof(struct utest_suite)
-        + DEFAULT_BUFSIZE * sizeof(struct utest_harness);
+        + DEFAULT_BUFSIZE * sizeof(struct utest_test);
     suite = malloc(size);
     if (suite != NULL) {
         memset(suite, 0, size);
@@ -53,19 +53,19 @@ utest_suite_destroy(struct utest_suite *suite)
 
 void
 utest_suite_add_test(struct utest_suite *suite,
-                     utest_ret_t (*test)(void*),
+                     utest_ret_t (*test_run)(void*),
                      void *args)
 {
     if (suite->length + 1 >= suite->bufsize) {
         suite->bufsize *= 2;
         size_t size = sizeof(struct utest_suite)
-            + sizeof(struct utest_harness) * suite->bufsize;
+            + sizeof(struct utest_test) * suite->bufsize;
         suite = realloc(suite, size);
     }
-    struct utest_harness harness;
-    harness.test = test;
-    harness.args = args;
-    (suite->harnesses)[suite->length] = harness;
+    struct utest_test test;
+    test.run = test_run;
+    test.args = args;
+    (suite->tests)[suite->length] = test;
     suite->length++;
 }
 
@@ -73,7 +73,7 @@ void
 utest_suite_run(struct utest_suite *suite)
 {
     int i;
-    struct utest_harness *harness;
+    struct utest_test *test;
     int num_tests;
     int num_failures;
     char *message;
@@ -81,14 +81,14 @@ utest_suite_run(struct utest_suite *suite)
     num_tests = 0;
     num_failures = 0;
     for (i = 0; i < suite->length; i++) {
-        harness = &(suite->harnesses)[i];
+        test = &(suite->tests)[i];
         pid_t pid = fork();
         if (pid < 0) {
             fprintf(stderr, "ERROR: Could not fork()\n");
             exit(EXIT_FAILURE);
         } else if (pid == 0) {
             /* In the child, run the test and exit */
-            message = (harness->test)(harness->args);
+            message = (test->run)(test->args);
             if (message == NULL) {
                 exit(EXIT_SUCCESS);
             } else {
