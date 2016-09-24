@@ -89,23 +89,29 @@ UTEST_BEGIN(test_hash_merge)
     strcpy(value, "value2");
     value_data = ctache_data_create_string(value, strlen(value));
     ctache_data_hash_table_set(hash2, "key2", value_data);
+    u_assert_int_eq(1, value_data->refcount, "Wrong reference count");
 
     ctache_data_t *merged_hash = ctache_data_merge_hashes(hash1, hash2);
     ctache_data_t *keys_array;
+    u_assert_int_eq(2, value_data->refcount, "Wrong reference count");
     keys_array = ctache_data_hash_get_keys_as_array(merged_hash);
+    u_assert_int_eq(2, value_data->refcount, "Wrong reference count");
     int num_keys = ctache_data_length(keys_array);
     u_assert_int_eq(2, num_keys, "Wrong number of keys in merged hash");
     bool has_key = ctache_data_hash_table_has_key(merged_hash, "key2");
     u_assert(has_key, "Key missing from merged hash");
     value_data = ctache_data_hash_table_get(merged_hash, "key2");
     u_assert_str_eq(value_data->data.string, "value2", "Wrong value for key2");
+    /* merged_hash + hash2 = count = 3 */
+    /* Note that the array should not increase the refcount because the data
+     * is copied, it is not pointed to. */
     u_assert_int_eq(2, value_data->refcount, "Wrong reference count");
 
+    u_assert_int_eq(0, keys_array->refcount, "Keys array has wrong refcount");
     ctache_data_destroy(keys_array);
+    u_assert_int_eq(2, value_data->refcount, "Wrong reference count");
     ctache_data_destroy(merged_hash);
-
-    value_data = ctache_data_hash_table_get(hash2, "key2");
-    u_assert_int_eq(3, value_data->refcount, "Wrong reference count");
+    u_assert_int_eq(1, value_data->refcount, "Wrong reference count");
 
     ctache_data_destroy(hash2);
     ctache_data_destroy(hash1);

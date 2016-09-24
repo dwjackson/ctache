@@ -161,7 +161,6 @@ ctache_data_t
 void
 ctache_data_array_append(ctache_data_t *data, ctache_data_t *value)
 {
-    value->refcount++;
     ctache_array_append(&(data->data.array), value);
 }
 
@@ -277,7 +276,6 @@ ctache_data_t
         key_data = ctache_data_array_get(first_keys_array, i);
         key = key_data->data.string;
         value_data = ctache_data_hash_table_get(first, key);
-        value_data->refcount++;
         ctache_data_hash_table_set(merged, key, value_data);
     }
 
@@ -287,7 +285,6 @@ ctache_data_t
         key_data = ctache_data_array_get(second_keys_array, i);
         key = key_data->data.string;
         value_data = ctache_data_hash_table_get(second, key);
-        value_data->refcount++;
         ctache_data_hash_table_set(merged, key, value_data);
     }
 
