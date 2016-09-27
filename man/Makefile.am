@@ -4,5 +4,5 @@
 
 ## Copyright (c) 2016 David Jackson
 
-man1_MANS = ctache.1
-man3_MANS = ctache_render.3 ctache_data.3
+dist_man1_MANS = ctache.1
+dist_man3_MANS = ctache_render.3 ctache_data.3
