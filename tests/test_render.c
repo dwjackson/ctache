@@ -9,6 +9,7 @@
  */
 
 #include "ctache_data.h"
+#include "render.h"
 #include "escaping.h"
 #include "utest.h"
 #include <string.h>
