@@ -35,4 +35,13 @@ ctache_render_file(FILE *in_fp,
                    const char *delim_begin,
                    const char *delim_end);
 
+void
+ctache_render_string_to_string(const char *in_str,
+                               size_t in_str_len,
+                               char **out_str_ptr,
+                               ctache_data_t *data,
+                               enum escaping_type escaping_type,
+                               const char *delim_begin,
+                               const char *delim_end);
+
 #endif /* CTACHE_RENDER_H */

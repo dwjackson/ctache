@@ -616,3 +616,36 @@ ctache_render_file(FILE *in_fp,
                         delim_begin,
                         delim_end);
 }
+
+void
+ctache_render_string_to_string(const char *in_str,
+                               size_t in_str_len,
+                               char **out_str_ptr,
+                               ctache_data_t *data,
+                               enum escaping_type escaping_type,
+                               const char *delim_begin,
+                               const char *delim_end)
+{
+    FILE *temp = tmpfile();
+    ctache_render_string(in_str,
+                         in_str_len,
+                         temp,
+                         data,
+                         escaping_type,
+                         delim_begin,
+                         delim_end);
+    long temp_len = ftell(temp);
+    fseek(temp, 0, SEEK_SET);
+
+    char *out_str = malloc(temp_len + 1);
+    memset(out_str, 0, temp_len + 1);
+    size_t bytes_read = fread(out_str, 1, temp_len, temp);
+    if (bytes_read != temp_len) {
+        char e[] = "ERROR: File length was wrong: was %ld, should be %d\n";
+        fprintf(stderr, e, bytes_read, temp_len);
+        abort();
+    }
+    *out_str_ptr = out_str;
+
+    fclose(temp);
+}
