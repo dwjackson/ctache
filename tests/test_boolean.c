@@ -33,7 +33,7 @@ UTEST_BEGIN(test_string_as_boolean)
                          "{{",
                          "}}");
     fseek(fp, 0, SEEK_SET);
-    chat output[100];
+    char output[100];
     memset(output, 0, 100);
     fgets(output, 100, fp);
 
