@@ -4,9 +4,9 @@
 
 ## Copyright (c) 2016 David Jackson
 
-TESTS = test_hash_table test_delimiters test_render
+TESTS = test_hash_table test_delimiters test_render test_boolean
 
-bin_PROGRAMS = test_hash_table test_delimiters test_render
+bin_PROGRAMS = test_hash_table test_delimiters test_render test_boolean
 
 test_hash_table_SOURCES = test_hash_table.c utest.c utest.h
 test_hash_table_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
@@ -19,3 +19,7 @@ test_delimiters_LDADD = $(top_builddir)/lib/libctache.la
 test_render_SOURCES = test_render.c utest.c utest.h
 test_render_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
 test_render_LDADD = $(top_builddir)/lib/libctache.la
+
+test_boolean_SOURCES = test_boolean.c utest.c utest.h
+test_boolean_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
+test_boolean_LDADD = $(top_builddir)/lib/libctache.la
