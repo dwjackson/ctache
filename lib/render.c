@@ -69,12 +69,15 @@ handle_section_tag(struct linked_list_node **token_node_ptr,
 
             ctache_data_t *child_data;
             child_data = ctache_data_hash_table_get(*curr_data_ptr, key);
-            if (!ctache_data_is_boolean(child_data)) {
+            if (ctache_data_is_hash(child_data)
+                    || ctache_data_is_array(child_data)) {
                 *curr_data_ptr = child_data;
-            } else {
+            } else if (ctache_data_is_boolean(child_data)) {
                 if (child_data->data.boolean == false) {
                     *hidden_ptr = true;
                 }
+            } else {
+                *hidden_ptr = false;
             }
         } else {
             fprintf(stderr, "Key not in hash: %s\n", key);
@@ -155,6 +158,8 @@ handle_close_tag(struct linked_list_node **token_node_ptr,
             if (ctache_data_is_boolean(child_data)
                 && *hidden_ptr == true
                 && child_data->data.boolean == false) {
+                *hidden_ptr = false;
+            } else {
                 *hidden_ptr = false;
             }
         }
