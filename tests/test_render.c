@@ -34,7 +34,7 @@ ASTRO_TEST_BEGIN(test_render_string_to_string)
                                    "{{",
                                    "}}");
 
-    u_assert_str_eq(correct_output, output, "rendered string is incorrect");
+    assert_str_eq(correct_output, output, "rendered string is incorrect");
 
     free(output);
     ctache_data_destroy(data);

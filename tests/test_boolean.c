@@ -23,7 +23,7 @@ ASTRO_TEST_BEGIN(test_string_as_boolean)
 
     char template_str[] = "value = {{#key}}{{key}}{{/key}}";
     FILE *fp = tmpfile();
-    u_assert(fp != NULL, "output file is NULL");
+    assert(fp != NULL, "output file is NULL");
 
     ctache_render_string(template_str,
                          strlen(template_str),
@@ -38,7 +38,7 @@ ASTRO_TEST_BEGIN(test_string_as_boolean)
     fgets(output, 100, fp);
 
     char correct_output[] = "value = test";
-    u_assert_str_eq(correct_output, output, "Wrong output for string-as-bool");
+    assert_str_eq(correct_output, output, "Wrong output for string-as-bool");
 
     fclose(fp);
     ctache_data_destroy(data);
