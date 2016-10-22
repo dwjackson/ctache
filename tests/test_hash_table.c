@@ -9,13 +9,13 @@
  */
 
 #include "ctache_data.h"
-#include "utest.h"
+#include "astrounit.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
-UTEST_BEGIN(test_hash_get_set)
+ASTRO_TEST_BEGIN(test_hash_get_set)
 {
     ctache_data_t *hash = ctache_data_create_hash();
 
@@ -37,9 +37,9 @@ UTEST_BEGIN(test_hash_get_set)
 
     ctache_data_destroy(hash);
 }
-UTEST_END
+ASTRO_TEST_END
 
-UTEST_BEGIN(test_get_keys)
+ASTRO_TEST_BEGIN(test_get_keys)
 {
     ctache_data_t *hash = ctache_data_create_hash();
 
@@ -73,9 +73,9 @@ UTEST_BEGIN(test_get_keys)
     ctache_data_destroy(keys_array);
     ctache_data_destroy(hash);
 }
-UTEST_END
+ASTRO_TEST_END
 
-UTEST_BEGIN(test_hash_merge)
+ASTRO_TEST_BEGIN(test_hash_merge)
 {
     ctache_data_t *value_data;
     char value[100];
@@ -116,9 +116,9 @@ UTEST_BEGIN(test_hash_merge)
     ctache_data_destroy(hash2);
     ctache_data_destroy(hash1);
 }
-UTEST_END
+ASTRO_TEST_END
 
-UTEST_BEGIN(test_empty_hash)
+ASTRO_TEST_BEGIN(test_empty_hash)
 {
     ctache_data_t *empty_hash = ctache_data_create_hash();
     ctache_data_t *keys_array = ctache_data_hash_get_keys_as_array(empty_hash);
@@ -127,22 +127,22 @@ UTEST_BEGIN(test_empty_hash)
     ctache_data_destroy(keys_array);
     ctache_data_destroy(empty_hash);
 }
-UTEST_END
+ASTRO_TEST_END
 
 int
 main(void)
 {
     int num_failures;
-    struct utest_suite *suite;
+    struct astro_suite *suite;
 
-    suite = utest_suite_create();
-    utest_suite_add_test(suite, test_hash_get_set, NULL);
-    utest_suite_add_test(suite, test_get_keys, NULL);
-    utest_suite_add_test(suite, test_hash_merge, NULL);
-    utest_suite_add_test(suite, test_empty_hash, NULL);
-    utest_suite_run(suite);
-    num_failures = utest_suite_num_failures(suite);
-    utest_suite_destroy(suite);
+    suite = astro_suite_create();
+    astro_suite_add_test(suite, test_hash_get_set, NULL);
+    astro_suite_add_test(suite, test_get_keys, NULL);
+    astro_suite_add_test(suite, test_hash_merge, NULL);
+    astro_suite_add_test(suite, test_empty_hash, NULL);
+    astro_suite_run(suite);
+    num_failures = astro_suite_num_failures(suite);
+    astro_suite_destroy(suite);
 
     return (num_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

@@ -10,12 +10,12 @@
 
 #include "ctache_data.h"
 #include "render.h"
-#include "utest.h"
+#include "astrounit.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-UTEST_BEGIN(test_string_as_boolean)
+ASTRO_TEST_BEGIN(test_string_as_boolean)
 {
     ctache_data_t *data = ctache_data_create_hash();
     ctache_data_t *value = ctache_data_create_string("test", 4);
@@ -43,19 +43,19 @@ UTEST_BEGIN(test_string_as_boolean)
     fclose(fp);
     ctache_data_destroy(data);
 }
-UTEST_END
+ASTRO_TEST_END
 
 int
 main(void)
 {
     int num_failures;
-    struct utest_suite *suite;
+    struct astro_suite *suite;
 
-    suite = utest_suite_create();
-    utest_suite_add_test(suite, test_string_as_boolean, NULL);
-    utest_suite_run(suite);
-    num_failures = utest_suite_num_failures(suite);
-    utest_suite_destroy(suite);
+    suite = astro_suite_create();
+    astro_suite_add_test(suite, test_string_as_boolean, NULL);
+    astro_suite_run(suite);
+    num_failures = astro_suite_num_failures(suite);
+    astro_suite_destroy(suite);
 
     return (num_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

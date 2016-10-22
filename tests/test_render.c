@@ -11,11 +11,11 @@
 #include "ctache_data.h"
 #include "render.h"
 #include "escaping.h"
-#include "utest.h"
+#include "astrounit.h"
 #include <string.h>
 #include <stdlib.h>
 
-UTEST_BEGIN(test_render_string_to_string)
+ASTRO_TEST_BEGIN(test_render_string_to_string)
 {
     char input[] = "The value at 'test' is {{test}}.";
     size_t input_len = strlen(input);
@@ -39,19 +39,19 @@ UTEST_BEGIN(test_render_string_to_string)
     free(output);
     ctache_data_destroy(data);
 }
-UTEST_END
+ASTRO_TEST_END
 
 int
 main(void)
 {
     int num_failures;
-    struct utest_suite *suite;
+    struct astro_suite *suite;
 
-    suite = utest_suite_create();
-    utest_suite_add_test(suite, test_render_string_to_string, NULL);
-    utest_suite_run(suite);
-    num_failures = utest_suite_num_failures(suite);
-    utest_suite_destroy(suite);
+    suite = astro_suite_create();
+    astro_suite_add_test(suite, test_render_string_to_string, NULL);
+    astro_suite_run(suite);
+    num_failures = astro_suite_num_failures(suite);
+    astro_suite_destroy(suite);
 
     return (num_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

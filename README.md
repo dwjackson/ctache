@@ -29,7 +29,9 @@ It requires the libyaml library. At the time of this writing the version of the
 library is 0.1.6 and it is available [here](http://pyyaml.org/wiki/LibYAML). It
 should be available in the package manager for your operating system. I got it
 from [pkgsrc](https://www.pkgsrc.org/) on my OS X machine, apt-get on my Ubuntu
-machine and from the ports tree on my FreeBSD machine.
+machine and from the ports tree on my FreeBSD machine. To run the unit tests
+for Ctache, you need the [AstroUnit](https://github.com/dwjackson/astrounit)
+unit testing library.
 
 ### Compiling
 
