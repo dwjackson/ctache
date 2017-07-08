@@ -299,3 +299,11 @@ ctache_data_strcmp(const ctache_data_t *data1, const ctache_data_t *data2)
 {
 	return strcmp(data1->data.string, data2->data.string);
 }
+
+void
+ctache_array_sort(ctache_data_t *array_data,
+		  int (*compar)(const void *p1, const void *p2))
+{
+	ctache_array_t *array = array_data->data.array;
+	qsort(array->buffer, array->length, array->element_size, compar);
+}

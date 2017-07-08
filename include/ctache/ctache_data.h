@@ -98,6 +98,10 @@ ctache_data_t
 *ctache_data_merge_hashes(ctache_data_t *first, ctache_data_t *second);
 
 int
-ctache_data_strcmp(ctache_data_t *data1, ctache_data_t *data2);
+ctache_data_strcmp(const ctache_data_t *data1, const ctache_data_t *data2);
+
+void
+ctache_array_sort(ctache_data_t *array_data,
+		  int (*compar)(const void *p1, const void *p2));
 
 #endif /* CTACHE_DATA_H */

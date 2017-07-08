@@ -78,12 +78,4 @@ ctache_array_append(ctache_array_t **array_ptr, void *data)
     ((*array_ptr)->length)++;
 }
 
-void
-ctache_array_sort(ctache_data_t *array_data,
-		  int (*compar)(const void *p1, const void *p2))
-{
-	ctache_arra_t *arr = array_data->data.array;
-	qsort(array->buffer, array->length, array->element_size, compar);
-}
-
 #undef BUF_SIZE

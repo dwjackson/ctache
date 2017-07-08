@@ -39,7 +39,4 @@ ctache_array_set(ctache_array_t *array, size_t index, void *data);
 void
 ctache_array_append(ctache_array_t **array_ptr, void *data);
 
-void
-ctache_array_sort(ctache_data_t *array_data, int (*compar)(void *p1, void *p2));
-
 #endif /* CTACHE_ARRAY_H */
