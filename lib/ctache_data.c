@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016 David Jackson
+ * Copyright (c) 2016-2017 David Jackson
  */
 
 #include <stdlib.h>
@@ -292,4 +292,10 @@ ctache_data_t
     ctache_data_destroy(first_keys_array);
 
     return merged;
+}
+
+int
+ctache_data_strcmp(const ctache_data_t *data1, const ctache_data_t *data2)
+{
+	return strcmp(data1->data.string, data2->data.string);
 }

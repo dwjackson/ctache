@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016 David Jackson
+ * Copyright (c) 2016-2017 David Jackson
  */
 
 #ifndef CTACHE_DATA_H
@@ -96,5 +96,8 @@ ctache_data_t
 
 ctache_data_t
 *ctache_data_merge_hashes(ctache_data_t *first, ctache_data_t *second);
+
+int
+ctache_data_strcmp(ctache_data_t *data1, ctache_data_t *data2);
 
 #endif /* CTACHE_DATA_H */
