@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2016-2017 David Jackson
+ * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
 #include <stdlib.h>
@@ -15,6 +16,7 @@
 #include "hash_table.h"
 #include "ctache_data.h"
 #include "ctache_array.h"
+#include "ctache_string.h"
 
 ctache_data_t
 *ctache_data_create_array(size_t num_elements)
@@ -47,9 +49,9 @@ ctache_data_t
 {
     struct ctache_hash_table *tbl;
     struct ctache_array *array;
+    struct ctache_string *string;
     double *dp;
     bool *bp;
-    char *str;
     time_t *tp;
 
     struct ctache_data *ctache_data = malloc(sizeof(struct ctache_data));
@@ -66,8 +68,8 @@ ctache_data_t
             ctache_data->data.array = array;
             break;
         case CTACHE_DATA_STRING:
-            str = (char *)(data);
-            ctache_data->data.string = strdup(str);
+            string = ctache_string_create(data, num_elements);
+            ctache_data->data.string = string;
             break;
         case CTACHE_DATA_NUMBER:
             dp = (double *)(data);
@@ -99,7 +101,7 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_data *ctache_data = (struct ctache_data *)(data);
     struct ctache_hash_table *hash_table;
     struct ctache_array *array;
-    char *str;
+    struct ctache_string *string;
     int i;
 
     ctache_data->refcount--;
@@ -113,8 +115,8 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
         ctache_hash_table_destroy(hash_table, ctache_data_destroy);
         break;
     case CTACHE_DATA_STRING:
-        str = ctache_data->data.string;
-        free(str);
+        string = ctache_data->data.string;
+        ctache_string_destroy(string);
         break;
     case CTACHE_DATA_ARRAY:
         array = ctache_data->data.array;
@@ -173,11 +175,16 @@ ctache_data_t
 size_t
 ctache_data_length(ctache_data_t *data)
 {
-    size_t len = 0;
-    if (data->data_type == CTACHE_DATA_ARRAY) {
-        len = data->data.array->length;
+    switch (data->data_type) {
+    case CTACHE_DATA_ARRAY:
+        return data->data.array->length;
+
+    case CTACHE_DATA_STRING:
+        return ctache_string_length(data->data.string);
+
+    default:
+        return 0;
     }
-    return len;
 }
 
 bool
@@ -274,7 +281,7 @@ ctache_data_t
     length = ctache_data_length(first_keys_array);
     for (i = 0; i < length; i++) {
         key_data = ctache_data_array_get(first_keys_array, i);
-        key = key_data->data.string;
+        key = ctache_string_buffer(key_data->data.string);
         value_data = ctache_data_hash_table_get(first, key);
         ctache_data_hash_table_set(merged, key, value_data);
     }
@@ -283,7 +290,7 @@ ctache_data_t
     length = ctache_data_length(second_keys_array);
     for (i = 0; i < length; i++) {
         key_data = ctache_data_array_get(second_keys_array, i);
-        key = key_data->data.string;
+        key = ctache_string_buffer(key_data->data.string);
         value_data = ctache_data_hash_table_get(second, key);
         ctache_data_hash_table_set(merged, key, value_data);
     }
@@ -297,7 +304,7 @@ ctache_data_t
 int
 ctache_data_strcmp(const ctache_data_t *data1, const ctache_data_t *data2)
 {
-	return strcmp(data1->data.string, data2->data.string);
+	return ctache_string_compare(data1->data.string, data2->data.string);
 }
 
 void
@@ -306,4 +313,11 @@ ctache_array_sort(ctache_data_t *array_data,
 {
 	ctache_array_t *array = array_data->data.array;
 	qsort(array->buffer, array->length, array->element_size, compar);
+}
+
+const char
+*ctache_data_string_buffer(ctache_data_t *string_data)
+{
+	ctache_string_t *string = string_data->data.string;
+	return ctache_string_buffer(string);
 }

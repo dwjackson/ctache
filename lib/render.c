@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2016 David Jackson
+ * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
 #ifdef __linux__
@@ -16,6 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "ctache_data.h"
+#include "ctache_string.h"
 #include "linked_list.h"
 #include "lexer.h"
 #include "render.h"
@@ -184,7 +186,7 @@ static char
 
     switch(value->data_type) {
     case CTACHE_DATA_STRING:
-        str = strdup(value->data.string);
+        str = strdup(ctache_string_buffer(value->data.string));
         if (str == NULL) {
             fprintf(stderr, "ERROR: Could not allocate string\n");
         }
@@ -419,10 +421,13 @@ handle_partial(struct linked_list_node **token_node_ptr,
     char *key = token->value;
     if (ctache_data_hash_table_has_key(curr_data, key)) {
         ctache_data_t *partial_data;
+        struct ctache_string *partial;
+
         partial_data = ctache_data_hash_table_get(curr_data, key);
-        char *partial = partial_data->data.string;
-        _ctache_render_string(partial,
-                              strlen(partial),
+        partial = partial_data->data.string;
+
+        _ctache_render_string(ctache_string_buffer(partial),
+                              ctache_string_length(partial),
                               out,
                               curr_data,
                               0, /* flags */
