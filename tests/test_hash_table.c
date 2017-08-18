@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2016 David Jackson
+ * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
 #include "ctache_data.h"
@@ -33,7 +34,7 @@ ASTRO_TEST_BEGIN(test_hash_get_set)
     assert_int_eq(check_data->data_type,
                     CTACHE_DATA_STRING,
                     "Value is not a string");
-    assert_str_eq("test_value", check_data->data.string, "Value is wrong");
+    assert_str_eq("test_value", ctache_data_string_buffer(check_data), "Value is wrong");
 
     ctache_data_destroy(hash);
 }
@@ -64,11 +65,11 @@ ASTRO_TEST_BEGIN(test_get_keys)
     assert_int_eq(3, length, "Wrong number of keys");
     ctache_data_t *key_data;
     key_data = ctache_data_array_get(keys_array, 0);
-    assert_str_eq("test_key1", key_data->data.string, "Wrong first key");
+    assert_str_eq("test_key1", ctache_data_string_buffer(key_data), "Wrong first key");
     key_data = ctache_data_array_get(keys_array, 1);
-    assert_str_eq("test_key2", key_data->data.string, "Wrong second key");
+    assert_str_eq("test_key2", ctache_data_string_buffer(key_data), "Wrong second key");
     key_data = ctache_data_array_get(keys_array, 2);
-    assert_str_eq("test_key3", key_data->data.string, "Wrong third key");
+    assert_str_eq("test_key3", ctache_data_string_buffer(key_data), "Wrong third key");
 
     ctache_data_destroy(keys_array);
     ctache_data_destroy(hash);
@@ -101,7 +102,7 @@ ASTRO_TEST_BEGIN(test_hash_merge)
     bool has_key = ctache_data_hash_table_has_key(merged_hash, "key2");
     assert(has_key, "Key missing from merged hash");
     value_data = ctache_data_hash_table_get(merged_hash, "key2");
-    assert_str_eq(value_data->data.string, "value2", "Wrong value for key2");
+    assert_str_eq(ctache_data_string_buffer(value_data), "value2", "Wrong value for key2");
     /* merged_hash + hash2 = count = 3 */
     /* Note that the array should not increase the refcount because the data
      * is copied, it is not pointed to. */

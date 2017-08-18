@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2016-2017 David Jackson
+ * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
 #ifndef CTACHE_DATA_H
@@ -29,7 +30,7 @@ struct ctache_data {
     union {
         struct ctache_hash_table *hash;
         struct ctache_array *array;
-        char *string;
+        struct ctache_string *string;
         double number;
         bool boolean;
         time_t time;
@@ -103,5 +104,8 @@ ctache_data_strcmp(const ctache_data_t *data1, const ctache_data_t *data2);
 void
 ctache_array_sort(ctache_data_t *array_data,
 		  int (*compar)(const void *p1, const void *p2));
+
+const char
+*ctache_data_string_buffer(ctache_data_t *data);
 
 #endif /* CTACHE_DATA_H */
