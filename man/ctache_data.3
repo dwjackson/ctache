@@ -40,6 +40,10 @@
 .Fo ctache_data_length
 .Fa "ctache_data_t *data"
 .Fc
+.Ft const char
+.Fo *ctache_data_string_buffer
+.Fa "ctache_data_t *data"
+.Fc
 .Sh DESCRIPTION
 Ctache uses a generic data format (the ctache_data_t) structure to contain
 several different possible types of data (e.g. boolean, string, array, hash)
@@ -85,4 +89,9 @@ The
 function is used to merge two ctache_data_t hash tables with non-overlapping
 sets of keys. The
 .Fn ctache_data_length
-function will return the "length" of particular data - e.g. array length.
+function will return the "length" of particular data - e.g. array length,
+string length.
+.Fn ctache_data_string_buffer
+function will return the underlying buffer of the string. You may dereference
+up to the length of the string plus one. The extra one holds a NUL character
+which allows you to treat the buffer as a c-style string.
