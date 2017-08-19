@@ -9,7 +9,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([ctache], [0.8.0], [dwjackson@users.noreply.github.com])
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src/ctache.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall foreign])
 
