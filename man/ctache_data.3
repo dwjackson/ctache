@@ -3,6 +3,7 @@
 .\" file, You can obtain one at http://mozilla.org/MPL/2.0/.
 .\"
 .\" Copyright (c) 2016 David Jackson
+.\" Modified work Copyright 2017 Daniel Araujo
 .\"
 .Dd June 26, 2016
 .Dt CTACHE_DATA 3
@@ -38,6 +39,10 @@
 .Fc
 .Ft size_t
 .Fo ctache_data_length
+.Fa "ctache_data_t *data"
+.Fc
+.Ft const char
+.Fo *ctache_data_string_buffer
 .Fa "ctache_data_t *data"
 .Fc
 .Sh DESCRIPTION
@@ -85,4 +90,9 @@ The
 function is used to merge two ctache_data_t hash tables with non-overlapping
 sets of keys. The
 .Fn ctache_data_length
-function will return the "length" of particular data - e.g. array length.
+function will return the "length" of particular data - e.g. array length,
+string length.
+.Fn ctache_data_string_buffer
+function will return the underlying buffer of the string. You may dereference
+up to the length of the string plus one. The extra one holds a NUL character
+which allows you to treat the buffer as a c-style string.

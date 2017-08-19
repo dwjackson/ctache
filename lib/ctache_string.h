@@ -43,8 +43,9 @@ ctache_string_t
  * Destroys a ctache string.
  *
  * You must pass a pointer to a ctache_string struct that was returned by a
- * call to ctache_string_create. You may only destroy a ctache string once.
- * Anything else may crash the program.
+ * call to ctache_string_create, anything else may crash the program.
+ *
+ * You may only destroy a ctache string once.
  */
 void
 ctache_string_destroy(void *data);
@@ -53,7 +54,7 @@ ctache_string_destroy(void *data);
  * Returns a pointer to the underlying buffer.
  *
  * You may only dereference up to the length of the string plus one. Call
- * ctache_string_size to find out the length.
+ * ctache_string_length to find out the length.
  *
  * The extra one in the length is reserved for a NUL character so that the
  * buffer can be used as a c-style string.
@@ -63,9 +64,6 @@ ctache_string_buffer(ctache_string_t *string);
 
 /*
  * Returns the length of the string.
- *
- * You may only dereference up to the length of the string. Call
- * ctache_string_size to find out the size.
  */
 size_t
 ctache_string_length(ctache_string_t *string);
