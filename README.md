@@ -12,9 +12,8 @@ Copyright (c) 2016 David Jackson
 
 Ctache (pronounced "stash" as in "stache" as in "moustache" you see) is an
 implementation of [mustache](https://mustache.github.io/) templates in C
-(though I have not yet checked whether it fully implements the spec). It is
-available as the command-line tool `ctache` and also in library form as
-`libctache`.
+(though it does not fully implement the spec). It is available as the
+command-line tool `ctache` and also in library form as `libctache`.
 
 ## Building & Installing
 
