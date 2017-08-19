@@ -19,7 +19,14 @@ enum json_token_type {
 	JSON_BRACE_LEFT,
 	JSON_BRACE_RIGHT,
 	JSON_BRACKET_LEFT,
-	JSON_BRACKET_RIGHT
+	JSON_BRACKET_RIGHT,
+	JSON_END
+};
+
+enum json_error {
+	JSON_ENOERR,
+	JSON_ENOMEM,
+	JSON_EBADTOK
 };
 
 struct json_token {
@@ -35,6 +42,7 @@ struct json_token {
 struct json_parser {
 	struct json_token token;
 	bool free_json;
+	enum json_error error;
 	char *json;
 	char *json_p;
 };
@@ -47,5 +55,11 @@ struct json_parser
 
 void
 json_parser_destroy(struct json_parser *parser);
+
+struct json_token
+*json_next_token(struct json_parser *parser);
+
+bool
+json_has_error(struct json_parser *parser);
 
 #endif /* JSON_H */

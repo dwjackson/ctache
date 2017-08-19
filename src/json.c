@@ -1,6 +1,17 @@
+/* 
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * Copyright (c) 2017 David Jackson
+ */
+
 #include "json.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #define DEFAULT_BUF_SIZE 1024
 
@@ -23,7 +34,7 @@ struct json_parser
 
 	buf_len = 0;
 	while ((ch = fgetc(fp)) != EOF) {
-		if (buf_len + 1 < buf_size - 1) {
+		if (buf_len + 1 >= buf_size - 1) {
 			buf_size *= 2;
 			tmp = realloc(buf, buf_size);
 			if (tmp == NULL) {
@@ -45,6 +56,7 @@ struct json_parser
 	parser->json = buf;
 	parser->json_p = parser->json;
 	parser->free_json = true;
+	parser->error = JSON_ENOERR;
 	return parser;
 }
 
@@ -59,6 +71,7 @@ struct json_parser
 	parser->json = str;
 	parser->json_p = parser->json;
 	parser->free_json = false;
+	parser->error = JSON_ENOERR;
 	return parser;
 }
 
@@ -69,4 +82,35 @@ json_parser_destroy(struct json_parser *parser)
 		free(parser->json);
 	}
 	free(parser);
+}
+
+struct json_token
+*json_next_token(struct json_parser *parser)
+{
+	char ch;
+
+	ch = *(parser->json_p);
+	if (ch == '\0') {
+		parser->token.type = JSON_END;
+		return &(parser->token);
+	}
+	parser->json_p++;
+
+	if (ch == '{') {
+		parser->token.type = JSON_BRACE_LEFT;
+		parser->token.value.string = NULL;
+	} else if (ch == '}') {
+		parser->token.type = JSON_BRACE_RIGHT;
+		parser->token.value.string = NULL;
+	} else {
+		parser->error = JSON_EBADTOK;
+	}
+
+	return &(parser->token);
+}
+
+bool
+json_has_error(struct json_parser *parser)
+{
+	return parser->error != JSON_ENOERR;
 }
