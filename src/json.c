@@ -98,10 +98,12 @@ struct json_token
 
 	if (ch == '{') {
 		parser->token.type = JSON_BRACE_LEFT;
-		parser->token.value.string = NULL;
 	} else if (ch == '}') {
 		parser->token.type = JSON_BRACE_RIGHT;
-		parser->token.value.string = NULL;
+	} else if (ch == '[') {
+		parser->token.type = JSON_BRACKET_LEFT;
+	} else if (ch == ']') {
+		parser->token.type = JSON_BRACKET_RIGHT;
 	} else {
 		parser->error = JSON_EBADTOK;
 	}
