@@ -3,6 +3,7 @@
 ## file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 ## Copyright (c) 2016 David Jackson
+## Modified work Copyright 2017 Daniel Araujo
 
 TESTS = test_hash_table test_delimiters test_render test_boolean test_array \
 	       test_string
