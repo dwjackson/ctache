@@ -17,6 +17,9 @@
 static ctache_data_t
 *read_object(struct json_parser *parser);
 
+static ctache_data_t
+*read_array(struct json_parser *parser);
+
 ctache_data_t
 *data_from_json(const char *file_name)
 {
@@ -71,6 +74,8 @@ static ctache_data_t
 			val = ctache_data_create_string(tok->value.string, len);
 		} else if (tok->type == JSON_BRACE_LEFT) {
 			val = read_object(parser);
+		} else if (tok->type == JSON_BRACKET_LEFT) {
+			val = read_array(parser);
 		} else {
 			fprintf(stderr, "ERROR: Expected value\n");
 			ctache_data_destroy(data);
@@ -89,6 +94,50 @@ static ctache_data_t
 			fprintf(stderr, "ERROR: Expected '}'\n");
 			ctache_data_destroy(data);
 			return NULL;
+		}
+	}
+	return data;
+}
+
+static ctache_data_t
+*read_array(struct json_parser *parser)
+{
+	ctache_data_t *data;
+	ctache_data_t *elem;
+	struct json_token *tok;
+	char *str;
+	size_t str_len;
+	int done;
+
+	data = ctache_data_create_array(0);
+	if (data == NULL) {
+		return NULL;
+	}
+	
+	done = 0;
+	while (!done) {
+		tok = json_next_token(parser);
+		if (tok->type == JSON_BRACKET_RIGHT) {
+			done = 1;
+		} else if (tok->type == JSON_STRING) {
+			str = tok->value.string;
+			str_len = strlen(str);
+			elem = ctache_data_create_string(str, str_len);
+			ctache_data_array_append(data, elem);
+		} else {
+			fprintf(stderr, "ERROR: Expected value\n");
+			ctache_data_destroy(data);
+			return NULL;
+		}
+		tok = json_next_token(parser);
+		if (tok->type != JSON_COMMA
+			&& tok->type != JSON_BRACKET_RIGHT) {
+			fprintf(stderr, "ERROR: Expected ']' or ','\n");
+			ctache_data_destroy(data);
+			return NULL;
+		}
+		if (tok->type == JSON_BRACKET_RIGHT) {
+			done = 1;
 		}
 	}
 	return data;
