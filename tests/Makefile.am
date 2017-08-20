@@ -36,6 +36,7 @@ test_string_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
 test_string_LDADD = $(top_builddir)/lib/libctache.la -lastrounit
 
 test_json_SOURCES = test_json.c $(top_builddir)/src/json.c \
-		    $(top_builddir)/src/json.h
+		    $(top_builddir)/src/json.h $(top_builddir)/src/strbuf.c \
+		    $(top_builddir)/src/strbuf.h
 test_json_CFLAGS = -g -Wall -I$(top_builddir)/src
 test_json_LDADD = -lastrounit

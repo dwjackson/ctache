@@ -52,6 +52,28 @@ ASTRO_TEST_BEGIN(test_empty_array)
 }
 ASTRO_TEST_END
 
+ASTRO_TEST_BEGIN(test_simple_object)
+{
+	char str[] = "{ \"key\": 42 }";
+	size_t str_len = strlen(str);
+	struct json_parser *parser = json_parse_string(str, str_len);
+	const struct json_token *tok;
+	assert(parser != NULL, "parser creation failed");
+	tok = json_next_token(parser);
+	assert_int_eq(JSON_BRACE_LEFT, tok->type, "Wrong token");
+	tok = json_next_token(parser);
+	assert_int_eq(JSON_STRING, tok->type, "Wrong token");
+	assert_str_eq("key", tok->value.string, "Key is wrong");
+	tok = json_next_token(parser);
+	assert_int_eq(JSON_COLON, tok->type, "Wrong token");
+	tok = json_next_token(parser);
+	assert_int_eq(JSON_NUMBER, tok->type, "Wrong token");
+	tok = json_next_token(parser);
+	assert_int_eq(JSON_BRACE_RIGHT, tok->type, "Wrong token");
+	json_parser_destroy(parser);
+}
+ASTRO_TEST_END
+
 int
 main(void)
 {
@@ -61,6 +83,7 @@ main(void)
     suite = astro_suite_create();
     astro_suite_add_test(suite, test_empty_object, NULL);
     astro_suite_add_test(suite, test_empty_array, NULL);
+    astro_suite_add_test(suite, test_simple_object, NULL);
     astro_suite_run(suite);
     num_failures = astro_suite_num_failures(suite);
     astro_suite_destroy(suite);

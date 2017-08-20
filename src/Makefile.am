@@ -7,5 +7,6 @@
 AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib -I$(top_srcdir)
 
 bin_PROGRAMS = ctache
-ctache_SOURCES = ctache.c yaml_data.c yaml_data.h json.c json.h
+ctache_SOURCES = ctache.c yaml_data.c yaml_data.h json.c json.h strbuf.c \
+		 strbuf.h
 ctache_LDADD = $(top_srcdir)/lib/libctache.la

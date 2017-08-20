@@ -16,23 +16,28 @@
 #include <stdbool.h>
 
 enum json_token_type {
+	JSON_NONE_TOK,
 	JSON_BRACE_LEFT,
 	JSON_BRACE_RIGHT,
 	JSON_BRACKET_LEFT,
 	JSON_BRACKET_RIGHT,
+	JSON_STRING,
+	JSON_COLON,
+	JSON_NUMBER,
 	JSON_END
 };
 
 enum json_error {
 	JSON_ENOERR,
 	JSON_ENOMEM,
-	JSON_EBADTOK
+	JSON_EBADTOK,
+	JSON_ESYNTAX
 };
 
 struct json_token {
 	enum json_token_type type;
 	union {
-		const char *string;
+		char *string;
 		double number;
 		bool boolean;
 		void *nullvalue;
@@ -43,6 +48,7 @@ struct json_parser {
 	struct json_token token;
 	bool free_json;
 	enum json_error error;
+	char *error_message;
 	char *json;
 	char *json_p;
 };
