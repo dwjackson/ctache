@@ -182,7 +182,16 @@ parse_number(struct json_parser *parser)
 		goto cleanup;
 	}
 	strbuf_append_char(strbuf, '.');
-	// TODO
+	while ((ch = *(parser->json_p++)) != '\0' && isdigit(ch)) {
+		if (strbuf_append_char(strbuf, ch) < 0) {
+			parser->error = JSON_ENOMEM;
+			goto cleanup;
+		}
+	}
+	strbuf_null_terminate(strbuf);
+	sscanf(strbuf_buffer(strbuf), "%lf", &number);
+	parser->token.type = JSON_NUMBER;
+	parser->token.value.number = number;
 cleanup:
 	strbuf_destroy(strbuf);
 }
