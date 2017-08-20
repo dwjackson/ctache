@@ -72,6 +72,8 @@ static ctache_data_t
 		if (tok->type == JSON_STRING) {
 			len = strlen(tok->value.string);
 			val = ctache_data_create_string(tok->value.string, len);
+		} else if (tok->type == JSON_BOOLEAN) {
+			val = ctache_data_create_boolean(tok->value.boolean);
 		} else if (tok->type == JSON_BRACE_LEFT) {
 			val = read_object(parser);
 		} else if (tok->type == JSON_BRACKET_LEFT) {

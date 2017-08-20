@@ -5,7 +5,8 @@
 ## Copyright (c) 2016 David Jackson
 ## Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
 
-AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/include/ctache
+AM_CFLAGS = -Wall -Wextra -I$(top_srcdir)/include \
+	    -I$(top_srcdir)/include/ctache
 
 lib_LTLIBRARIES = libctache.la
 libctache_la_SOURCES = ctache_array.c ctache_array.h ctache_data.c \

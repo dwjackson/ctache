@@ -34,7 +34,8 @@ static yaml_char_t
     int starting_whitespace = 0;
     int ending_whitespace = 0;
 
-    int i;
+    unsigned int i;
+    int j;
     unsigned char ch = '\0';
     for (i = 0; i < length; i++) {
         ch = str[i];
@@ -45,8 +46,8 @@ static yaml_char_t
         }
     }
 
-    for (i = length - 1; i >= 0; i--) {
-        ch = str[i];
+    for (j = length - 1; j >= 0; j--) {
+        ch = str[j];
         if (is_whitespace(ch)) {
             ending_whitespace++;
         } else {
@@ -115,6 +116,7 @@ ctache_data_t
         key = NULL;
         value = NULL;
         while (!done) {
+            value_len = -1;
             if (!yaml_parser_parse(&parser, &event)) {
                 goto end;
             }

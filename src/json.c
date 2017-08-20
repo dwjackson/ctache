@@ -25,6 +25,9 @@ parse_string(struct json_parser *parser);
 static void
 parse_number(struct json_parser *parser);
 
+static void
+parse_boolean(struct json_parser *parser);
+
 struct json_parser
 *json_parse_file(FILE *fp)
 {
@@ -57,7 +60,7 @@ struct json_parser
 }
 
 struct json_parser
-*json_parse_string(char *str, size_t str_len)
+*json_parse_string(char *str)
 {
 	struct json_parser *parser = malloc(sizeof(struct json_parser));
 	if (parser == NULL) {
@@ -124,6 +127,10 @@ struct json_token
 			done = 1; 
 		} else if (ch == ',') {
 			parser->token.type = JSON_COMMA;
+			done = 1;
+		} else if (ch == 't' || ch == 'f') {
+			parser->json_p--;
+			parse_boolean(parser);
 			done = 1;
 		} else if (isspace(ch)) {
 			/* skip spaces */
@@ -204,4 +211,30 @@ bool
 json_has_error(struct json_parser *parser)
 {
 	return parser->error != JSON_ENOERR;
+}
+
+static void
+parse_boolean(struct json_parser *parser)
+{
+	struct strbuf *strbuf;
+	char ch;
+	const char *str;
+
+	strbuf = strbuf_create(10);
+	while ((ch = *(parser->json_p++)) != '\0' && isalpha(ch)) {
+		strbuf_append_char(strbuf, ch);
+	}
+	parser->json_p--;
+	strbuf_null_terminate(strbuf);
+	str = strbuf_buffer(strbuf);
+	if (strcmp(str, "true") == 0) {
+		parser->token.type = JSON_BOOLEAN;
+		parser->token.value.boolean = true;
+	} else if (strcmp(str, "false") == 0) {
+		parser->token.type = JSON_BOOLEAN;
+		parser->token.value.boolean = false;
+	} else {
+		parser->error = JSON_ESYNTAX;
+	}
+	strbuf_destroy(strbuf);
 }

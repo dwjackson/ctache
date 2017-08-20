@@ -31,7 +31,7 @@ void
 ctache_array_destroy(void *data);
 
 void
-*ctache_array_get(ctache_array_t *array, int index);
+*ctache_array_get(ctache_array_t *array, size_t index);
 
 void
 ctache_array_set(ctache_array_t *array, size_t index, void *data);

@@ -324,7 +324,7 @@ _ctache_render_string(const char *in_str,
             enum ctache_token_type tok_type = tok->tok_type;
             printf("\t%s (%d)", ctache_token_names[tok_type], tok_type);
             if (tok->tok_type == CTACHE_TOK_STRING) {
-                int i;
+                unsigned int i;
                 size_t value_len = strlen(tok->value);
                 char ch;
                 printf(" \"");
@@ -649,12 +649,16 @@ ctache_render_string_to_string(const char *in_str,
                          delim_begin,
                          delim_end);
     long temp_len = ftell(temp);
+    if (temp_len < 0) {
+	    fprintf(stderr, "ERROR: ftell() returned -1\n");
+	    abort();
+    }
     fseek(temp, 0, SEEK_SET);
 
     char *out_str = malloc(temp_len + 1);
     memset(out_str, 0, temp_len + 1);
     size_t bytes_read = fread(out_str, 1, temp_len, temp);
-    if (bytes_read != temp_len) {
+    if (bytes_read != (size_t)temp_len) {
         char e[] = "ERROR: File length was wrong: was %ld, should be %d\n";
         fprintf(stderr, e, bytes_read, temp_len);
         abort();

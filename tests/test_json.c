@@ -15,8 +15,7 @@
 ASTRO_TEST_BEGIN(test_empty_object)
 {
 	char *str = "{}";
-	size_t str_len = strlen(str);
-	struct json_parser *parser = json_parse_string(str, str_len);
+	struct json_parser *parser = json_parse_string(str);
 	const struct json_token *tok;
 	assert(parser != NULL, "parser creation failed");
 	tok = json_next_token(parser);
@@ -35,8 +34,7 @@ ASTRO_TEST_END
 ASTRO_TEST_BEGIN(test_empty_array)
 {
 	char str[] = "[]";
-	size_t str_len = strlen(str);
-	struct json_parser *parser = json_parse_string(str, str_len);
+	struct json_parser *parser = json_parse_string(str);
 	const struct json_token *tok;
 	assert(parser != NULL, "parser creation failed");
 	tok = json_next_token(parser);
@@ -55,8 +53,7 @@ ASTRO_TEST_END
 ASTRO_TEST_BEGIN(test_simple_object)
 {
 	char str[] = "{ \"key\": 42 }";
-	size_t str_len = strlen(str);
-	struct json_parser *parser = json_parse_string(str, str_len);
+	struct json_parser *parser = json_parse_string(str);
 	const struct json_token *tok;
 	assert(parser != NULL, "parser creation failed");
 	tok = json_next_token(parser);
@@ -78,8 +75,7 @@ ASTRO_TEST_END
 ASTRO_TEST_BEGIN(test_number_with_decimal)
 {
 	char str[] = "{ \"key\": 42.5 }";
-	size_t str_len = strlen(str);
-	struct json_parser *parser = json_parse_string(str, str_len);
+	struct json_parser *parser = json_parse_string(str);
 	const struct json_token *tok;
 	tok = json_next_token(parser);
 	tok = json_next_token(parser);

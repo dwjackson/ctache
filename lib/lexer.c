@@ -100,7 +100,8 @@ struct linked_list
     int row = 0;
     int col = 0;
     struct ctache_token *tok = NULL;
-    int ch, i;
+    int ch;
+    unsigned int i;
     for (i = 0; i < str_len; i++) {
         ch = str[i];
         if (ch == delim_begin[0]) {

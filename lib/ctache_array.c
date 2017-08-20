@@ -39,7 +39,7 @@ ctache_array_destroy(void *data)
 }
 
 void
-*ctache_array_get(ctache_array_t *array, int index)
+*ctache_array_get(ctache_array_t *array, size_t index)
 {
     void *data;
     if (index > array->length) {
@@ -55,7 +55,7 @@ ctache_array_set(ctache_array_t *array, size_t index, void *data)
 {
     byte *byte_ptr = (array->buffer) + index * array->element_size;
     byte *data_ptr = (byte *)(data);
-    int i;
+    unsigned int i;
     for (i = 0; i < array->element_size; i++) {
         *byte_ptr = *data_ptr;
         byte_ptr++;

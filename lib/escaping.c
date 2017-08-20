@@ -24,7 +24,7 @@ static char
     size_t escaped_length = 0;
 
     char ch;
-    int i, j;
+    unsigned int i, j;
     struct escape_char ech;
     bool found;
     for (i = 0; i < str_length; i++) {

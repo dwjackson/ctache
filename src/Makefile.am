@@ -4,7 +4,8 @@
 
 ## Copyright (c) 2016 David Jackson
 
-AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib -I$(top_srcdir)
+AM_CFLAGS = -Wall -Wextra -I$(top_srcdir)/include -I$(top_srcdir)/lib \
+	    -I$(top_srcdir)
 
 bin_PROGRAMS = ctache
 ctache_SOURCES = ctache.c yaml_data.c yaml_data.h json.c json.h strbuf.c \

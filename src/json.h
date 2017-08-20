@@ -25,6 +25,7 @@ enum json_token_type {
 	JSON_COLON,
 	JSON_NUMBER,
 	JSON_COMMA,
+	JSON_BOOLEAN,
 	JSON_END
 };
 
@@ -58,7 +59,7 @@ struct json_parser
 *json_parse_file(FILE *fp);
 
 struct json_parser
-*json_parse_string(char *str, size_t str_len);
+*json_parse_string(char *str);
 
 void
 json_parser_destroy(struct json_parser *parser);

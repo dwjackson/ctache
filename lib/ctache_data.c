@@ -102,7 +102,7 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_hash_table *hash_table;
     struct ctache_array *array;
     struct ctache_string *string;
-    int i;
+    unsigned int i;
 
     ctache_data->refcount--;
     if (ctache_data->refcount > 0) {
@@ -268,7 +268,7 @@ ctache_data_t
     ctache_data_t *first_keys_array;
     ctache_data_t *second_keys_array;
     size_t length;
-    int i;
+    unsigned int i;
     ctache_data_t *key_data;
     char *key;
     ctache_data_t *value_data;
