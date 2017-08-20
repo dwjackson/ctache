@@ -121,6 +121,9 @@ struct json_token
 		} else if (ch == '-' || isdigit(ch)) {
 			parser->json_p--;
 			parse_number(parser);
+			done = 1; 
+		} else if (ch == ',') {
+			parser->token.type = JSON_COMMA;
 			done = 1;
 		} else if (isspace(ch)) {
 			/* skip spaces */
