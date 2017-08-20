@@ -24,6 +24,7 @@ enum json_token_type {
 	JSON_STRING,
 	JSON_COLON,
 	JSON_NUMBER,
+	JSON_COMMA,
 	JSON_END
 };
 

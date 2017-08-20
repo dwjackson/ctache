@@ -86,7 +86,7 @@ handle_section_tag(struct linked_list_node **token_node_ptr,
                 *hidden_ptr = false;
             }
         } else {
-            fprintf(stderr, "Key not in hash: %s\n", key);
+            fprintf(stderr, "Key not in hash: \"%s\"\n", key);
         }
     } else if (ctache_data_is_array(*curr_data_ptr)) {
         linked_list_push(data_stack, *curr_data_ptr);
@@ -246,7 +246,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
         if (value_data != NULL) {
             str = string_from_ctache_data(value_data);
         } else {
-            fprintf(stderr, "Key not in hash: %s\n", token_ptr->value);
+            fprintf(stderr, "Key not in hash: \"%s\"\n", token_ptr->value);
         }
     } else if (ctache_data_is_array(curr_data)) {
         if (token_ptr->value != NULL && key[0] == '.') {
@@ -263,7 +263,7 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
                     str_data = ctache_data_hash_table_get(arr_data, key);
                     str = string_from_ctache_data(str_data);
                 } else {
-                    fprintf(stderr, "Key not in hash: %s\n", key);
+                    fprintf(stderr, "Key not in hash: \"%s\"\n", key);
                 }
             }
         }

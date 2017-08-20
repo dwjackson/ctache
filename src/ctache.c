@@ -16,6 +16,7 @@
 #include <yaml.h>
 #include "ctache/ctache.h"
 #include "yaml_data.h"
+#include "json_data.h"
 #include "config.h"
 
 #define DELIM_BEGIN "{{"
@@ -44,6 +45,7 @@ main(int argc, char *argv[])
     bool print_tokens = false;
     bool help_flag_set = false;
     char *yaml_file_name = NULL;
+    char *json_file_name = NULL;
     ctache_data_t *data = NULL;
     bool print_parsed_rules = false;
     enum escaping_type escaping_type = ESCAPE_HTML;
@@ -53,7 +55,7 @@ main(int argc, char *argv[])
     extern char *optarg;
     extern int optind, opterr, optopt;
     int opt;
-    while ((opt = getopt(argc, argv, "d:D:e:o:i:thy:pV")) != -1) {
+    while ((opt = getopt(argc, argv, "d:D:e:o:i:j:thy:pV")) != -1) {
         switch (opt) {
         case 'd':
             if (strcmp(optarg, DELIM_BEGIN) != 0) {
@@ -85,6 +87,9 @@ main(int argc, char *argv[])
                 fprintf(stderr, "Error opening file: %s\n", in_file_name);
                 exit(EXIT_FAILURE);
             }
+            break;
+        case 'j':
+            json_file_name = strdup(optarg);
             break;
         case 'o':
             out_file_name = strdup(optarg);
@@ -118,13 +123,17 @@ main(int argc, char *argv[])
         goto cleanup; /* Do nothing else */
     } 
 
-    if (yaml_file_name == NULL) {
+    if (yaml_file_name == NULL && json_file_name == NULL) {
         print_help(argv[0]);
         goto cleanup;
     }
 
-    /* Read the YAML data file */
-    data = data_from_yaml(yaml_file_name);
+    /* Read the data from a file */
+    if (yaml_file_name != NULL) {
+        data = data_from_yaml(yaml_file_name);
+    } else {
+        data = data_from_json(json_file_name);
+    }
 
     /* Render the template */
     if (data != NULL) {
@@ -143,7 +152,7 @@ main(int argc, char *argv[])
                             delim_begin,
                             delim_end);
     } else {
-        fprintf(stderr, "Error parsing YAML file\n");
+        fprintf(stderr, "Error parsing data file\n");
     }
     
 cleanup:
@@ -157,15 +166,10 @@ cleanup:
     if (in_fp != stdin) {
         fclose(in_fp);
     }
-    if (in_file_name != NULL) {
-        free(in_file_name);
-    }
-    if (out_file_name != NULL) {
-        free(out_file_name);
-    }
-    if (yaml_file_name != NULL) {
-        free(yaml_file_name);
-    }
+    free(in_file_name);
+    free(out_file_name);
+    free(yaml_file_name);
+    free(json_file_name);
     if (strcmp(delim_begin, DELIM_BEGIN) != 0) {
         free(delim_begin);
     }
@@ -184,6 +188,7 @@ print_help(const char *prog_name)
     printf("\t-h: Print this help message\n");
     printf("\t-t: Print lexer tokens (for debugging)\n");
     printf("\t-i: Specify input file name\n");
+    printf("\t-j: Specify the JSON-formatted input data file\n");
     printf("\t-o: Specify output file name\n");
     printf("\t-p: Print list of parsed rules (for debugging)\n");
     printf("\t-y: Specify the YAML-formatted input data file\n");
