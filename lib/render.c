@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016 David Jackson
+ * Copyright (c) 2016-2017 David Jackson
  * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
