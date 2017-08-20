@@ -12,13 +12,14 @@
 .Nd render mustache-style templates
 .Sh SYNOPSIS
 .Nm
-.Op Fl h t p
-.Op Fl y Ar yaml_data
-.Op Fl i Ar input_file
-.Op Fl o Ar output_file
 .Op Fl d Ar delim_begin
 .Op Fl D Ar delim_end
 .Op Fl e Ar escaping_type
+.Op Fl h t p
+.Op Fl i Ar input_file
+.Op Fl j Ar json_data
+.Op Fl o Ar output_file
+.Op Fl y Ar yaml_data
 .Sh DESCRIPTION
 The ctache command renders a mustache-style template. By default, the input
 template comes from standard input and the output is printed to standard
@@ -31,16 +32,18 @@ The arguments are as follows:
 Specify a custom delimiter for begining of tag (default is "{{")
 .It Fl D Ar delim_end
 Specify a custom delimiter for end of tag (default is "}}")
-.It Fl h
-Print a help message
-.It Fl y Ar yaml_data
-Specify a YAML file that contains the data for insertion into the template
-.It Fl i Ar input_file
-Specify the input (template) file to render
-.It Fl o Ar output_file
-Specify the file to which to write the rendered template
 .It Fl e Ar escaping_type
 By default
+.It Fl h
+Print a help message
+.It Fl i Ar input_file
+Specify the input (template) file to render
+.It Fl j Ar json_data
+Specify a JSON file that contains the data for insertion into the template
+.It Fl o Ar output_file
+Specify the file to which to write the rendered template
+.It Fl y Ar yaml_data
+Specify a YAML file that contains the data for insertion into the template
 .Nm
 escapes all text interted into a template using HTML escpare characters. This
 flag allows you to choose how to escape the text. Acceptable values are
