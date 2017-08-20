@@ -116,6 +116,7 @@ static ctache_data_t
 	
 	done = 0;
 	while (!done) {
+		elem = NULL;
 		tok = json_next_token(parser);
 		if (tok->type == JSON_BRACKET_RIGHT) {
 			done = 1;
@@ -123,11 +124,15 @@ static ctache_data_t
 			str = tok->value.string;
 			str_len = strlen(str);
 			elem = ctache_data_create_string(str, str_len);
-			ctache_data_array_append(data, elem);
+		} else if (tok->type == JSON_BRACE_LEFT) {
+			elem = read_object(parser);
 		} else {
 			fprintf(stderr, "ERROR: Expected value\n");
 			ctache_data_destroy(data);
 			return NULL;
+		}
+		if (elem != NULL) {
+			ctache_data_array_append(data, elem);
 		}
 		tok = json_next_token(parser);
 		if (tok->type != JSON_COMMA
