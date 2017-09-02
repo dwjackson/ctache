@@ -8,7 +8,7 @@
 TESTS = test_hash_table test_delimiters test_render test_boolean test_array \
 	       test_string test_json
 
-bin_PROGRAMS = test_hash_table test_delimiters test_render test_boolean \
+check_PROGRAMS = test_hash_table test_delimiters test_render test_boolean \
 	       test_array test_string test_json
 
 test_hash_table_SOURCES = test_hash_table.c
