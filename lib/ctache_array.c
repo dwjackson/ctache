@@ -8,6 +8,7 @@
  * Copyright (c) 2016-2017 David Jackson
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "ctache_array.h"
 
@@ -72,6 +73,10 @@ ctache_array_append(ctache_array_t **array_ptr, void *data)
         size_t bufsize_bytes = bufsize * array->element_size;
         size_t array_size = sizeof(struct ctache_array) + bufsize_bytes;
         *array_ptr = realloc(*array_ptr, array_size);
+	if (*array_ptr == NULL) {
+		fprintf(stderr, "ctache_array_append: Out of memory");
+		exit(EXIT_FAILURE);
+	}
         array = *array_ptr;
     }
     ctache_array_set(*array_ptr, array->length, data);

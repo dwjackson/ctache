@@ -47,10 +47,14 @@ add_char_to_strval(char **strval_ptr,
         (*strval_bufsize_ptr) *= 2;
         char *curr_strval = strdup(*strval_ptr);
         if (curr_strval == NULL) {
-            fprintf(stderr, "ctache_lex(): Out of memory\n");
+            fprintf(stderr, "add_char_to_strval(): Out of memory\n");
             exit(EXIT_FAILURE);
         }
         *strval_ptr = realloc(*strval_ptr, *strval_bufsize_ptr);
+	if (*strval_ptr == NULL) {
+            fprintf(stderr, "add_char_to_strval(): Out of memory\n");
+            exit(EXIT_FAILURE);
+	}
         memset(*strval_ptr, 0, *strval_bufsize_ptr);
         strcpy(*strval_ptr, curr_strval);
 

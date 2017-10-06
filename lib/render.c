@@ -26,6 +26,7 @@
 
 #define IN_BUF_SIZE_DEFAULT 1024
 #define DATE_FORMAT "YYYY-MM-DD"
+#define IN_BUF_SIZE_MAX 1073741824 /* 1 GiB */
 
 static void
 _ctache_render(struct linked_list *tokens,
@@ -580,7 +581,7 @@ _ctache_render_file(FILE *in_fp,
     in_buf = malloc(in_buf_size);
     if (in_buf == NULL) {
         fprintf(stderr, "Out of memory\n");
-        exit(EXIT_FAILURE);
+	abort();
     }
     int ch;
     while ((ch = fgetc(in_fp)) != EOF) {
@@ -589,10 +590,14 @@ _ctache_render_file(FILE *in_fp,
             in_buf_len++;
         } else {
             in_buf_size *= 2;
+	    if (in_buf_size >= IN_BUF_SIZE_MAX) {
+                fprintf(stderr, "_ctache_render_file: Input too large\n");
+		abort();
+	    }
             in_buf = realloc(in_buf, in_buf_size);
             if (in_buf == NULL) {
-                fprintf(stderr, "Out of memory\n");
-                exit(EXIT_FAILURE);
+                fprintf(stderr, "_ctache_render_file: Out of memory\n");
+		abort();
             }
             in_buf[in_buf_len] = ch;
             in_buf_len++;
