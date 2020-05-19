@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2017 Daniel Araujo <contact@daniel-araujo.pt>
+ * Copyright (c) 2020 David Jackson
  */
 
 #include <stdlib.h>
@@ -61,13 +62,17 @@ ctache_string_length(ctache_string_t *string)
 int
 ctache_string_compare(ctache_string_t *string1, ctache_string_t *string2)
 {
-    if (string1->length != string2->length) {
-        return string1->length > string2->length ? 1 : -1;
+    size_t length;
+
+    /* If the two strings are of different lengths, only compare as many bytes
+     * as are in the shorter string */
+    if (string1->length < string2->length) {
+        length = string1->length;
+    } else {
+        length = string2->length;
     }
 
-    // At this point we know that both strings have the same length, so there's
-    // no difference in reading the value of length from string1 or string2.
-    size_t length = string1->length;
-
-    return strncmp(string1->buffer, string2->buffer, length);
+    int retval = strncmp(string1->buffer, string2->buffer, length);
+    return retval;
 }
+
