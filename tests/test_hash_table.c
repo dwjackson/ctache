@@ -141,8 +141,7 @@ main(void)
     astro_suite_add_test(suite, test_get_keys, NULL);
     astro_suite_add_test(suite, test_hash_merge, NULL);
     astro_suite_add_test(suite, test_empty_hash, NULL);
-    astro_suite_run(suite);
-    num_failures = astro_suite_num_failures(suite);
+    num_failures = astro_suite_run(suite);
     astro_suite_destroy(suite);
 
     return (num_failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
