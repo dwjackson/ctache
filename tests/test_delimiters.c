@@ -45,6 +45,7 @@ ASTRO_TEST_BEGIN(test_custom_delimiters)
         char *s = fgets(str, 100, fp);
         assert(s != NULL, "fgets() failed");
         fclose(fp);
+	remove(out_file_name);
         assert_str_eq(str, "test_value", "Wrong value in data hash");
     }
 }
