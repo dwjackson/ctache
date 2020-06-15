@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016-2017 David Jackson
+ * Copyright (c) 2016-2020 David Jackson
  */
 
 #include <stdlib.h>
@@ -16,16 +16,11 @@
 #include <sys/mman.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "ctache/ctache.h"
 #include "linked_list.h"
 #include "ctache_array.h"
 #include "yaml_data.h"
-
-static bool
-is_whitespace(unsigned char ch)
-{
-    return (ch == ' ' || ch == '\n' || ch == '\r');
-}
 
 static yaml_char_t
 *yaml_strtrim(yaml_char_t *str, size_t length)
@@ -39,7 +34,7 @@ static yaml_char_t
     unsigned char ch = '\0';
     for (i = 0; i < length; i++) {
         ch = str[i];
-        if (is_whitespace(ch)) {
+        if (isspace(ch)) {
             starting_whitespace++;
         } else {
             break;
@@ -48,7 +43,7 @@ static yaml_char_t
 
     for (j = length - 1; j >= 0; j--) {
         ch = str[j];
-        if (is_whitespace(ch)) {
+        if (isspace(ch)) {
             ending_whitespace++;
         } else {
             break;
