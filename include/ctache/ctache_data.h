@@ -52,6 +52,9 @@ ctache_data_t
 *ctache_data_create_double(double num);
 
 ctache_data_t
+*ctache_data_create_int(int num);
+
+ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type,
                     void *data,
                     size_t element_size,

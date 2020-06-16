@@ -41,6 +41,13 @@ ctache_data_t
 }
 
 ctache_data_t
+*ctache_data_create_int(int number)
+{
+    double d = (double) number;
+    return ctache_data_create_double(d);
+}
+
+ctache_data_t
 *ctache_data_create_hash()
 {
     struct ctache_hash_table *tbl = ctache_hash_table_create();
