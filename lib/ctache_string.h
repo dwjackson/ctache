@@ -6,6 +6,7 @@
 
 /*
  * Copyright (c) 2017 Daniel Araujo <contact@daniel-araujo.pt>
+ * Copyright (c) 2020 David Jackson
  */
 
 #ifndef CTACHE_STRING_H
@@ -69,9 +70,11 @@ size_t
 ctache_string_length(ctache_string_t *string);
 
 /*
- * Checks whether two strings are equal.
+ * Compare two strings such that they can be ordered.
  *
- * Returns 0 if they are equal, any other value if otherwise.
+ * Analogous to strcmp, returns a number less than 0, equal to 0, or greater
+ * than 0 if the first string is respectively less than, equal to, or greater
+ * than the second string.
  */
 int
 ctache_string_compare(ctache_string_t *string1, ctache_string_t *string2);
