@@ -11,7 +11,7 @@ AC_PREREQ([2.69])
 AC_INIT([ctache], [0.9.2], [dwjackson@users.noreply.github.com])
 AC_CONFIG_SRCDIR([src/ctache.c])
 AC_CONFIG_HEADERS([config.h])
-AM_INIT_AUTOMAKE([-Wall foreign])
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -39,7 +39,6 @@ AC_TYPE_PID_T
 AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
-AC_FUNC_FORK
 AC_CHECK_FUNCS([memset munmap strdup strerror])
 
 AC_CONFIG_FILES([Makefile
