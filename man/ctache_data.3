@@ -5,7 +5,7 @@
 .\" Copyright (c) 2016-2020 David Jackson
 .\" Modified work Copyright 2017 Daniel Araujo
 .\"
-.Dd June 26, 2016
+.Dd June 16, 2020
 .Dt CTACHE_DATA 3
 .Os
 .Sh NAME
@@ -28,6 +28,22 @@
 .Ft ctache_data_t
 .Fo *ctache_data_create_boolean
 .Fa "bool value"
+.Fc
+.Ft ctache_data_t
+.Fo ctache_data_create_double
+.Fa "double number"
+.Fc
+.Ft ctache_data_t
+.Fo ctache_data_create_int
+.Fa "int number"
+.Fc
+.Ft double
+.Fo ctache_data_as_number
+.Fa "ctache_data_t *data"
+.Fc
+.Ft bool  
+.Fo ctache_data_is_number
+.Fa "ctache_data_t *data"
 .Fc
 .Ft void
 .Fo ctache_data_hash_table_set
