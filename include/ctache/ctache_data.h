@@ -49,6 +49,9 @@ ctache_data_t
 *ctache_data_create_hash();
 
 ctache_data_t
+*ctache_data_create_double(double num);
+
+ctache_data_t
 *ctache_data_create(enum ctache_data_type data_type,
                     void *data,
                     size_t element_size,
@@ -84,6 +87,9 @@ bool
 ctache_data_is_hash(ctache_data_t *data);
 
 bool
+ctache_data_is_number(ctache_data_t *data);
+
+bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key);
 
 ctache_data_t
@@ -107,5 +113,8 @@ ctache_array_sort(ctache_data_t *array_data,
 
 const char
 *ctache_data_string_buffer(ctache_data_t *data);
+
+double
+ctache_data_as_number(ctache_data_t *data);
 
 #endif /* CTACHE_DATA_H */

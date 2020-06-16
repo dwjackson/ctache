@@ -2,14 +2,14 @@
 ## License, v. 2.0. If a copy of the MPL was not distributed with this
 ## file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-## Copyright (c) 2016-2017 David Jackson
+## Copyright (c) 2016-2020 David Jackson
 ## Modified work Copyright 2017 Daniel Araujo
 
 TESTS = test_hash_table test_delimiters test_render test_boolean test_array \
-	       test_string test_json
+	       test_string test_json test_number
 
 check_PROGRAMS = test_hash_table test_delimiters test_render test_boolean \
-	       test_array test_string test_json
+	       test_array test_string test_json test_number
 
 test_hash_table_SOURCES = test_hash_table.c
 test_hash_table_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
@@ -39,4 +39,10 @@ test_json_SOURCES = test_json.c $(top_builddir)/src/json.c \
 		    $(top_builddir)/src/json.h $(top_builddir)/src/strbuf.c \
 		    $(top_builddir)/src/strbuf.h
 test_json_CFLAGS = -g -Wall -I$(top_builddir)/src
-test_json_LDADD = -lastrounit
+test_json_LDADD = $(top_builddir)/lib/libctache.la -lastrounit
+
+test_number_SOURCES = test_number.c $(top_builddir)/src/json.c \
+		    $(top_builddir)/src/json.h $(top_builddir)/src/strbuf.c \
+		    $(top_builddir)/src/strbuf.h
+test_number_CFLAGS = -g -Wall -I$(top_builddir)/include/ctache
+test_number_LDADD = $(top_builddir)/lib/libctache.la -lastrounit

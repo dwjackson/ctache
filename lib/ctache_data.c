@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016-2017 David Jackson
+ * Copyright (c) 2016-2020 David Jackson
  * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
@@ -32,6 +32,12 @@ ctache_data_t
 *ctache_data_create_string(char *str, size_t len)
 {
     return ctache_data_create(CTACHE_DATA_STRING, str, 1, len);
+}
+
+ctache_data_t
+*ctache_data_create_double(double number)
+{
+    return ctache_data_create(CTACHE_DATA_NUMBER, &number, sizeof(double), 1);
 }
 
 ctache_data_t
@@ -206,6 +212,12 @@ ctache_data_is_hash(ctache_data_t *data)
 }
 
 bool
+ctache_data_is_number(ctache_data_t *data)
+{
+    return (data->data_type == CTACHE_DATA_NUMBER);
+}
+
+bool
 ctache_data_hash_table_has_key(ctache_data_t *data, const char *key)
 {
     return ctache_hash_table_has_key(data->data.hash, key);
@@ -320,4 +332,10 @@ const char
 {
 	ctache_string_t *string = string_data->data.string;
 	return ctache_string_buffer(string);
+}
+
+double
+ctache_data_as_number(ctache_data_t *data)
+{
+	return data->data.number;
 }
