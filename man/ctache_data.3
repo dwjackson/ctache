@@ -2,7 +2,7 @@
 .\" License, v. 2.0. If a copy of the MPL was not distributed with this
 .\" file, You can obtain one at http://mozilla.org/MPL/2.0/.
 .\"
-.\" Copyright (c) 2016-2017 David Jackson
+.\" Copyright (c) 2016-2020 David Jackson
 .\" Modified work Copyright 2017 Daniel Araujo
 .\"
 .Dd June 26, 2016
@@ -48,6 +48,10 @@
 .Ft const char
 .Fo *ctache_data_string_buffer
 .Fa "ctache_data_t *data"
+.Fc
+.Ft void
+.Fo ctache_data_destroy
+.Fa "void *data"
 .Fc
 .Sh DESCRIPTION
 Ctache uses a generic data format (the ctache_data_t) structure to contain
@@ -99,4 +103,8 @@ string length.
 .Fn ctache_data_string_buffer
 function will return the underlying buffer of the string. You may dereference
 up to the length of the string plus one. The extra one holds a NUL character
-which allows you to treat the buffer as a c-style string.
+which allows you to treat the buffer as a C-style string.
+.Pp
+The
+.Fn ctache_data_destroy
+function is used to free the memory used by a ctache_data_t object.
