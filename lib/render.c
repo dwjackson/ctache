@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016-2017 David Jackson
+ * Copyright (c) 2016-2020 David Jackson
  * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
@@ -87,7 +87,8 @@ handle_section_tag(struct linked_list_node **token_node_ptr,
                 *hidden_ptr = false;
             }
         } else {
-            fprintf(stderr, "Key not in hash: \"%s\"\n", key);
+            /* If the data doesn't exist, it's "undefined" which is false-y */
+            *hidden_ptr = true;
         }
     } else if (ctache_data_is_array(*curr_data_ptr)) {
         linked_list_push(data_stack, *curr_data_ptr);
@@ -169,7 +170,12 @@ handle_close_tag(struct linked_list_node **token_node_ptr,
             } else {
                 *hidden_ptr = false;
             }
-        }
+        } else if (ctache_data_is_hash(*curr_data_ptr)
+                   && !ctache_data_hash_table_has_key(*curr_data_ptr, key)) {
+            /* If closing a tag for an undefined variable, treat the undefined
+	     * variable as a false-y boolean */
+            *hidden_ptr = false;
+	}
         if (data_stack->length > 0) {
             *curr_data_ptr = linked_list_pop(data_stack);
         }

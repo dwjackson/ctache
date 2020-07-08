@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016 David Jackson
+ * Copyright (c) 2016-2020 David Jackson
  */
 
 #include "ctache_data.h"
@@ -22,7 +22,8 @@ ASTRO_TEST_BEGIN(test_string_as_boolean)
     ctache_data_hash_table_set(data, "key", value);
 
     char template_str[] = "value = {{#key}}{{key}}{{/key}}";
-    FILE *fp = tmpfile();
+    char buf[100];
+    FILE *fp = fmemopen(buf, 100, "w+");
     assert(fp != NULL, "output file is NULL");
 
     ctache_render_string(template_str,
@@ -45,6 +46,35 @@ ASTRO_TEST_BEGIN(test_string_as_boolean)
 }
 ASTRO_TEST_END
 
+ASTRO_TEST_BEGIN(test_undefined_is_false)
+{
+    ctache_data_t *data = ctache_data_create_hash();
+
+    char template_str[] = "value = {{#missing}}bad{{/missing}}good";
+    char buf[100];
+    FILE *fp = fmemopen(buf, 100, "w+");
+    assert(fp != NULL, "output file is NULL");
+
+    ctache_render_string(template_str,
+                         strlen(template_str),
+                         fp,
+                         data,
+                         ESCAPE_HTML,
+                         "{{",
+                         "}}");
+    fseek(fp, 0, SEEK_SET);
+
+    char output[100];
+    memset(output, 0, 100);
+    fgets(output, 100, fp);
+
+    assert_str_eq("value = good", output, "Wrong output for undefined-as-bool");
+
+    fclose(fp);
+    ctache_data_destroy(data);
+}
+ASTRO_TEST_END
+
 int
 main(void)
 {
@@ -53,6 +83,7 @@ main(void)
 
     suite = astro_suite_create();
     astro_suite_add_test(suite, test_string_as_boolean, NULL);
+    astro_suite_add_test(suite, test_undefined_is_false, NULL);
     num_failures = astro_suite_run(suite);
     astro_suite_destroy(suite);
 
