@@ -250,7 +250,9 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
 
     if (ctache_data_is_hash(curr_data)) {
         value_data = ctache_data_hash_table_get(curr_data, key);
-        if (value_data != NULL) {
+	if (hidden) {
+            str = NULL;
+	} else if (value_data != NULL) {
             str = string_from_ctache_data(value_data);
         } else {
             fprintf(stderr, "Key not in hash: \"%s\"\n", token_ptr->value);
@@ -266,7 +268,9 @@ handle_value_tag(struct linked_list_node **token_node_ptr,
             arr_data = ctache_data_array_get(curr_data, *index_ptr);
             if (arr_data != NULL && ctache_data_is_hash(arr_data)) {
                 ctache_data_t *str_data;
-                if (ctache_data_hash_table_has_key(arr_data, key)) {
+		if (hidden) {
+		    str = NULL;
+		} else if (ctache_data_hash_table_has_key(arr_data, key)) {
                     str_data = ctache_data_hash_table_get(arr_data, key);
                     str = string_from_ctache_data(str_data);
                 } else {
