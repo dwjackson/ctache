@@ -2,10 +2,10 @@
 .\" License, v. 2.0. If a copy of the MPL was not distributed with this
 .\" file, You can obtain one at http://mozilla.org/MPL/2.0/.
 .\"
-.\" Copyright (c) 2016-2020 David Jackson
+.\" Copyright (c) 2016-2021 David Jackson
 .\" Modified work Copyright 2017 Daniel Araujo
 .\"
-.Dd June 16, 2020
+.Dd May 24, 2021
 .Dt CTACHE_DATA 3
 .Os
 .Sh NAME
@@ -123,4 +123,5 @@ which allows you to treat the buffer as a C-style string.
 .Pp
 The
 .Fn ctache_data_destroy
-function is used to free the memory used by a ctache_data_t object.
+function is used to free the memory used by a ctache_data_t object. If passed
+NULL, no operation is performed.
