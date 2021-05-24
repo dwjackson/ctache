@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (c) 2016-2020 David Jackson
+ * Copyright (c) 2016-2021 David Jackson
  * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
@@ -116,6 +116,11 @@ _ctache_data_destroy(void *data, bool free_ctache_data)
     struct ctache_array *array;
     struct ctache_string *string;
     unsigned int i;
+
+    if (data == NULL) {
+	    /* Do nothing when passed NULL */
+	    return;
+    }
 
     ctache_data->refcount--;
     if (ctache_data->refcount > 0) {

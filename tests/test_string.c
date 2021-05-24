@@ -6,7 +6,7 @@
 
 /*
  * Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
- * Copyright 2020 David Jackson
+ * Copyright 2020-2021 David Jackson
  */
 
 #include "ctache_data.h"
@@ -67,6 +67,12 @@ ASTRO_TEST_BEGIN(test_ctache_data_strcmp_for_different_size_stings)
 }
 ASTRO_TEST_END
 
+ASTRO_TEST_BEGIN(test_destroy_null)
+{
+	ctache_data_destroy(NULL);
+}
+ASTRO_TEST_END
+
 int
 main(void)
 {
@@ -77,6 +83,7 @@ main(void)
     astro_suite_add_test(suite, test_string_length_respected, NULL);
     astro_suite_add_test(suite, test_string_nul_terminator, NULL);
     astro_suite_add_test(suite, test_ctache_data_strcmp_for_different_size_stings, NULL);
+    astro_suite_add_test(suite, test_destroy_null, NULL);
     num_failures = astro_suite_run(suite);
     astro_suite_destroy(suite);
 
