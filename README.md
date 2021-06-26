@@ -5,7 +5,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 
 <!--
-Copyright (c) 2016 David Jackson
+Copyright (c) 2016-2021 David Jackson
 -->
 
 # Ctache
@@ -74,8 +74,6 @@ For an explanation of the Ctache library, libctache, see the man pages
 Ctache.
 
 ## License
-
-Copyright 2016 David Jackson
 
 Ctache is licensed under the [MPLv2](https://www.mozilla.org/en-US/MPL/2.0/).
 If you don't know how the MPLv2 works, there is an
