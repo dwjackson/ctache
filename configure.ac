@@ -8,10 +8,12 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([ctache], [0.9.6], [dwjackson@users.noreply.github.com])
+AC_INIT([ctache], [0.9.7], [dwjackson@users.noreply.github.com])
 AC_CONFIG_SRCDIR([src/ctache.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
+
+AC_GNU_SOURCE
 
 # Checks for programs.
 AC_PROG_CXX

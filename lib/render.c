@@ -5,13 +5,11 @@
  */
 
 /*
- * Copyright (c) 2016-2020 David Jackson
+ * Copyright (c) 2016-2021 David Jackson
  * Modified work Copyright 2017 Daniel Araujo <contact@daniel-araujo.pt>
  */
 
-#ifdef __linux__
-#define _GNU_SOURCE
-#endif /* __linux__ */
+#include "config.h"
 
 #include <stdio.h>
 #include <stdbool.h>
